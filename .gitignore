@@ -1,1 +1,54 @@
 .vs/*
+
+# Pastas de build do .NET
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+[Xx]64/
+[Xx]86/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+
+# Resultados de teste
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+# Publicação / artefatos
+*.publishsettings
+PublishProfiles/
+*.pubxml
+*.pubxml.user
+
+# Arquivos de sistema operacional
+.DS_Store
+Thumbs.db
+
+# Segredos locais (não versionar)
+*.env
+appsettings.*.local.json
