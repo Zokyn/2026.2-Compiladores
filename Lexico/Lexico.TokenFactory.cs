@@ -24,7 +24,7 @@
                         throw new Exception($"Literal de texto não fechado na linha {linha}, coluna {coluna}.");
                     }
 
-                    char c = lex.GetCaractereAtual();
+                    char c = lex.CaractereAtual;
 
                     if (c == '"')
                     {
@@ -67,7 +67,7 @@
                 int inicio = lex.Posicao;
 
                 while (!lex.IsFimDoCodigo() &&
-                    (char.IsLetterOrDigit(lex.GetCaractereAtual()) || lex.GetCaractereAtual() == '_'))
+                    (char.IsLetterOrDigit(lex.CaractereAtual) || lex.CaractereAtual == '_'))
                 {
                     lex.ProximoCaractere();
                 }

@@ -35,17 +35,17 @@
         private int _linha = 1;
         /// <summary>Posição, em coluna, do caracter atual no leitor</summary>
         private int _coluna = 1;
-        /// <summary>Propriedade calcula e retorna a posição em par-ordenado de linha e coluna</summary>
-        public (int, int) LinhaColuna => (_linha, _coluna);
-        /// <summary>Propriedade calcula e retorna posição em inteiro do leitor no código-fonte de entrada.</summary>
+        
+        // PROPRIEDADES COMPUTADAS
+        /// <summary>Propriedade computada que retorna posição em inteiro do leitor no código-fonte de entrada.</summary>
         public int Posicao => _posicao;
+        /// <summary>Propriedade computada que retorna a posição em par-ordenado de linha e coluna.</summary>
+        public (int, int) LinhaColuna => (_linha, _coluna);
+        /// <summary>Propriedade computada que retorna o caractere atual do código-fonte de entrada, baseado na posição atual.</summary>
+        public char CaractereAtual => _entrada[_posicao];
         // SUBCLASSES E OBJETOS
         public partial class TokenFactory { }
 
-        /// <summary>
-        /// Retorna o caractere atual do código-fonte de entrada, baseado na posição atual.
-        /// </summary>
-        public char GetCaractereAtual() => _entrada[_posicao];
         /// <summary>
         /// Retorna verdadeiro se a posição atual mais o valor de deslocamento for maior que o tamanho do código-fonte.
         /// </summary>
@@ -82,7 +82,7 @@
 
             while (!IsFimDoCodigo())
             {
-                char c = GetCaractereAtual();
+                char c = CaractereAtual;
 
                 if (c == ' ' || c == '\t' || c == '\r')
                 {
