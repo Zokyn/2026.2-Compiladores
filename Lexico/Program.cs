@@ -26,7 +26,7 @@ pagina ""Loja Declara"" {
 
             try
             {
-                var lexer = new Lexer(entrada);
+                var lexer = new Lexico(entrada);
                 var tokens = lexer.Tokenizar();
 
                 foreach (var token in tokens)

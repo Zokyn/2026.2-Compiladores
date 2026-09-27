@@ -4,8 +4,9 @@
     /// Analisador Léxico (Lexer) para o compilador. 
     /// Responsável por ler o código-fonte de entrada e gerar uma lista de tokens.
     /// </summary>
-    public class Lexer(string entrada)
+    public partial class Lexico(string entrada)
     {
+        // LISTAS DE SIMBOLOS
         /// <summary>
         /// Lista de Palavras Chaves de Componentes
         /// </summary>
@@ -25,7 +26,7 @@
             "em",
             "se"
         };
-
+        // PROPRIEDADES
         /// <summary>String de entrada; código-fonte do compilador.</summary>
         private readonly string _entrada = entrada ?? throw new ArgumentNullException(nameof(entrada));
         /// <summary>Posição do caractere atual no leitor do analisador léxico</summary>
@@ -38,6 +39,8 @@
         public (int, int) LinhaColuna => (_linha, _coluna);
         /// <summary>Propriedade calcula e retorna posição em inteiro do leitor no código-fonte de entrada.</summary>
         public int Posicao => _posicao;
+        // SUBCLASSES E OBJETOS
+        public partial class TokenFactory { }
 
         /// <summary>
         /// Retorna o caractere atual do código-fonte de entrada, baseado na posição atual.
