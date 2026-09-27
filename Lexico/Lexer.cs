@@ -49,9 +49,9 @@
         {
             List<Token> tokens = new List<Token>();
 
-            while (!FimDoCodigo())
+            while (!IsFimDoCodigo())
             {
-                char c = CaractereAtual();
+                char c = GetCaractereAtual();
 
                 if (c == ' ' || c == '\t' || c == '\r')
                 {
@@ -68,27 +68,27 @@
                         ProximoCaractere();
                         continue;
                     case '{':
-                        tokens.Add(CriarToken(TokenType.AbreBloco, "{"));
+                        tokens.Add(GeraToken(TokenType.AbreBloco, "{"));
                         continue;
                     case '}':
-                        tokens.Add(CriarToken(TokenType.FechaBloco, "}"));
+                        tokens.Add(GeraToken(TokenType.FechaBloco, "}"));
                         continue;
                     case ':':
-                        tokens.Add(CriarToken(TokenType.Atribuidor, ":"));
+                        tokens.Add(GeraToken(TokenType.Atribuidor, ":"));
                         continue;
                     case '.':
-                        tokens.Add(CriarToken(TokenType.AcessoMembro, "."));
+                        tokens.Add(GeraToken(TokenType.AcessoMembro, "."));
                         continue;
                     case ';':
-                        tokens.Add(CriarToken(TokenType.Separador, ";"));
+                        tokens.Add(GeraToken(TokenType.Separador, ";"));
                         continue;
                     case '"':
-                        tokens.Add(LerLiteral());
+                        tokens.Add(GeraTokenLiteral());
                         continue;
                     default:
                         if (char.IsLetter(c) || c == '_')
                         {
-                            tokens.Add(LerIdentificadorOuPalavraChave());
+                            tokens.Add(GeraTokenIdentificadorOuPalavraChave());
                             continue;
                         }
 
@@ -97,7 +97,7 @@
                 }
             }
 
-            tokens.Add(CriaTokenFimDeArquivo());
+            tokens.Add(GeraTokenFimDeArquivo());
             return tokens;
         }
         /// <summary>
@@ -106,7 +106,7 @@
         /// </summary>
         /// <returns>Token a partir do literal, caso contrário levanta exception.</returns>
         /// <exception cref="Exception"></exception>
-        private Token LerLiteral()
+        private Token GeraTokenLiteral()
         {
             int linha = _linha;
             int coluna = _coluna;
@@ -116,12 +116,12 @@
 
             while (true)
             {
-                if (FimDoCodigo())
+                if (IsFimDoCodigo())
                 {
                     throw new Exception($"Literal de texto não fechado na linha {linha}, coluna {coluna}.");
                 }
 
-                char c = CaractereAtual();
+                char c = GetCaractereAtual();
 
                 if (c == '"')
                 {
@@ -146,21 +146,21 @@
         /// Método interno para geração de token de fim de arquivo o terminar a cadeia de entrada.
         /// </summary>
         /// <returns>Token de Fim de Arquivo.</returns>
-        private Token CriaTokenFimDeArquivo() => new Token(TokenType.FimDeArquivo, string.Empty, "FimDoArquivo", (_linha, _coluna));
+        private Token GeraTokenFimDeArquivo() => new Token(TokenType.FimDeArquivo, string.Empty, "FimDoArquivo", (_linha, _coluna));
 
         /// <summary>
         /// Método interno para ler identificadores ou palavras-chave. O método consome os caracteres do identificador até encontrar 
         /// um caractere que não seja letra, dígito ou sublinhado (_).
         /// </summary>
         /// <returns>Token de Identificador ou Palavra-chave</returns>
-        private Token LerIdentificadorOuPalavraChave()
+        private Token GeraTokenIdentificadorOuPalavraChave()
         {
             int linha = _linha;
             int coluna = _coluna;
             int inicio = _posicao;
 
-            while (!FimDoCodigo() &&
-                (char.IsLetterOrDigit(CaractereAtual()) || CaractereAtual() == '_'))
+            while (!IsFimDoCodigo() &&
+                (char.IsLetterOrDigit(GetCaractereAtual()) || GetCaractereAtual() == '_'))
             {
                 ProximoCaractere();
             }
@@ -184,7 +184,7 @@
         /// <param name="tipo"><see cref="TokenType"/> do Token.</param>
         /// <param name="lexema">Cadeia de caracteres que representa o token no código fonte.</param>
         /// <returns>O token gerado a partir dos parâmetros de entrada.</returns>
-        private Token CriarToken(TokenType tipo, string lexema)
+        private Token GeraToken(TokenType tipo, string lexema)
         {
             var posicao = (_linha, _coluna);
             ProximoCaractere();
@@ -195,14 +195,14 @@
         /// Retorna o caractere atual do código-fonte de entrada, baseado na posição atual.
         /// </summary>
         /// <returns></returns>
-        private char CaractereAtual() => _entrada[_posicao];
+        private char GetCaractereAtual() => _entrada[_posicao];
 
         /// <summary>
         /// Retorna verdadeiro se a posição atual mais o valor de deslocamento for maior que o tamanho do código-fonte.
         /// </summary>
         /// <param name="deslocamento">Valor inteiro do deslocamento que somado a posição do leitor, é verificado se 
         /// é o final do código de entrada.</param>
-        private bool FimDoCodigo(int deslocamento = 0) => _posicao + deslocamento >= _entrada.Length;
+        private bool IsFimDoCodigo(int deslocamento = 0) => _posicao + deslocamento >= _entrada.Length;
 
         /// <summary>
         /// Avança para o próximo caractere do código-fonte de entrada, atualizando reiniciando a coluna e
