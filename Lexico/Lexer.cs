@@ -106,26 +106,26 @@
         /// </summary>
         /// <returns>Token a partir do literal, caso contrário levanta exception.</returns>
         /// <exception cref="Exception"></exception>
-        private Token GeraTokenLiteral()
+        private static Token GeraTokenLiteral(Lexer lex)
         {
-            int linha = _linha;
-            int coluna = _coluna;
-            ProximoCaractere(); // Para consumir as aspas de abertura
+            int linha = lex._linha;
+            int coluna = lex._coluna;
+            lex.ProximoCaractere(); // Para consumir as aspas de abertura
 
             string conteudo = "";
 
             while (true)
             {
-                if (IsFimDoCodigo())
+                if (lex.IsFimDoCodigo())
                 {
                     throw new Exception($"Literal de texto não fechado na linha {linha}, coluna {coluna}.");
                 }
 
-                char c = GetCaractereAtual();
+                char c = lex.GetCaractereAtual();
 
                 if (c == '"')
                 {
-                    ProximoCaractere(); // Para consumir as aspas de fechamento
+                    lex.ProximoCaractere(); // Para consumir as aspas de fechamento
                     break;
                 }
                 else if (c == '\n')
@@ -136,7 +136,7 @@
                 //TO-DO: adicionar suporte a quebras de linha com \n dentro do literal de texto, e quebra de linha sem quebrar o texto
 
                 conteudo += c;
-                ProximoCaractere();
+                lex.ProximoCaractere();
             }
 
 
@@ -146,26 +146,31 @@
         /// Método interno para geração de token de fim de arquivo o terminar a cadeia de entrada.
         /// </summary>
         /// <returns>Token de Fim de Arquivo.</returns>
-        private Token GeraTokenFimDeArquivo() => new Token(TokenType.FimDeArquivo, string.Empty, "FimDoArquivo", (_linha, _coluna));
+        private static Token GeraTokenFimDeArquivo(Lexer lex) => new(
+            TokenType.FimDeArquivo, 
+            string.Empty, 
+            "FimDoArquivo", 
+            (lex._linha, lex._coluna)
+        );
 
         /// <summary>
         /// Método interno para ler identificadores ou palavras-chave. O método consome os caracteres do identificador até encontrar 
         /// um caractere que não seja letra, dígito ou sublinhado (_).
         /// </summary>
         /// <returns>Token de Identificador ou Palavra-chave</returns>
-        private Token GeraTokenIdentificadorOuPalavraChave()
+        private static Token GeraTokenIdentificadorOuPalavraChave(Lexer lex)
         {
-            int linha = _linha;
-            int coluna = _coluna;
-            int inicio = _posicao;
+            int linha = lex._linha;
+            int coluna = lex._coluna;
+            int inicio = lex._posicao;
 
-            while (!IsFimDoCodigo() &&
-                (char.IsLetterOrDigit(GetCaractereAtual()) || GetCaractereAtual() == '_'))
+            while (!lex.IsFimDoCodigo() &&
+                (char.IsLetterOrDigit(lex.GetCaractereAtual()) || lex.GetCaractereAtual() == '_'))
             {
-                ProximoCaractere();
+                lex.ProximoCaractere();
             }
 
-            string lexema = _entrada.Substring(inicio, _posicao - inicio);
+            string lexema = lex._entrada.Substring(inicio, lex._posicao - inicio);
 
             if (Componentes.Contains(lexema))
             {
@@ -179,16 +184,15 @@
             return new Token(TokenType.Identificador, lexema, lexema, (linha, coluna));
         }
         /// <summary>
-        /// Método interno de fabriação de Token.
+        /// Método estático de fabriação de Token.
         /// </summary>
         /// <param name="tipo"><see cref="TokenType"/> do Token.</param>
         /// <param name="lexema">Cadeia de caracteres que representa o token no código fonte.</param>
         /// <returns>O token gerado a partir dos parâmetros de entrada.</returns>
-        private Token GeraToken(TokenType tipo, string lexema)
+        private static Token GeraToken(Lexer lex, TokenType tipo, string lexema)
         {
-            var posicao = (_linha, _coluna);
-            ProximoCaractere();
-            return new Token(tipo, lexema, lexema, posicao);
+            lex.ProximoCaractere();
+            return new Token(tipo, lexema, lexema, (lex._linha, lex._coluna));
         }
 
         /// <summary>
