@@ -123,13 +123,24 @@
                             continue;
                         }
 
-                        throw new Exception($"Caractere inesperado '{c}' na linha {_linha}, coluna {_coluna}.");
+                        throw new ErroLexico($"Caractere inesperado '{c}'.", _linha, _coluna);
 
                 }
             }
 
             tokens.Add(TokenFactory.GeraTokenFimDeArquivo(this));
             return tokens;
+        }
+    }
+    public class ErroLexico : Exception
+    {
+        public int Linha { get; }
+        public int Coluna { get; }
+        public ErroLexico(string mensagem, int linha, int coluna)
+            : base($"Erro léxico [{linha};{coluna}]: {mensagem}")
+        {
+            Linha = linha;
+            Coluna = coluna;
         }
     }
 }

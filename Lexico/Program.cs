@@ -33,9 +33,9 @@ pagina ""Loja Declara"" {
                 {
                     Console.WriteLine(token);
                 }
-            } catch (Exception ex)
+            } catch (ErroLexico erroLexico)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(erroLexico.Message);
             }
         }
     }
