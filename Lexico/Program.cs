@@ -1,7 +1,4 @@
-﻿using System; 
-using System.Text.RegularExpressions;
-
-namespace Lexico
+﻿namespace Lexico
 {
     public static class Program
     {

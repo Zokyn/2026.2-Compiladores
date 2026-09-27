@@ -4,42 +4,70 @@
     /// Analisador Léxico (Lexer) para o compilador. 
     /// Responsável por ler o código-fonte de entrada e gerar uma lista de tokens.
     /// </summary>
-    public class Lexer
+    public class Lexer(string entrada)
     {
         /// <summary>
         /// Lista de Palavras Chaves de Componentes
         /// </summary>
-        private static readonly List<string> Componentes = new List<string>
+        public static readonly List<string> Componentes = new List<string>
         {
-            "pagina", 
-            "secao", 
-            "cartao", 
+            "pagina",
+            "secao",
+            "cartao",
             "botao"
         };
         /// <summary>
         /// Lista de Palavras Chaves de Controles
         /// </summary>
-        private static readonly List<string> Controles = new List<string>
+        public static readonly List<string> Controles = new List<string>
         {
-            "para", 
-            "em", 
+            "para",
+            "em",
             "se"
         };
 
         /// <summary>String de entrada; código-fonte do compilador.</summary>
-        private readonly string _entrada;
+        private readonly string _entrada = entrada ?? throw new ArgumentNullException(nameof(entrada));
         /// <summary>Posição do caractere atual no leitor do analisador léxico</summary>
         private int _posicao;
         /// <summary>Posição, em linha, do caracter atual no leitor.</summary>
         private int _linha = 1;
         /// <summary>Posição, em coluna, do caracter atual no leitor</summary>
         private int _coluna = 1;
+        /// <summary>Propriedade calcula e retorna a posição em par-ordenado de linha e coluna</summary>
+        public (int, int) LinhaColuna => (_linha, _coluna);
+        /// <summary>Propriedade calcula e retorna posição em inteiro do leitor no código-fonte de entrada.</summary>
+        public int Posicao => _posicao;
 
-        public Lexer(string entrada)
+        /// <summary>
+        /// Retorna o caractere atual do código-fonte de entrada, baseado na posição atual.
+        /// </summary>
+        public char GetCaractereAtual() => _entrada[_posicao];
+        /// <summary>
+        /// Retorna verdadeiro se a posição atual mais o valor de deslocamento for maior que o tamanho do código-fonte.
+        /// </summary>
+        /// <param name="deslocamento">Valor inteiro do deslocamento que somado a posição do leitor, é verificado se 
+        /// é o final do código de entrada.</param>
+        public bool IsFimDoCodigo(int deslocamento = 0) => _posicao + deslocamento >= _entrada.Length;
+        /// <summary>
+        /// Avança para o próximo caractere do código-fonte de entrada, atualizando reiniciando a coluna e
+        /// incrementando o valor da linha, tenha ocorrido uma quebra de linha. Caso contrário apenas a coluna
+        /// é incrementada. A posição no código-fonte é incrementada sempre, independente do caractere atual.
+        /// </summary>
+        public void ProximoCaractere()
         {
-            _entrada = entrada ?? throw new ArgumentNullException(nameof(entrada));
+            if (_entrada[_posicao] == '\n')
+            {
+                _linha++;
+                _coluna = 1;
+            }
+            else
+            {
+                _coluna++;
+            }
+            _posicao++;
         }
-
+    
         /// <summary>
         /// Dado o conjunto de caracteres de entrada, o Lexer gera uma lista de tokens.
         /// </summary>
@@ -68,27 +96,27 @@
                         ProximoCaractere();
                         continue;
                     case '{':
-                        tokens.Add(GeraToken(TokenType.AbreBloco, "{"));
+                        tokens.Add(TokenFactory.GeraToken(this, TokenType.AbreBloco, "{", LinhaColuna));
                         continue;
                     case '}':
-                        tokens.Add(GeraToken(TokenType.FechaBloco, "}"));
+                        tokens.Add(TokenFactory.GeraToken(this, TokenType.FechaBloco, "}", LinhaColuna));
                         continue;
                     case ':':
-                        tokens.Add(GeraToken(TokenType.Atribuidor, ":"));
+                        tokens.Add(TokenFactory.GeraToken(this, TokenType.Atribuidor, ":", LinhaColuna));
                         continue;
                     case '.':
-                        tokens.Add(GeraToken(TokenType.AcessoMembro, "."));
+                        tokens.Add(TokenFactory.GeraToken(this, TokenType.AcessoMembro, ".", LinhaColuna));
                         continue;
                     case ';':
-                        tokens.Add(GeraToken(TokenType.Separador, ";"));
+                        tokens.Add(TokenFactory.GeraToken(this, TokenType.Separador, ";", LinhaColuna));
                         continue;
                     case '"':
-                        tokens.Add(GeraTokenLiteral());
+                        tokens.Add(TokenFactory.GeraTokenLiteral(this));
                         continue;
                     default:
                         if (char.IsLetter(c) || c == '_')
                         {
-                            tokens.Add(GeraTokenIdentificadorOuPalavraChave());
+                            tokens.Add(TokenFactory.GeraTokenIdentificadorOuPalavraChave(this, _entrada));
                             continue;
                         }
 
@@ -97,134 +125,8 @@
                 }
             }
 
-            tokens.Add(GeraTokenFimDeArquivo());
+            tokens.Add(TokenFactory.GeraTokenFimDeArquivo(this));
             return tokens;
-        }
-        /// <summary>
-        /// Método interno para ler um literal de texto delimitado por aspas duplas. 
-        /// O método consome os caracteres do literal até encontrar a aspa de fechamento.
-        /// </summary>
-        /// <returns>Token a partir do literal, caso contrário levanta exception.</returns>
-        /// <exception cref="Exception"></exception>
-        private static Token GeraTokenLiteral(Lexer lex)
-        {
-            int linha = lex._linha;
-            int coluna = lex._coluna;
-            lex.ProximoCaractere(); // Para consumir as aspas de abertura
-
-            string conteudo = "";
-
-            while (true)
-            {
-                if (lex.IsFimDoCodigo())
-                {
-                    throw new Exception($"Literal de texto não fechado na linha {linha}, coluna {coluna}.");
-                }
-
-                char c = lex.GetCaractereAtual();
-
-                if (c == '"')
-                {
-                    lex.ProximoCaractere(); // Para consumir as aspas de fechamento
-                    break;
-                }
-                else if (c == '\n')
-                {
-                    throw new Exception($"Literal de texto não pode conter quebras de linha na linha {linha}, coluna {coluna}.");
-                }
-                //TO-DO: adicionar suporte para escapes \ e \\ 
-                //TO-DO: adicionar suporte a quebras de linha com \n dentro do literal de texto, e quebra de linha sem quebrar o texto
-
-                conteudo += c;
-                lex.ProximoCaractere();
-            }
-
-
-            return new Token(TokenType.Texto, $"\"{conteudo}\"", conteudo.ToString(), (linha, coluna));
-        }
-        /// <summary>
-        /// Método interno para geração de token de fim de arquivo o terminar a cadeia de entrada.
-        /// </summary>
-        /// <returns>Token de Fim de Arquivo.</returns>
-        private static Token GeraTokenFimDeArquivo(Lexer lex) => new(
-            TokenType.FimDeArquivo, 
-            string.Empty, 
-            "FimDoArquivo", 
-            (lex._linha, lex._coluna)
-        );
-
-        /// <summary>
-        /// Método interno para ler identificadores ou palavras-chave. O método consome os caracteres do identificador até encontrar 
-        /// um caractere que não seja letra, dígito ou sublinhado (_).
-        /// </summary>
-        /// <returns>Token de Identificador ou Palavra-chave</returns>
-        private static Token GeraTokenIdentificadorOuPalavraChave(Lexer lex)
-        {
-            int linha = lex._linha;
-            int coluna = lex._coluna;
-            int inicio = lex._posicao;
-
-            while (!lex.IsFimDoCodigo() &&
-                (char.IsLetterOrDigit(lex.GetCaractereAtual()) || lex.GetCaractereAtual() == '_'))
-            {
-                lex.ProximoCaractere();
-            }
-
-            string lexema = lex._entrada.Substring(inicio, lex._posicao - inicio);
-
-            if (Componentes.Contains(lexema))
-            {
-                return new Token(TokenType.Componente, lexema, lexema.ToLowerInvariant(), (linha, coluna));
-            }
-            else if (Controles.Contains(lexema))
-            {
-                return new Token(TokenType.Controle, lexema, lexema.ToLowerInvariant(), (linha, coluna));
-            }
-
-            return new Token(TokenType.Identificador, lexema, lexema, (linha, coluna));
-        }
-        /// <summary>
-        /// Método estático de fabriação de Token.
-        /// </summary>
-        /// <param name="tipo"><see cref="TokenType"/> do Token.</param>
-        /// <param name="lexema">Cadeia de caracteres que representa o token no código fonte.</param>
-        /// <returns>O token gerado a partir dos parâmetros de entrada.</returns>
-        private static Token GeraToken(Lexer lex, TokenType tipo, string lexema)
-        {
-            lex.ProximoCaractere();
-            return new Token(tipo, lexema, lexema, (lex._linha, lex._coluna));
-        }
-
-        /// <summary>
-        /// Retorna o caractere atual do código-fonte de entrada, baseado na posição atual.
-        /// </summary>
-        /// <returns></returns>
-        private char GetCaractereAtual() => _entrada[_posicao];
-
-        /// <summary>
-        /// Retorna verdadeiro se a posição atual mais o valor de deslocamento for maior que o tamanho do código-fonte.
-        /// </summary>
-        /// <param name="deslocamento">Valor inteiro do deslocamento que somado a posição do leitor, é verificado se 
-        /// é o final do código de entrada.</param>
-        private bool IsFimDoCodigo(int deslocamento = 0) => _posicao + deslocamento >= _entrada.Length;
-
-        /// <summary>
-        /// Avança para o próximo caractere do código-fonte de entrada, atualizando reiniciando a coluna e
-        /// incrementando o valor da linha, tenha ocorrido uma quebra de linha. Caso contrário apenas a coluna
-        /// é incrementada. A posição no código-fonte é incrementada sempre, independente do caractere atual.
-        /// </summary>
-        private void ProximoCaractere()
-        {
-            if (_entrada[_posicao] == '\n')
-            {
-                _linha++;
-                _coluna = 1;
-            }
-            else
-            {
-                _coluna++;
-            }
-            _posicao++;
         }
     }
 }
