@@ -1,0 +1,16 @@
+pagina (pag-loja, "Loja Declara") {
+    secao (sec-produtos, "Produtos em destaque") {
+	    para item em produtos {
+	        cartao (titulo: item.nome, texto: item.descricao) 
+			{
+		        se item.promocao {
+		            texto: texto + "OFERTA";
+		        }
+			}
+	        botao () {
+	            texto: "Comprar";
+	            acao: adicionarCarrinho;
+	        }
+        }
+    }
+}

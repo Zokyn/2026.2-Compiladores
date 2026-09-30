@@ -1,4 +1,6 @@
-﻿namespace Lexico
+﻿using System.Text.RegularExpressions;
+
+namespace Lexico
 {
     /// <summary>
     /// Analisador Léxico (Lexer) para o compilador. 
@@ -71,6 +73,7 @@
             _posicao++;
         }
     
+        public Regex EspacosVazios = new Regex(@"[ \t\r\n]+", RegexOptions.Compiled);
         /// <summary>
         /// Dado o conjunto de caracteres de entrada, o Lexer gera uma lista de tokens.
         /// </summary>
@@ -83,6 +86,7 @@
             while (!IsFimDoCodigo())
             {
                 char c = CaractereAtual;
+                Match m = EspacosVazios.Match(_entrada, _posicao);
 
                 if (c == ' ' || c == '\t' || c == '\r')
                 {
