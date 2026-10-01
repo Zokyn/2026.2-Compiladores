@@ -59,15 +59,6 @@ namespace Lexico
         /// incrementando o valor da linha, tenha ocorrido uma quebra de linha. Caso contrário apenas a coluna
         /// é incrementada. A posição no código-fonte é incrementada sempre, independente do caractere atual.
         /// </summary>
-        public void DeslocaCaracter(int deslocamento)
-        {
-            int i = 0; 
-            while (!IsFimDoCodigo() && i < deslocamento)
-            {
-                ProximoCaractere();
-                i++;
-            }
-        }
         private void ProximoCaractere()
         {
             if (_entrada[_posicao] == '\n')
