@@ -29,20 +29,27 @@
         /// </summary>
         AcessoMembro,
         /// <summary>
-        /// Símbolo de "abre chaves", '{'. Usado para abrir um bloco de código.
+        /// Números inteiros e decimais. Ex.: 42, 3.14, -7, 0.001
         /// </summary>
-        AbreBloco,
+        Numero,
         /// <summary>
-        /// Símbolo de "fecha chaves", '}'. Usado para fechar um bloco de código.
+        /// Símbolo de "abre" e "fecha chaves", '{' e '}'. Usado para abrir e fechar um bloco de código.
         /// </summary>
-        FechaBloco,
+        DelimitadorBloco,
         /// <summary>
-        /// Símbolo de "ponto e vírgula", ';'. Usado para separar pares chave-valor de atributos.
+        /// Símbolo de "abre" e "fecha parênteses", '(' e ')'. Usado para abrir e fechar um construtor de componente.
+        /// </summary>
+        DelimitadorConstrutor,
+        /// <summary>
+        /// Símbolo de "ponto e vírgula" e "virgula", ';' e ','. Usado para separar pares chave-valor de atributos em 
+        /// bloco de código e separar argumentos dos atributos em construtores.
         /// </summary>
         Separador,
         /// <summary>
         /// Símbolo de "fim de arquivo" (invísvel), usado para indicar o final do código-fonte.
         /// </summary>
-        FimDeArquivo
+        FimDeArquivo,
+
+        Erro,
     }
 }

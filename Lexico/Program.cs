@@ -5,22 +5,22 @@
         public static void Main()
         {
             string entrada = @"
-pagina ""Loja Declara"" {
-    secao ""Produtos em destaque"" {
+dados produtos {
+  produto(nome: ""Camiseta"", descricao: ""Algodão"", promocao: verdadeiro)
+  produto(nome: ""Caneca"", descricao: ""Cerâmica"", promocao: falso)
+}
+
+pagina(pag-loja, ""Loja Declara"") {
+  secao(sec-produtos, ""Produtos em destaque"") {
     para item em produtos {
-        cartao {
-        titulo: item.nome;
-        texto: item.descricao;
+      cartao(titulo: item.nome, texto: item.descricao) {
         se item.promocao {
-            texto: ""OFERTA"";
+          selo(""OFERTA"")
         }
-        botao {
-            texto: ""Comprar"";
-            acao: ""adicionarCarrinho"";
-        }
-        }
+        botao(btn-comprar, ""Comprar"", acao: adicionarCarrinho)
+      }
     }
-    }
+  }
 }
 ";
 

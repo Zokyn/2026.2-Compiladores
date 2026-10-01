@@ -59,7 +59,16 @@ namespace Lexico
         /// incrementando o valor da linha, tenha ocorrido uma quebra de linha. Caso contrário apenas a coluna
         /// é incrementada. A posição no código-fonte é incrementada sempre, independente do caractere atual.
         /// </summary>
-        public void ProximoCaractere()
+        public void DeslocaCaracter(int deslocamento)
+        {
+            int i = 0; 
+            while (!IsFimDoCodigo() && i < deslocamento)
+            {
+                ProximoCaractere();
+                i++;
+            }
+        }
+        private void ProximoCaractere()
         {
             if (_entrada[_posicao] == '\n')
             {
@@ -73,7 +82,32 @@ namespace Lexico
             _posicao++;
         }
     
-        public Regex EspacosVazios = new Regex(@"[ \t\r\n]+", RegexOptions.Compiled);
+        public Regex Expressoes = new Regex(@"
+            (?<EspacosVazios>[ \t\r\n]+) 
+            | (?<Identificador> [a-zA-Z_][a-zA-Z0-9_]* (?:-[a-zA-Z0-9_]+)* )
+            | (?<Texto>""[^""\n]*"")
+            | (?<Atribuidor>     [:] )
+            | (?<AcessoMembro> [.] )
+            | (?<Numero>      \d+(?:\.\d+)? )
+            | (?<DelimitadorBloco> [{}] )
+            | (?<DelimitadorConstrutor> [()] )
+            | (?<Separador> [,;] )
+            | (?<Erro>        . )
+        ", RegexOptions.IgnorePatternWhitespace);
+        
+        public readonly Dictionary<string, TokenType?> Grupos = new Dictionary<string, TokenType?>
+        {
+            { "EspacosVazios", null },
+            { "Identificador", TokenType.Identificador },
+            { "Texto", TokenType.Texto },
+            { "Atribuidor", TokenType.Atribuidor },
+            { "AcessoMembro", TokenType.AcessoMembro },
+            { "Numero", TokenType.Numero },
+            { "DelimitadorBloco", TokenType.DelimitadorBloco },
+            { "DelimitadorConstrutor", TokenType.DelimitadorConstrutor },
+            { "Separador", TokenType.Separador },
+            { "Erro", TokenType.Erro }
+        };
         /// <summary>
         /// Dado o conjunto de caracteres de entrada, o Lexer gera uma lista de tokens.
         /// </summary>
@@ -82,57 +116,40 @@ namespace Lexico
         public List<Token> Tokenizar()
         {
             List<Token> tokens = new List<Token>();
-
-            while (!IsFimDoCodigo())
+            int linhaAtual = 1, ultimaQuebraLinha = -1;
+            int colunaAtual = -1;
+            foreach (Match m in Expressoes.Matches(_entrada))
             {
-                char c = CaractereAtual;
-                Match m = EspacosVazios.Match(_entrada, _posicao);
+                string grupoNome = Grupos.Keys.First(nome => m.Groups[nome].Success);
+                Grupos.TryGetValue(grupoNome, out TokenType? tipo);
 
-                if (c == ' ' || c == '\t' || c == '\r')
-                {
-                    ProximoCaractere();
-                    continue;
-                }
+                colunaAtual = m.Index - ultimaQuebraLinha;
 
-                switch (c)
+                if (grupoNome == "Erro")
+                    throw new ErroLexico($"Caractere inesperado '{m.Value}'", linhaAtual, colunaAtual);
+
+
+                if (tipo == null)
                 {
-                    case ' ':
-                    case '\n':
-                    case '\t':
-                    case '\r':
-                        ProximoCaractere();
-                        continue;
-                    case '{':
-                        tokens.Add(TokenFactory.GeraToken(this, TokenType.AbreBloco, "{", LinhaColuna));
-                        continue;
-                    case '}':
-                        tokens.Add(TokenFactory.GeraToken(this, TokenType.FechaBloco, "}", LinhaColuna));
-                        continue;
-                    case ':':
-                        tokens.Add(TokenFactory.GeraToken(this, TokenType.Atribuidor, ":", LinhaColuna));
-                        continue;
-                    case '.':
-                        tokens.Add(TokenFactory.GeraToken(this, TokenType.AcessoMembro, ".", LinhaColuna));
-                        continue;
-                    case ';':
-                        tokens.Add(TokenFactory.GeraToken(this, TokenType.Separador, ";", LinhaColuna));
-                        continue;
-                    case '"':
-                        tokens.Add(TokenFactory.GeraTokenLiteral(this));
-                        continue;
-                    default:
-                        if (char.IsLetter(c) || c == '_')
+                    for (int i = 0; i < m.Length; i++)
+                    {
+                        if (m.Value[i] == '\n')
                         {
-                            tokens.Add(TokenFactory.GeraTokenIdentificadorOuPalavraChave(this, _entrada));
-                            continue;
+                            linhaAtual++;
+                            ultimaQuebraLinha = m.Index + i;
                         }
-
-                        throw new ErroLexico($"Caractere inesperado '{c}'.", _linha, _coluna);
-
+                    }
+                    continue;
+                } else
+                {
+                    if (tipo.HasValue)
+                    {
+                        tokens.Add(new Token(tipo.Value, m.Value, m.Value, (linhaAtual, colunaAtual)));
+                    }
                 }
             }
 
-            tokens.Add(TokenFactory.GeraTokenFimDeArquivo(this));
+            tokens.Add(TokenFactory.GeraTokenFimDeArquivo(linhaAtual, colunaAtual));
             return tokens;
         }
     }

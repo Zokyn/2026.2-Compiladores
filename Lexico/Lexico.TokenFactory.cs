@@ -49,11 +49,11 @@
             /// Método interno para geração de token de fim de arquivo o terminar a cadeia de entrada.
             /// </summary>
             /// <returns>Token de Fim de Arquivo.</returns>
-            public static Token GeraTokenFimDeArquivo(Lexico lex) => new(
+            public static Token GeraTokenFimDeArquivo(int linha, int coluna) => new(
                 TokenType.FimDeArquivo,
                 string.Empty,
                 "FimDoArquivo",
-                lex.LinhaColuna
+                (linha, coluna)
             );
 
             /// <summary>
@@ -91,9 +91,8 @@
             /// <param name="tipo"><see cref="TokenType"/> do Token.</param>
             /// <param name="lexema">Cadeia de caracteres que representa o token no código fonte.</param>
             /// <returns>O token gerado a partir dos parâmetros de entrada.</returns>
-            public static Token GeraToken(Lexico lex, TokenType tipo, string lexema, (int, int) linhaColuna)
+            public static Token GeraToken(TokenType tipo, string lexema, (int, int) linhaColuna)
             {
-                lex.ProximoCaractere();
                 return new Token(tipo, lexema, lexema, linhaColuna);
             }
         }
