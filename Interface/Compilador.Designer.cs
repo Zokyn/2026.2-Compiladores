@@ -42,7 +42,7 @@
             dgvTokens = new DataGridView();
             menuStrip1 = new MenuStrip();
             smiEditar = new ToolStripMenuItem();
-            smiConfigFilePath = new ToolStripMenuItem();
+            smiEditarFilename = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -88,10 +88,10 @@
             flwFileOpen.TabIndex = 4;
             flwFileOpen.WrapContents = false;
             // 
-            // btnFileOpen
+            // btnAbrirCodigo
             // 
             btnAbrirCodigo.Location = new Point(7, 7);
-            btnAbrirCodigo.Name = "btnFileOpen";
+            btnAbrirCodigo.Name = "btnAbrirCodigo";
             btnAbrirCodigo.Size = new Size(25, 23);
             btnAbrirCodigo.TabIndex = 3;
             btnAbrirCodigo.Text = "...";
@@ -105,10 +105,10 @@
             txtFilePath.Size = new Size(320, 23);
             txtFilePath.TabIndex = 1;
             // 
-            // btnCodigoClean
+            // btnLimpaCodigo
             // 
             btnLimpaCodigo.Location = new Point(364, 7);
-            btnLimpaCodigo.Name = "btnCodigoClean";
+            btnLimpaCodigo.Name = "btnLimpaCodigo";
             btnLimpaCodigo.Size = new Size(75, 23);
             btnLimpaCodigo.TabIndex = 0;
             btnLimpaCodigo.Text = "Limpar";
@@ -219,17 +219,17 @@
             // 
             // smiEditar
             // 
-            smiEditar.DropDownItems.AddRange(new ToolStripItem[] { smiConfigFilePath });
+            smiEditar.DropDownItems.AddRange(new ToolStripItem[] { smiEditarFilename });
             smiEditar.Name = "smiEditar";
             smiEditar.Size = new Size(49, 20);
             smiEditar.Text = "Editar";
             // 
-            // smiConfigFilePath
+            // smiEditarFilename
             // 
-            smiConfigFilePath.Name = "smiConfigFilePath";
-            smiConfigFilePath.Size = new Size(215, 22);
-            smiConfigFilePath.Text = "Caminho do Código-fonte";
-            smiConfigFilePath.Click += smiEditarilePath_Click;
+            smiEditarFilename.Name = "smiEditarFilename";
+            smiEditarFilename.Size = new Size(215, 22);
+            smiEditarFilename.Text = "Caminho do Código-fonte";
+            smiEditarFilename.Click += smiEditarFilename_Click;
             // 
             // Compilador
             // 
@@ -270,7 +270,7 @@
         private LinkLabel lblCurrentTokenTypeLink;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem smiEditar;
-        private ToolStripMenuItem smiConfigFilePath;
+        private ToolStripMenuItem smiEditarFilename;
         private FlowLayoutPanel flwFileOpen;
         private Button btnAbrirCodigo;
         private TextBox txtFilePath;

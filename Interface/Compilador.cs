@@ -1,5 +1,6 @@
-using Lexico;
 using DotNetEnv;
+using Lexico;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace Interface
 {
@@ -21,15 +22,16 @@ namespace Interface
         private void LeCodigoFonteLocal()
         {
             string? defaultPath = Environment.GetEnvironmentVariable("FILEPATH");
-            
-            if (defaultPath is null) return;
-            
-            _filename = defaultPath;
-            
-            List<Token> tokens = ProcessaArquivo();
 
-            EscreveTextoCodigo();
-            PreencherGridTokens(tokens);
+            if (defaultPath is null) return;
+
+            _filename = defaultPath;
+
+            List<Token>? tokens = ProcessaArquivo();
+
+            if (string.IsNullOrEmpty(_codigofonte)) EscreveTextoCodigo();
+
+            if (tokens != null && tokens?.Count > 0) PreencherGridTokens(tokens);
         }
         private void ConfiguraCodeBlock()
         {
@@ -75,24 +77,105 @@ namespace Interface
             lblCurrentTokenTypeLink.Font = new Font("Arial, sans serif", 14f, FontStyle.Bold);
             lblCurrentTokenTypeLink.BorderStyle = BorderStyle.FixedSingle;
         }
+        
+        // EXPLORAÇÃO E LEITURA DE ARQUIVO
+        private static string? EncontrarCaminhoSolucao()
+        {
+            var dir = new DirectoryInfo(AppContext.BaseDirectory);
+            while (dir != null)
+            {
+                if (dir.GetFiles("*.sln").Length > 0)
+                {
+                    return dir.FullName;
+                }
+                dir = dir.Parent;
+            }
+            return null;
+        }
+        /// <summary>
+        /// Abre um OpenFileDialog que serve para selecionar o arquivo de código-fonte de entrada. 
+        /// O caminho inicial do dialog é definido como a raiz do projeto, que buscada pelo método
+        /// EncontrarCaminhoSolucao e mesmo que não seja encontrada, é usada o diretório atual.
+        /// O ideal é que os códigos exemplos sempre estejam na pasta raiz do projeto, para que o 
+        /// dialog abra no caminho correto.
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        private bool AbrirExplorarCodigo()
+        {
+            string? pathDaSolucao = EncontrarCaminhoSolucao();
+
+            if (pathDaSolucao != null)
+                _root = pathDaSolucao;
+            else
+                _root = Environment.CurrentDirectory;
+
+            //Abre OpenFileDialog para selecionar o arquivo de código-fonte 
+            using var dialog = new OpenFileDialog
+            {
+                Title = "Abrir código-fonte de entrada",
+                InitialDirectory = _root,
+                Filter = "Código-fonte Declara (*.dcl;*.txt)|*.dcl;*.txt|Todos os arquivos (*.*)|*.*",
+                RestoreDirectory = true
+            };
+
+            if (dialog.ShowDialog() != DialogResult.OK) return false;
+
+            //Fechado o dialog temos um FileName atribuido a ele
+            _filename = dialog.FileName;
+
+            _codigofonte = File.ReadAllText(_filename);
+
+            txtFilePath.Text = _filename;
+
+            return true;
+        }
+        /// <summary>
+        /// Uma vez preenchido o _codigofonte com conteúdo do arquivo,
+        /// o analisador léxico retorna uma lista de tokens serve como entrada para
+        /// os controles da interface e para, posteriormente, o analisador sintático.
+        /// </summary>
+        /// <returns>Lista de tokens recuperadas a partir do _codigofonte</returns>
+        public List<Token>? ProcessaArquivo()
+        {
+            if (string.IsNullOrEmpty(_codigofonte)) return null;
+
+            var lexer = new AnalisadorLexico(_codigofonte);
+
+            List<Token> tokens = lexer.Tokenizar();
+
+            return tokens;
+        }
+
+        // PREENCHIMENTO DE CONTROLES E RESPOSIVIDADE
+        /// <summary>Busca o index da linha selecionada (se tiver) e a partir dela, apaga a seleção.</summary>
         private void LimpaSelecaoGridTokens()
         {
             int? indexSelected = dgvTokens.CurrentRow?.Index;
 
             if (!indexSelected.HasValue) return;
-            else 
+            else
                 dgvTokens.Rows[indexSelected.Value].Selected = false;
         }
+        /// <summary>Formata o código fonte (se tiver) e insere no txtCodigo.</summary>
         private void EscreveTextoCodigo()
         {
-            txtCodigo.Text = _codigofonte.Replace("\r\n", "\n")
-                                        .Replace("\n", Environment.NewLine); // codigo formatado
+            if (string.IsNullOrEmpty(_codigofonte)) return;
 
             txtCodigo.Text = _codigofonte.Replace("\r\n", "\n")
                                         .Replace("\n", Environment.NewLine); // codigo formatado
         }
-        private void PreencherGridTokens(IReadOnlyList<Token> tokens)
+        /// <summary>
+        /// A partir de uma lista IReadOnlyList de tokens (se tiver), trata os tokens e os 
+        /// converte para TokenItem, um objeto com campos tratados para string prontos para 
+        /// serem exibidos como items do DataSource do DataViewGrid dgvTokens. Após inserido
+        /// todos os itens, limpa a seleção do grid para evitar que fique descompassado com 
+        /// os demais controles da interface.
+        /// </summary>
+        /// <param name="tokens">Lista read-only preenchida ou não de Tokens a serem convertidos para TokenLinha.</param>
+        private void PreencherGridTokens(IReadOnlyList<Token>? tokens)
         {
+            if (tokens == null || tokens.Count < 0) return; 
+
             var linhas = tokens.Select((t, i) => new TokenItem
             {
                 Id = i + 1,
@@ -109,67 +192,13 @@ namespace Interface
 
             LimpaSelecaoGridTokens();
         }
-
-        private static string? EncontrarCaminhoSolucao()
-        {
-            var dir = new DirectoryInfo(AppContext.BaseDirectory);
-            while (dir != null)
-            {
-                if (dir.GetFiles("*.sln").Length > 0)
-                {
-                    return dir.FullName;
-                }
-                dir = dir.Parent;
-            }
-            return null;
-        }
-
-        private void AbrirExplorarCodigo(string? path = null)
-        {
-            if (path == null)
-            {
-                string? pathDaSolucao = EncontrarCaminhoSolucao();
-                if (pathDaSolucao != null)
-                    _root = pathDaSolucao;
-                else
-                    _root = Environment.CurrentDirectory;
-            }
-            else
-                _root = path;
-
-            //Abre OpenFileDialog para selecionar o arquivo de código-fonte 
-            using var dialog = new OpenFileDialog
-            {
-                Title = "Abrir código-fonte de entrada",
-                InitialDirectory = _root,
-                Filter = "Código-fonte Declara (*.dcl;*.txt)|*.dcl;*.txt|Todos os arquivos (*.*)|*.*",
-                RestoreDirectory = true
-            };
-
-            // Levanta exception se o Dialog não retornar OK, pois não é esperado outro comportamento
-            if (dialog.ShowDialog(this) != DialogResult.OK)
-            {
-                throw new Exception("Dialog teve um comportamento inesperado");
-            }
-            //Fechado o dialog temos um FileName atribuido a ele
-
-
-            _filename = dialog.FileName; 
-
-            _codigofonte = File.ReadAllText(_filename);
-
-            txtFilePath.Text = _filename;
-        }
-
-        public List<Token> ProcessaArquivo()
-        {
-            var lexer = new AnalisadorLexico(_codigofonte);
-
-            List<Token> tokens = lexer.Tokenizar();
-
-            return tokens;
-        }
-
+        /// <summary>
+        /// A partir do index (posição em caracteres) do lexema do Token no bloco de texto
+        /// do código-fonte (txtCodigo) encontra o indíce na lista de tokens e utiliza desse
+        /// indíce para selecionar o token no DataGridView dgvTokens, já que as linhas são 
+        /// imútaveis e não intercaláveis.
+        /// </summary>
+        /// <param name="index"></param>
         private void SelecionarTokenNoGrid(int index)
         {
             if (dgvTokens.DataSource is not List<TokenItem> tokens ||
@@ -191,43 +220,29 @@ namespace Interface
             dgvTokens.CurrentCell = dgvTokens.Rows[pos].Cells[0];
         }
 
+        // EVENTOS 
+        /// <summary>Abre o Explorar de Arquivos pelo SubMenuItem smiEditarFilename.</summary>
+        private void smiEditarFilename_Click(object sender, EventArgs e)
+        {
+            if(!AbrirExplorarCodigo()) return;
+            List<Token>? tokens = ProcessaArquivo();
+
+            EscreveTextoCodigo();
+            PreencherGridTokens(tokens);
+        }
+        /// <summary>Abre o Explorar de Arquivos pelo Botão btnAbrirCodigo.</summary>
         private void btnAbrirCodigo_Click(object sender, EventArgs e)
         {
-            AbrirExplorarCodigo();
+            if(!AbrirExplorarCodigo()) return;
 
             btnLimpaCodigo.Enabled = !(txtFilePath.Text == string.Empty);
 
-            List<Token> tokens = ProcessaArquivo();
+            List<Token>? tokens = ProcessaArquivo();
 
             EscreveTextoCodigo();
             PreencherGridTokens(tokens);
         }
-        private void txtCodigo_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (txtCodigo.SelectionLength > 0) return;
-
-            int index = txtCodigo.GetCharIndexFromPosition(e.Location);
-            SelecionarTokenNoGrid(index);
-        }
-
-        private void txtCodigo_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (txtCodigo.SelectionLength > 0) return;
-
-            SelecionarTokenNoGrid(txtCodigo.GetCharIndexFromPosition(e.Location));
-            txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
-            lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
-        }
-
-        private void smiEditarilePath_Click(object sender, EventArgs e)
-        {
-            AbrirExplorarCodigo();
-            List<Token> tokens = ProcessaArquivo();
-
-            EscreveTextoCodigo();
-            PreencherGridTokens(tokens);
-        }
-
+        /// <summary>Limpa o Código da interface clicando no Botão btnCodigoClean.</summary>
         private void btnCodigoClean_Click(object sender, EventArgs e)
         {
             txtCodigo.Text = string.Empty;
@@ -240,11 +255,37 @@ namespace Interface
             btnLimpaCodigo.Enabled = !(txtFilePath.Text == string.Empty);
 
         }
-
+        /// <summary>Seleciona token pelo clique em linha do DataGridView dgvTokens.</summary>
         private void dgvTokens_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (txtCodigo.SelectionLength > 0) return;
 
+            txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
+            lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
+        }
+        /// <summary>
+        /// Ao soltar o clique no bloco de código, se não estiver selecionando nada, 
+        /// o index (posição em caracateres) é passado, a partir da posição
+        /// do mouse utilizando GetCharIndexFromPosition(), e seleciona o Token
+        /// no DataGridView dgvTokens.
+        /// </summary>
+        private void txtCodigo_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (txtCodigo.SelectionLength > 0) return;
+
+            SelecionarTokenNoGrid(txtCodigo.GetCharIndexFromPosition(e.Location));
+        }
+        /// <summary>
+        /// Ao clicar no bloco de código, se não estiver selecionando nada, 
+        /// o index (posição em caracateres) é passado, a partir da posição
+        /// do mouse utilizando GetCharIndexFromPosition(), e seleciona o Token
+        /// no DataGridView dgvTokens, e atribui o Lexema e Tipo aos campos de texto.
+        /// </summary>
+        private void txtCodigo_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (txtCodigo.SelectionLength > 0) return;
+
+            SelecionarTokenNoGrid(txtCodigo.GetCharIndexFromPosition(e.Location));
             txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
             lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
         }
