@@ -4,7 +4,8 @@
     {
         public static void Main()
         {
-            string entrada = @"
+            string? entradaDeTexto = File.ReadAllText(Environment.GetEnvironmentVariable("FILEPATH");
+            string entrada = entradaDeTexto ?? @"
 dados produtos {
   produto(nome: ""Camiseta"", descricao: ""Algodão"", promocao: verdadeiro)
   produto(nome: ""Caneca"", descricao: ""Cerâmica"", promocao: falso)

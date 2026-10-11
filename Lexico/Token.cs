@@ -27,8 +27,21 @@
 
         public override string ToString()
         {
-            string valor = Valor;
-            return $"({Tipo}, '{valor}') - linha {Posicao.Item1}, coluna {Posicao.Item2}";
+            return $"({Tipo}) '{Valor}' {GetPosicaoString()}";
+        }
+
+        private string GetPosicaoString()
+        {
+            return $"[{Posicao.Item1},{Posicao.Item2}]";
+        }
+
+        private string GetPosicaoExtensaString()
+        {
+            return $"Linha {Posicao.Item1}, Coluna {Posicao.Item2}";
+        }
+        private string ToExtensaString()
+        {
+            return $"Token {Tipo}: {Valor} em {GetPosicaoExtensaString()}.";
         }
     }
 }

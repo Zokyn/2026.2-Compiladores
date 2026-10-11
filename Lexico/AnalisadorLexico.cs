@@ -37,7 +37,7 @@ namespace Lexico
         private int _linha = 1;
         /// <summary>Posição, em coluna, do caracter atual no leitor</summary>
         private int _coluna = 1;
-        
+
         // PROPRIEDADES COMPUTADAS
         /// <summary>Propriedade computada que retorna posição em inteiro do leitor no código-fonte de entrada.</summary>
         public int Posicao => _posicao;
@@ -72,7 +72,7 @@ namespace Lexico
             }
             _posicao++;
         }
-    
+
         public Regex Expressoes = new Regex(@"
             (?<EspacosVazios>[ \t\r\n]+) 
             | (?<Identificador> [a-zA-Z_][a-zA-Z0-9_]* (?:-[a-zA-Z0-9_]+)* )
@@ -85,7 +85,7 @@ namespace Lexico
             | (?<Separador> [,;] )
             | (?<Erro>        . )
         ", RegexOptions.IgnorePatternWhitespace);
-        
+
         public readonly Dictionary<string, TokenType?> Grupos = new Dictionary<string, TokenType?>
         {
             { "EspacosVazios", null },
@@ -117,9 +117,10 @@ namespace Lexico
                 colunaAtual = m.Index - ultimaQuebraLinha;
 
                 if (grupoNome == "Erro")
-                    throw new ErroLexico($"Caractere inesperado '{m.Value}'", linhaAtual, colunaAtual);
+                    throw new ErroCaractereInesperado(m.Value[0], linhaAtual, colunaAtual);
+                //throw new ErroLexico($"Caractere inesperado '{m.Value}'", linhaAtual, colunaAtual);
 
-
+                // Se for um valor em branco, segue o cursor para frente e quebra linha, caso necessário.
                 if (tipo == null)
                 {
                     for (int i = 0; i < m.Length; i++)
@@ -131,17 +132,20 @@ namespace Lexico
                         }
                     }
                     continue;
-                } else
+                }
+                else // Se for um token válido, adiciona na lista de tokens.
                 {
                     if (tipo.HasValue)
                     {
+                        // Se um identificador pode ser um Identificador, PalavraChaveControle ou PalavraCaComponente,
+                        // então verifica se o valor do identificador está nas listas de palavras-chave.
                         if (tipo.Value == TokenType.Identificador)
                         {
-                           if (Controles.Contains(m.Value))
+                            if (Controles.Contains(m.Value)) // para, em, se
                                 tipo = TokenType.Controle;
-                            else if (Componentes.Contains(m.Value))
+                            else if (Componentes.Contains(m.Value)) // pagina, cartao, secao, botao
                                 tipo = TokenType.Componente;
-                           else 
+                            else
                                 tipo = TokenType.Identificador;
                         }
                         tokens.Add(new Token(tipo.Value, m.Value, m.Value, (linhaAtual, colunaAtual)));
@@ -164,5 +168,16 @@ namespace Lexico
             Coluna = coluna;
         }
     }
+    public class ErroCaractereInesperado : ErroLexico
+    {
+        public char Caractere { get; }
+
+        public ErroCaractereInesperado(char caractere, int linha, int coluna)
+            : base($"Caractere inesperado '{caractere}'", linha, coluna)
+        {
+            Caractere = caractere;
+        }
+    }
 }
+
 
