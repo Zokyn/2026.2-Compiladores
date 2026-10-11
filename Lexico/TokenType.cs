@@ -1,4 +1,6 @@
-﻿namespace Lexico
+﻿using System.ComponentModel;
+
+namespace Lexico
 {
     public enum TokenType
     {
@@ -52,4 +54,5 @@
 
         Erro,
     }
+    
 }

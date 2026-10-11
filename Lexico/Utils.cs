@@ -24,5 +24,21 @@ namespace Lexico
             TokenType.Erro => "Erro",
             _ => throw new Exception("TokenType sem Categoria definida.")
         };
+        public static string GetNomeByType(TokenType tipo) => tipo switch
+        {
+            TokenType.Controle => "Controle",
+            TokenType.Componente => "Componente",
+            TokenType.Identificador => "Identificador",
+            TokenType.Texto => "Texto",
+            TokenType.Numero => "Numero",
+            TokenType.Separador => "Separador",
+            TokenType.AcessoMembro => "AcessoMembro",
+            TokenType.Atribuidor => "Atribuidor",
+            TokenType.DelimitadorBloco => "DelimitadorBloco",
+            TokenType.DelimitadorConstrutor => "DelimitadorConstrutor",
+            TokenType.FimDeArquivo => "FimDeArquivo",
+            TokenType.Erro => "Erro",
+            _ => throw new Exception("TokenType sem Categoria definida.")
+        };
     }
 }

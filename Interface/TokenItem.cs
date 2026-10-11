@@ -2,7 +2,7 @@
 
 namespace Interface
 {
-    public sealed class TokenLinha
+    public sealed class TokenItem
     {
         public int Id { get; init; }
         public string Tipo { get; init; } = "";

@@ -33,11 +33,12 @@
             lblFilePath = new Label();
             btnFileOpen = new Button();
             flowLayoutPanel1 = new FlowLayoutPanel();
-            txtCodeBlock = new TextBox();
+            txtCodigo = new TextBox();
             splitContainer1 = new SplitContainer();
             flpRight = new FlowLayoutPanel();
             lblTokenList = new Label();
             dgvTokens = new DataGridView();
+            flowLayoutPanel2 = new FlowLayoutPanel();
             flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -45,6 +46,7 @@
             splitContainer1.SuspendLayout();
             flpRight.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTokens).BeginInit();
+            flowLayoutPanel2.SuspendLayout();
             SuspendLayout();
             // 
             // btnFileRead
@@ -90,7 +92,7 @@
             flowLayoutPanel1.Controls.Add(btnFileOpen);
             flowLayoutPanel1.Controls.Add(txtFilePath);
             flowLayoutPanel1.Controls.Add(btnFileRead);
-            flowLayoutPanel1.Location = new Point(12, 377);
+            flowLayoutPanel1.Location = new Point(3, 379);
             flowLayoutPanel1.MinimumSize = new Size(24, 24);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
             flowLayoutPanel1.Padding = new Padding(16);
@@ -99,13 +101,15 @@
             // 
             // txtCodeBlock
             // 
-            txtCodeBlock.Location = new Point(12, 3);
-            txtCodeBlock.Multiline = true;
-            txtCodeBlock.Name = "txtCodeBlock";
-            txtCodeBlock.ReadOnly = true;
-            txtCodeBlock.ScrollBars = ScrollBars.Both;
-            txtCodeBlock.Size = new Size(425, 359);
-            txtCodeBlock.TabIndex = 5;
+            txtCodigo.Location = new Point(3, 3);
+            txtCodigo.Multiline = true;
+            txtCodigo.Name = "txtCodeBlock";
+            txtCodigo.ReadOnly = true;
+            txtCodigo.ScrollBars = ScrollBars.Both;
+            txtCodigo.Size = new Size(434, 370);
+            txtCodigo.TabIndex = 5;
+            txtCodigo.MouseDown += txtCodigo_MouseDown;
+            txtCodigo.MouseUp += txtCodigo_MouseUp;
             // 
             // splitContainer1
             // 
@@ -115,14 +119,13 @@
             // 
             // splitContainer1.Panel1
             // 
-            splitContainer1.Panel1.Controls.Add(txtCodeBlock);
-            splitContainer1.Panel1.Controls.Add(flowLayoutPanel1);
+            splitContainer1.Panel1.Controls.Add(flowLayoutPanel2);
             // 
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(flpRight);
-            splitContainer1.Size = new Size(800, 450);
-            splitContainer1.SplitterDistance = 443;
+            splitContainer1.Size = new Size(1358, 450);
+            splitContainer1.SplitterDistance = 440;
             splitContainer1.TabIndex = 7;
             // 
             // flpRight
@@ -135,7 +138,7 @@
             flpRight.Location = new Point(0, 0);
             flpRight.Margin = new Padding(16);
             flpRight.Name = "flpRight";
-            flpRight.Size = new Size(356, 450);
+            flpRight.Size = new Size(905, 450);
             flpRight.TabIndex = 1;
             // 
             // lblTokenList
@@ -154,24 +157,34 @@
             dgvTokens.AllowUserToDeleteRows = false;
             dgvTokens.AllowUserToResizeColumns = false;
             dgvTokens.AllowUserToResizeRows = false;
+            dgvTokens.Anchor = AnchorStyles.Top;
             dgvTokens.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvTokens.Location = new Point(3, 44);
             dgvTokens.Name = "dgvTokens";
-            dgvTokens.Size = new Size(350, 354);
+            dgvTokens.Size = new Size(899, 329);
             dgvTokens.TabIndex = 2;
+            // 
+            // flowLayoutPanel2
+            // 
+            flowLayoutPanel2.Controls.Add(txtCodigo);
+            flowLayoutPanel2.Controls.Add(flowLayoutPanel1);
+            flowLayoutPanel2.Dock = DockStyle.Fill;
+            flowLayoutPanel2.Location = new Point(0, 0);
+            flowLayoutPanel2.Name = "flowLayoutPanel2";
+            flowLayoutPanel2.Size = new Size(440, 450);
+            flowLayoutPanel2.TabIndex = 6;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1358, 450);
             Controls.Add(splitContainer1);
             Name = "Form1";
             Text = "Form1";
             flowLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);
-            splitContainer1.Panel1.PerformLayout();
             splitContainer1.Panel2.ResumeLayout(false);
             splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
@@ -179,6 +192,8 @@
             flpRight.ResumeLayout(false);
             flpRight.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTokens).EndInit();
+            flowLayoutPanel2.ResumeLayout(false);
+            flowLayoutPanel2.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -189,10 +204,11 @@
         private Label lblFilePath;
         private Button btnFileOpen;
         private FlowLayoutPanel flowLayoutPanel1;
-        private TextBox txtCodeBlock;
+        private TextBox txtCodigo;
         private SplitContainer splitContainer1;
         private FlowLayoutPanel flpRight;
         private Label lblTokenList;
         private DataGridView dgvTokens;
+        private FlowLayoutPanel flowLayoutPanel2;
     }
 }

@@ -9,13 +9,20 @@ namespace Interface
         {
             Env.Load();
             InitializeComponent();
+            ConfiguraCodeBlock();
             ConfigurarGrid();
 
             string? defaultPath = Environment.GetEnvironmentVariable("FILEPATH");
             if (defaultPath is null) return;
             ProcessaArquivo(defaultPath);
         }
-
+        private void ConfiguraCodeBlock()
+        {
+            txtCodigo.BackColor = Color.FromArgb(40, 44, 52);
+            txtCodigo.ForeColor = Color.FromArgb(171, 178, 191);
+            txtCodigo.Font = new Font("Segoe UI", 10f, FontStyle.Bold);
+            txtCodigo.TextAlign = HorizontalAlignment.Left;
+        }
         private void ConfigurarGrid()
         {
             dgvTokens.AutoGenerateColumns = true;
@@ -47,15 +54,16 @@ namespace Interface
         }
         private void PreencherGridTokens(IReadOnlyList<Token> tokens)
         {
-            var linhas = tokens.Select((t, i) => new TokenLinha
+            var linhas = tokens.Select((t, i) => new TokenItem
             {
                 Id = i + 1,
-                TipoEnum = t.Tipo,
+                Tipo = Utils.GetNomeByType(t.Tipo),
                 Lexema = t.Lexema,
                 Linha = t.Posicao.Item1,
                 Coluna = t.Posicao.Item2,
                 Comprimento = t.Lexema.Length,
-                Categoria = Utils.GetCategoriaByType(t.Tipo)
+                Categoria = Utils.GetCategoriaByType(t.Tipo),
+                TipoEnum = t.Tipo
             }).ToList();
 
             dgvTokens.DataSource = linhas;
@@ -75,14 +83,24 @@ namespace Interface
             return null;
         }
 
-        private void AbrirArquivo()
+        private void AbrirCodigoFonte(string? path = null)
         {
-            string? root = EncontrarCaminhoSolucao();
+            string root;
+            if (path == null)
+            {
+                string? pathDaSolucao = EncontrarCaminhoSolucao();
+                if (pathDaSolucao != null)
+                    root = pathDaSolucao;
+                else
+                    root = Environment.CurrentDirectory;
+            }
+            else
+                root = path;
 
             using var dialog = new OpenFileDialog
             {
                 Title = "Abrir código-fonte de entrada",
-                InitialDirectory = root ?? Environment.CurrentDirectory,
+                InitialDirectory = root,
                 Filter = "Código-fonte Declara (*.dcl;*.txt)|*.dcl;*.txt|Todos os arquivos (*.*)|*.*",
                 RestoreDirectory = true
             };
@@ -95,25 +113,59 @@ namespace Interface
             ProcessaArquivo(dialog.FileName);
         }
 
-        private void ProcessaArquivo(string fileName) 
+        private void ProcessaArquivo(string fileName)
         {
             txtFilePath.Text = fileName;
 
-            txtCodeBlock.Text = File.ReadAllText(fileName)
+            txtCodigo.Text = File.ReadAllText(fileName)
                                     .Replace("\r\n", "\n")
                                     .Replace("\n", Environment.NewLine);
 
-            var lexer = new AnalisadorLexico(txtCodeBlock.Text);
+            var lexer = new AnalisadorLexico(txtCodigo.Text);
 
             List<Token> tokens = lexer.Tokenizar();
 
             PreencherGridTokens(tokens);
         }
 
+        private void SelecionarTokenNoGrid(int index)
+        {
+            if (dgvTokens.DataSource is not List<TokenItem> tokens ||
+                tokens.Count == 0) return;
+
+            int linhaIndex = txtCodigo.GetLineFromCharIndex(index);
+            int linha = linhaIndex + 1;
+            int coluna = index - txtCodigo.GetFirstCharIndexFromLine(linhaIndex) + 1;
+
+            int pos = tokens.FindIndex(t =>
+                t.Linha == linha &&
+                coluna >= t.Coluna &&
+                coluna < t.Coluna + t.Comprimento);
+
+            if (pos < 0) return;
+
+            dgvTokens.ClearSelection();
+            dgvTokens.Rows[pos].Selected = true;
+            dgvTokens.CurrentCell = dgvTokens.Rows[pos].Cells[0];
+        }
 
         private void btnFileOpen_Click(object sender, EventArgs e)
         {
-            AbrirArquivo();
+            AbrirCodigoFonte();
         }
+        private void txtCodigo_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (txtCodigo.SelectionLength > 0) return;
+
+            int index = txtCodigo.GetCharIndexFromPosition(e.Location);
+            SelecionarTokenNoGrid(index);
+        }
+
+        private void txtCodigo_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (txtCodigo.SelectionLength > 0) return;
+            SelecionarTokenNoGrid(txtCodigo.GetCharIndexFromPosition(e.Location));
+        }
+
     }
 }
