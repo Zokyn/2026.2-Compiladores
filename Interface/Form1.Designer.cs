@@ -35,7 +35,7 @@
             flowLayoutPanel1 = new FlowLayoutPanel();
             txtCodeBlock = new TextBox();
             splitContainer1 = new SplitContainer();
-            flowLayoutPanel2 = new FlowLayoutPanel();
+            flpRight = new FlowLayoutPanel();
             lblTokenList = new Label();
             dgvTokens = new DataGridView();
             flowLayoutPanel1.SuspendLayout();
@@ -43,7 +43,7 @@
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
-            flowLayoutPanel2.SuspendLayout();
+            flpRight.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTokens).BeginInit();
             SuspendLayout();
             // 
@@ -120,20 +120,23 @@
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(flowLayoutPanel2);
+            splitContainer1.Panel2.Controls.Add(flpRight);
             splitContainer1.Size = new Size(800, 450);
             splitContainer1.SplitterDistance = 443;
             splitContainer1.TabIndex = 7;
             // 
-            // flowLayoutPanel2
+            // flpRight
             // 
-            flowLayoutPanel2.Controls.Add(lblTokenList);
-            flowLayoutPanel2.Controls.Add(dgvTokens);
-            flowLayoutPanel2.Dock = DockStyle.Fill;
-            flowLayoutPanel2.Location = new Point(0, 0);
-            flowLayoutPanel2.Name = "flowLayoutPanel2";
-            flowLayoutPanel2.Size = new Size(353, 450);
-            flowLayoutPanel2.TabIndex = 1;
+            flpRight.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            flpRight.AutoSize = true;
+            flpRight.Controls.Add(lblTokenList);
+            flpRight.Controls.Add(dgvTokens);
+            flpRight.FlowDirection = FlowDirection.TopDown;
+            flpRight.Location = new Point(0, 0);
+            flpRight.Margin = new Padding(16);
+            flpRight.Name = "flpRight";
+            flpRight.Size = new Size(356, 450);
+            flpRight.TabIndex = 1;
             // 
             // lblTokenList
             // 
@@ -147,6 +150,10 @@
             // 
             // dgvTokens
             // 
+            dgvTokens.AllowUserToAddRows = false;
+            dgvTokens.AllowUserToDeleteRows = false;
+            dgvTokens.AllowUserToResizeColumns = false;
+            dgvTokens.AllowUserToResizeRows = false;
             dgvTokens.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvTokens.Location = new Point(3, 44);
             dgvTokens.Name = "dgvTokens";
@@ -166,10 +173,11 @@
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel1.PerformLayout();
             splitContainer1.Panel2.ResumeLayout(false);
+            splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
-            flowLayoutPanel2.ResumeLayout(false);
-            flowLayoutPanel2.PerformLayout();
+            flpRight.ResumeLayout(false);
+            flpRight.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTokens).EndInit();
             ResumeLayout(false);
         }
@@ -183,7 +191,7 @@
         private FlowLayoutPanel flowLayoutPanel1;
         private TextBox txtCodeBlock;
         private SplitContainer splitContainer1;
-        private FlowLayoutPanel flowLayoutPanel2;
+        private FlowLayoutPanel flpRight;
         private Label lblTokenList;
         private DataGridView dgvTokens;
     }

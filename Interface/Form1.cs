@@ -1,4 +1,5 @@
 using Lexico;
+using DotNetEnv;
 
 namespace Interface
 {
@@ -6,8 +7,13 @@ namespace Interface
     {
         public Form1()
         {
+            Env.Load();
             InitializeComponent();
             ConfigurarGrid();
+
+            string? defaultPath = Environment.GetEnvironmentVariable("FILEPATH");
+            if (defaultPath is null) return;
+            ProcessaArquivo(defaultPath);
         }
 
         private void ConfigurarGrid()
@@ -39,20 +45,6 @@ namespace Interface
                     dgvTokens.Columns[col]!.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             };
         }
-
-        public sealed class TokenLinha
-        {
-            public int Id { get; init; }
-            public string Tipo { get; init; } = "";
-            public string Lexema { get; init; } = "";
-            public int Linha { get; init; }
-            public int Coluna { get; init; }
-            public int Comprimento { get; init; }
-            public string Categoria { get; init; } = "";
-
-            public TokenType TipoEnum { get; init; }
-        }
-
         private void PreencherGridTokens(IReadOnlyList<Token> tokens)
         {
             var linhas = tokens.Select((t, i) => new TokenLinha
@@ -63,28 +55,11 @@ namespace Interface
                 Linha = t.Posicao.Item1,
                 Coluna = t.Posicao.Item2,
                 Comprimento = t.Lexema.Length,
-                Categoria = GetCategoriaByType(t.Tipo)
+                Categoria = Utils.GetCategoriaByType(t.Tipo)
             }).ToList();
 
             dgvTokens.DataSource = linhas;
         }
-
-        private static string GetCategoriaByType(TokenType tipo) => tipo switch
-        {
-            TokenType.Controle => "Palavra-chave de Controle",
-            TokenType.Componente => "Palavra-chave de Componente",
-            TokenType.Identificador => "Identificador",
-            TokenType.Texto => "Literal",
-            TokenType.Numero => "Número",
-            TokenType.Separador => "Símbolo de Separador",
-            TokenType.AcessoMembro => "Símbolo de Acesso a membro",
-            TokenType.Atribuidor => "Símbolo de Atribuidor",
-            TokenType.DelimitadorBloco => "Símbolo de Delimitador de bloco",
-            TokenType.DelimitadorConstrutor => "Símbolo de Delimitador de construtor",
-            TokenType.FimDeArquivo => "Token de Fim de arquivo",
-            TokenType.Erro => "Erro",
-            _ => throw new Exception("TokenType sem Categoria definida.")
-        };
 
         private static string? EncontrarCaminhoSolucao()
         {
@@ -114,23 +89,25 @@ namespace Interface
 
             if (dialog.ShowDialog(this) != DialogResult.OK)
             {
-                return;
+                throw new Exception("Dialog teve um comportamento inesperado");
             }
 
-            txtFilePath.Text = dialog.FileName;
+            ProcessaArquivo(dialog.FileName);
+        }
 
-            txtCodeBlock.Text = File.ReadAllText(dialog.FileName)
+        private void ProcessaArquivo(string fileName) 
+        {
+            txtFilePath.Text = fileName;
+
+            txtCodeBlock.Text = File.ReadAllText(fileName)
                                     .Replace("\r\n", "\n")
                                     .Replace("\n", Environment.NewLine);
 
-            var lexer = new Analisador(txtCodeBlock.Text);
+            var lexer = new AnalisadorLexico(txtCodeBlock.Text);
 
             List<Token> tokens = lexer.Tokenizar();
 
-            PreencherListaTokens(tokens);
-
             PreencherGridTokens(tokens);
-
         }
 
 
