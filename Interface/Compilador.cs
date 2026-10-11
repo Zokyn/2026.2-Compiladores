@@ -5,6 +5,9 @@ namespace Interface
 {
     public partial class Compilador : Form
     {
+        private string _root { get; set; } = "./";
+        private string _filename { get; set; } = "";
+        private string _codigofonte { get; set; } = string.Empty;
         public Compilador()
         {
             Env.Load();
@@ -18,8 +21,14 @@ namespace Interface
         private void LeCodigoFonteLocal()
         {
             string? defaultPath = Environment.GetEnvironmentVariable("FILEPATH");
+            
             if (defaultPath is null) return;
-            List<Token> tokens = ProcessaArquivo(defaultPath);
+            
+            _filename = defaultPath;
+            
+            List<Token> tokens = ProcessaArquivo();
+
+            EscreveTextoCodigo();
             PreencherGridTokens(tokens);
         }
         private void ConfiguraCodeBlock()
@@ -74,6 +83,14 @@ namespace Interface
             else 
                 dgvTokens.Rows[indexSelected.Value].Selected = false;
         }
+        private void EscreveTextoCodigo()
+        {
+            txtCodigo.Text = _codigofonte.Replace("\r\n", "\n")
+                                        .Replace("\n", Environment.NewLine); // codigo formatado
+
+            txtCodigo.Text = _codigofonte.Replace("\r\n", "\n")
+                                        .Replace("\n", Environment.NewLine); // codigo formatado
+        }
         private void PreencherGridTokens(IReadOnlyList<Token> tokens)
         {
             var linhas = tokens.Select((t, i) => new TokenItem
@@ -107,47 +124,46 @@ namespace Interface
             return null;
         }
 
-        private List<Token> AbrirCodigoFonte(string? path = null)
+        private void AbrirExplorarCodigo(string? path = null)
         {
-            string root;
             if (path == null)
             {
                 string? pathDaSolucao = EncontrarCaminhoSolucao();
                 if (pathDaSolucao != null)
-                    root = pathDaSolucao;
+                    _root = pathDaSolucao;
                 else
-                    root = Environment.CurrentDirectory;
+                    _root = Environment.CurrentDirectory;
             }
             else
-                root = path;
+                _root = path;
 
+            //Abre OpenFileDialog para selecionar o arquivo de código-fonte 
             using var dialog = new OpenFileDialog
             {
                 Title = "Abrir código-fonte de entrada",
-                InitialDirectory = root,
+                InitialDirectory = _root,
                 Filter = "Código-fonte Declara (*.dcl;*.txt)|*.dcl;*.txt|Todos os arquivos (*.*)|*.*",
                 RestoreDirectory = true
             };
 
+            // Levanta exception se o Dialog não retornar OK, pois não é esperado outro comportamento
             if (dialog.ShowDialog(this) != DialogResult.OK)
             {
                 throw new Exception("Dialog teve um comportamento inesperado");
             }
+            //Fechado o dialog temos um FileName atribuido a ele
 
-            List<Token> tokens = ProcessaArquivo(dialog.FileName);
 
-            return tokens;
+            _filename = dialog.FileName; 
+
+            _codigofonte = File.ReadAllText(_filename);
+
+            txtFilePath.Text = _filename;
         }
 
-        public List<Token> ProcessaArquivo(string fileName)
+        public List<Token> ProcessaArquivo()
         {
-            txtFilePath.Text = fileName;
-
-            txtCodigo.Text = File.ReadAllText(fileName)
-                                    .Replace("\r\n", "\n")
-                                    .Replace("\n", Environment.NewLine);
-
-            var lexer = new AnalisadorLexico(txtCodigo.Text);
+            var lexer = new AnalisadorLexico(_codigofonte);
 
             List<Token> tokens = lexer.Tokenizar();
 
@@ -175,12 +191,15 @@ namespace Interface
             dgvTokens.CurrentCell = dgvTokens.Rows[pos].Cells[0];
         }
 
-        private void btnFileOpen_Click(object sender, EventArgs e)
+        private void btnAbrirCodigo_Click(object sender, EventArgs e)
         {
-            List<Token> tokens = AbrirCodigoFonte();
+            AbrirExplorarCodigo();
 
             btnLimpaCodigo.Enabled = !(txtFilePath.Text == string.Empty);
 
+            List<Token> tokens = ProcessaArquivo();
+
+            EscreveTextoCodigo();
             PreencherGridTokens(tokens);
         }
         private void txtCodigo_MouseUp(object sender, MouseEventArgs e)
@@ -202,16 +221,11 @@ namespace Interface
 
         private void smiEditarilePath_Click(object sender, EventArgs e)
         {
-            using (var dlg = new frmOpenFileReader())
-            {
+            AbrirExplorarCodigo();
+            List<Token> tokens = ProcessaArquivo();
 
-                if (!string.IsNullOrEmpty(dlg.FileName))
-                {
-                    List<Token> tokens = ProcessaArquivo(dlg.FileName);
-
-                    PreencherGridTokens(tokens);
-                }
-            }
+            EscreveTextoCodigo();
+            PreencherGridTokens(tokens);
         }
 
         private void btnCodigoClean_Click(object sender, EventArgs e)

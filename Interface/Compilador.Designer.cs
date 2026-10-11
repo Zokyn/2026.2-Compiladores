@@ -30,7 +30,7 @@
         {
             splitContainer1 = new SplitContainer();
             flwFileOpen = new FlowLayoutPanel();
-            btnFileOpen = new Button();
+            btnAbrirCodigo = new Button();
             txtFilePath = new TextBox();
             btnLimpaCodigo = new Button();
             txtCodigo = new TextBox();
@@ -76,7 +76,7 @@
             // flwFileOpen
             // 
             flwFileOpen.AutoSize = true;
-            flwFileOpen.Controls.Add(btnFileOpen);
+            flwFileOpen.Controls.Add(btnAbrirCodigo);
             flwFileOpen.Controls.Add(txtFilePath);
             flwFileOpen.Controls.Add(btnLimpaCodigo);
             flwFileOpen.Location = new Point(0, 389);
@@ -90,13 +90,13 @@
             // 
             // btnFileOpen
             // 
-            btnFileOpen.Location = new Point(7, 7);
-            btnFileOpen.Name = "btnFileOpen";
-            btnFileOpen.Size = new Size(25, 23);
-            btnFileOpen.TabIndex = 3;
-            btnFileOpen.Text = "...";
-            btnFileOpen.UseVisualStyleBackColor = true;
-            btnFileOpen.Click += btnFileOpen_Click;
+            btnAbrirCodigo.Location = new Point(7, 7);
+            btnAbrirCodigo.Name = "btnFileOpen";
+            btnAbrirCodigo.Size = new Size(25, 23);
+            btnAbrirCodigo.TabIndex = 3;
+            btnAbrirCodigo.Text = "...";
+            btnAbrirCodigo.UseVisualStyleBackColor = true;
+            btnAbrirCodigo.Click += btnAbrirCodigo_Click;
             // 
             // txtFilePath
             // 
@@ -272,7 +272,7 @@
         private ToolStripMenuItem smiEditar;
         private ToolStripMenuItem smiConfigFilePath;
         private FlowLayoutPanel flwFileOpen;
-        private Button btnFileOpen;
+        private Button btnAbrirCodigo;
         private TextBox txtFilePath;
         private Button btnLimpaCodigo;
         private TextBox txtCodigo;
