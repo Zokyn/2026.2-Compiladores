@@ -113,7 +113,7 @@
             btnLimpaCodigo.TabIndex = 0;
             btnLimpaCodigo.Text = "Limpar";
             btnLimpaCodigo.UseVisualStyleBackColor = true;
-            btnLimpaCodigo.Click += btnCodigoClean_Click;
+            btnLimpaCodigo.Click += btnLimpaCodigo_Click;
             // 
             // txtCodigo
             // 

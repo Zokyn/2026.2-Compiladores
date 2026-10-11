@@ -135,6 +135,15 @@ namespace Lexico
                 {
                     if (tipo.HasValue)
                     {
+                        if (tipo.Value == TokenType.Identificador)
+                        {
+                           if (Controles.Contains(m.Value))
+                                tipo = TokenType.Controle;
+                            else if (Componentes.Contains(m.Value))
+                                tipo = TokenType.Componente;
+                           else 
+                                tipo = TokenType.Identificador;
+                        }
                         tokens.Add(new Token(tipo.Value, m.Value, m.Value, (linhaAtual, colunaAtual)));
                     }
                 }

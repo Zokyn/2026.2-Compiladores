@@ -14,7 +14,7 @@ namespace Interface
             Env.Load();
             InitializeComponent();
             ConfiguraCodeBlock();
-            ConfigurarGrid();
+            ConfiguraGrid();
             ConfiguraControles();
             //
             LeCodigoFonteLocal();
@@ -27,11 +27,13 @@ namespace Interface
 
             _filename = defaultPath;
 
+            LeArquivo(_filename);
+
             List<Token>? tokens = ProcessaArquivo();
 
-            if (string.IsNullOrEmpty(_codigofonte)) EscreveTextoCodigo();
+            if (!string.IsNullOrEmpty(_codigofonte)) EscreveTextoCodigo();
 
-            if (tokens != null && tokens?.Count > 0) PreencherGridTokens(tokens);
+            if (tokens != null && tokens?.Count > 0) PreencheGridTokens(tokens);
         }
         private void ConfiguraCodeBlock()
         {
@@ -40,7 +42,7 @@ namespace Interface
             txtCodigo.Font = new Font("Segoe UI", 10f, FontStyle.Bold);
             txtCodigo.TextAlign = HorizontalAlignment.Left;
         }
-        private void ConfigurarGrid()
+        private void ConfiguraGrid()
         {
             dgvTokens.AutoGenerateColumns = true;
             dgvTokens.ReadOnly = true;
@@ -79,7 +81,7 @@ namespace Interface
         }
         
         // EXPLORAÇÃO E LEITURA DE ARQUIVO
-        private static string? EncontrarCaminhoSolucao()
+        private static string? EncontraCaminhoSolucao()
         {
             var dir = new DirectoryInfo(AppContext.BaseDirectory);
             while (dir != null)
@@ -92,6 +94,10 @@ namespace Interface
             }
             return null;
         }
+        private void LeArquivo(string filename)
+        {
+            _codigofonte = File.ReadAllText(filename);
+        }
         /// <summary>
         /// Abre um OpenFileDialog que serve para selecionar o arquivo de código-fonte de entrada. 
         /// O caminho inicial do dialog é definido como a raiz do projeto, que buscada pelo método
@@ -100,9 +106,9 @@ namespace Interface
         /// dialog abra no caminho correto.
         /// </summary>
         /// <exception cref="Exception"></exception>
-        private bool AbrirExplorarCodigo()
+        private bool AbreExplorarCodigo()
         {
-            string? pathDaSolucao = EncontrarCaminhoSolucao();
+            string? pathDaSolucao = EncontraCaminhoSolucao();
 
             if (pathDaSolucao != null)
                 _root = pathDaSolucao;
@@ -123,7 +129,7 @@ namespace Interface
             //Fechado o dialog temos um FileName atribuido a ele
             _filename = dialog.FileName;
 
-            _codigofonte = File.ReadAllText(_filename);
+            LeArquivo(_filename);
 
             txtFilePath.Text = _filename;
 
@@ -172,7 +178,7 @@ namespace Interface
         /// os demais controles da interface.
         /// </summary>
         /// <param name="tokens">Lista read-only preenchida ou não de Tokens a serem convertidos para TokenLinha.</param>
-        private void PreencherGridTokens(IReadOnlyList<Token>? tokens)
+        private void PreencheGridTokens(IReadOnlyList<Token>? tokens)
         {
             if (tokens == null || tokens.Count < 0) return; 
 
@@ -199,7 +205,7 @@ namespace Interface
         /// imútaveis e não intercaláveis.
         /// </summary>
         /// <param name="index"></param>
-        private void SelecionarTokenNoGrid(int index)
+        private void SelecionaTokenNoGrid(int index)
         {
             if (dgvTokens.DataSource is not List<TokenItem> tokens ||
                 tokens.Count == 0) return;
@@ -224,26 +230,26 @@ namespace Interface
         /// <summary>Abre o Explorar de Arquivos pelo SubMenuItem smiEditarFilename.</summary>
         private void smiEditarFilename_Click(object sender, EventArgs e)
         {
-            if(!AbrirExplorarCodigo()) return;
+            if(!AbreExplorarCodigo()) return;
             List<Token>? tokens = ProcessaArquivo();
 
             EscreveTextoCodigo();
-            PreencherGridTokens(tokens);
+            PreencheGridTokens(tokens);
         }
         /// <summary>Abre o Explorar de Arquivos pelo Botão btnAbrirCodigo.</summary>
         private void btnAbrirCodigo_Click(object sender, EventArgs e)
         {
-            if(!AbrirExplorarCodigo()) return;
+            if(!AbreExplorarCodigo()) return;
 
             btnLimpaCodigo.Enabled = !(txtFilePath.Text == string.Empty);
 
             List<Token>? tokens = ProcessaArquivo();
 
             EscreveTextoCodigo();
-            PreencherGridTokens(tokens);
+            PreencheGridTokens(tokens);
         }
-        /// <summary>Limpa o Código da interface clicando no Botão btnCodigoClean.</summary>
-        private void btnCodigoClean_Click(object sender, EventArgs e)
+        /// <summary>Limpa o Código da interface clicando no Botão btnLimpaCodigo.</summary>
+        private void btnLimpaCodigo_Click(object sender, EventArgs e)
         {
             txtCodigo.Text = string.Empty;
             txtFilePath.Text = string.Empty;
@@ -273,7 +279,7 @@ namespace Interface
         {
             if (txtCodigo.SelectionLength > 0) return;
 
-            SelecionarTokenNoGrid(txtCodigo.GetCharIndexFromPosition(e.Location));
+            SelecionaTokenNoGrid(txtCodigo.GetCharIndexFromPosition(e.Location));
         }
         /// <summary>
         /// Ao clicar no bloco de código, se não estiver selecionando nada, 
@@ -285,7 +291,7 @@ namespace Interface
         {
             if (txtCodigo.SelectionLength > 0) return;
 
-            SelecionarTokenNoGrid(txtCodigo.GetCharIndexFromPosition(e.Location));
+            SelecionaTokenNoGrid(txtCodigo.GetCharIndexFromPosition(e.Location));
             txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
             lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
         }
