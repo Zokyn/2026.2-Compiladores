@@ -28,55 +28,69 @@
         /// </summary>
         private void InitializeComponent()
         {
-            btnFileRead = new Button();
-            txtFilePath = new TextBox();
-            lblFilePath = new Label();
-            btnFileOpen = new Button();
-            flowLayoutPanel1 = new FlowLayoutPanel();
-            txtCodigo = new TextBox();
             splitContainer1 = new SplitContainer();
+            flwFileOpen = new FlowLayoutPanel();
+            btnFileOpen = new Button();
+            txtFilePath = new TextBox();
+            btnCodigoClean = new Button();
+            txtCodigo = new TextBox();
             flpRight = new FlowLayoutPanel();
-            lblTokenList = new Label();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            txtCurrentToken = new TextBox();
+            lblTokenAtual = new Label();
+            lblCurrentTokenTypeLink = new LinkLabel();
             dgvTokens = new DataGridView();
-            flowLayoutPanel2 = new FlowLayoutPanel();
-            flowLayoutPanel1.SuspendLayout();
+            menuStrip1 = new MenuStrip();
+            smiEditar = new ToolStripMenuItem();
+            smiConfigFilePath = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            flwFileOpen.SuspendLayout();
             flpRight.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTokens).BeginInit();
-            flowLayoutPanel2.SuspendLayout();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
-            // btnFileRead
+            // splitContainer1
             // 
-            btnFileRead.Location = new Point(331, 19);
-            btnFileRead.Name = "btnFileRead";
-            btnFileRead.Size = new Size(75, 23);
-            btnFileRead.TabIndex = 0;
-            btnFileRead.Text = "Analisar";
-            btnFileRead.UseVisualStyleBackColor = true;
+            splitContainer1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            splitContainer1.Location = new Point(0, 24);
+            splitContainer1.Name = "splitContainer1";
             // 
-            // txtFilePath
+            // splitContainer1.Panel1
             // 
-            txtFilePath.Location = new Point(112, 19);
-            txtFilePath.Name = "txtFilePath";
-            txtFilePath.Size = new Size(213, 23);
-            txtFilePath.TabIndex = 1;
+            splitContainer1.Panel1.Controls.Add(flwFileOpen);
+            splitContainer1.Panel1.Controls.Add(txtCodigo);
+            splitContainer1.Panel1MinSize = 450;
             // 
-            // lblFilePath
+            // splitContainer1.Panel2
             // 
-            lblFilePath.AutoSize = true;
-            lblFilePath.Location = new Point(19, 16);
-            lblFilePath.Name = "lblFilePath";
-            lblFilePath.Size = new Size(56, 15);
-            lblFilePath.TabIndex = 2;
-            lblFilePath.Text = "Caminho";
+            splitContainer1.Panel2.Controls.Add(flpRight);
+            splitContainer1.Size = new Size(1362, 426);
+            splitContainer1.SplitterDistance = 451;
+            splitContainer1.TabIndex = 7;
+            // 
+            // flwFileOpen
+            // 
+            flwFileOpen.AutoSize = true;
+            flwFileOpen.Controls.Add(btnFileOpen);
+            flwFileOpen.Controls.Add(txtFilePath);
+            flwFileOpen.Controls.Add(btnCodigoClean);
+            flwFileOpen.Location = new Point(0, 389);
+            flwFileOpen.Margin = new Padding(0);
+            flwFileOpen.MinimumSize = new Size(24, 24);
+            flwFileOpen.Name = "flwFileOpen";
+            flwFileOpen.Padding = new Padding(4);
+            flwFileOpen.Size = new Size(450, 37);
+            flwFileOpen.TabIndex = 4;
+            flwFileOpen.WrapContents = false;
             // 
             // btnFileOpen
             // 
-            btnFileOpen.Location = new Point(81, 19);
+            btnFileOpen.Location = new Point(7, 7);
             btnFileOpen.Name = "btnFileOpen";
             btnFileOpen.Size = new Size(25, 23);
             btnFileOpen.TabIndex = 3;
@@ -84,72 +98,101 @@
             btnFileOpen.UseVisualStyleBackColor = true;
             btnFileOpen.Click += btnFileOpen_Click;
             // 
-            // flowLayoutPanel1
+            // txtFilePath
             // 
-            flowLayoutPanel1.AutoSize = true;
-            flowLayoutPanel1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            flowLayoutPanel1.Controls.Add(lblFilePath);
-            flowLayoutPanel1.Controls.Add(btnFileOpen);
-            flowLayoutPanel1.Controls.Add(txtFilePath);
-            flowLayoutPanel1.Controls.Add(btnFileRead);
-            flowLayoutPanel1.Location = new Point(3, 379);
-            flowLayoutPanel1.MinimumSize = new Size(24, 24);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Padding = new Padding(16);
-            flowLayoutPanel1.Size = new Size(425, 61);
-            flowLayoutPanel1.TabIndex = 4;
+            txtFilePath.Location = new Point(38, 7);
+            txtFilePath.Name = "txtFilePath";
+            txtFilePath.Size = new Size(320, 23);
+            txtFilePath.TabIndex = 1;
             // 
-            // txtCodeBlock
+            // btnCodigoClean
             // 
-            txtCodigo.Location = new Point(3, 3);
+            btnCodigoClean.Location = new Point(364, 7);
+            btnCodigoClean.Name = "btnCodigoClean";
+            btnCodigoClean.Size = new Size(75, 23);
+            btnCodigoClean.TabIndex = 0;
+            btnCodigoClean.Text = "Limpar";
+            btnCodigoClean.UseVisualStyleBackColor = true;
+            btnCodigoClean.Click += btnCodigoClean_Click;
+            // 
+            // txtCodigo
+            // 
+            txtCodigo.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            txtCodigo.Location = new Point(0, 0);
             txtCodigo.Multiline = true;
-            txtCodigo.Name = "txtCodeBlock";
+            txtCodigo.Name = "txtCodigo";
             txtCodigo.ReadOnly = true;
             txtCodigo.ScrollBars = ScrollBars.Both;
-            txtCodigo.Size = new Size(434, 370);
+            txtCodigo.Size = new Size(452, 390);
             txtCodigo.TabIndex = 5;
             txtCodigo.MouseDown += txtCodigo_MouseDown;
             txtCodigo.MouseUp += txtCodigo_MouseUp;
-            // 
-            // splitContainer1
-            // 
-            splitContainer1.Dock = DockStyle.Fill;
-            splitContainer1.Location = new Point(0, 0);
-            splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            splitContainer1.Panel1.Controls.Add(flowLayoutPanel2);
-            // 
-            // splitContainer1.Panel2
-            // 
-            splitContainer1.Panel2.Controls.Add(flpRight);
-            splitContainer1.Size = new Size(1358, 450);
-            splitContainer1.SplitterDistance = 440;
-            splitContainer1.TabIndex = 7;
             // 
             // flpRight
             // 
             flpRight.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             flpRight.AutoSize = true;
-            flpRight.Controls.Add(lblTokenList);
+            flpRight.Controls.Add(tableLayoutPanel1);
             flpRight.Controls.Add(dgvTokens);
             flpRight.FlowDirection = FlowDirection.TopDown;
             flpRight.Location = new Point(0, 0);
             flpRight.Margin = new Padding(16);
             flpRight.Name = "flpRight";
-            flpRight.Size = new Size(905, 450);
+            flpRight.Size = new Size(1045, 800);
             flpRight.TabIndex = 1;
             // 
-            // lblTokenList
+            // tableLayoutPanel1
             // 
-            lblTokenList.AutoSize = true;
-            lblTokenList.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
-            lblTokenList.Location = new Point(3, 0);
-            lblTokenList.Name = "lblTokenList";
-            lblTokenList.Size = new Size(115, 41);
-            lblTokenList.TabIndex = 1;
-            lblTokenList.Text = "Tokens";
+            tableLayoutPanel1.BackColor = SystemColors.ButtonShadow;
+            tableLayoutPanel1.ColumnCount = 2;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 22.7086182F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 77.29138F));
+            tableLayoutPanel1.Controls.Add(txtCurrentToken, 1, 1);
+            tableLayoutPanel1.Controls.Add(lblTokenAtual, 1, 0);
+            tableLayoutPanel1.Controls.Add(lblCurrentTokenTypeLink, 0, 1);
+            tableLayoutPanel1.Location = new Point(3, 3);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 3;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel1.Size = new Size(899, 94);
+            tableLayoutPanel1.TabIndex = 2;
+            // 
+            // txtCurrentToken
+            // 
+            txtCurrentToken.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            txtCurrentToken.Location = new Point(207, 40);
+            txtCurrentToken.Multiline = true;
+            txtCurrentToken.Name = "txtCurrentToken";
+            txtCurrentToken.Size = new Size(689, 31);
+            txtCurrentToken.TabIndex = 0;
+            // 
+            // lblTokenAtual
+            // 
+            lblTokenAtual.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            lblTokenAtual.AutoSize = true;
+            lblTokenAtual.CausesValidation = false;
+            lblTokenAtual.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblTokenAtual.ForeColor = SystemColors.Control;
+            lblTokenAtual.Location = new Point(207, 8);
+            lblTokenAtual.Name = "lblTokenAtual";
+            lblTokenAtual.Size = new Size(689, 21);
+            lblTokenAtual.TabIndex = 1;
+            lblTokenAtual.Text = "Token Atual";
+            lblTokenAtual.TextAlign = ContentAlignment.TopCenter;
+            // 
+            // lblCurrentTokenTypeLink
+            // 
+            lblCurrentTokenTypeLink.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblCurrentTokenTypeLink.BackColor = SystemColors.ButtonFace;
+            lblCurrentTokenTypeLink.Font = new Font("Segoe UI Black", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblCurrentTokenTypeLink.LinkColor = Color.SteelBlue;
+            lblCurrentTokenTypeLink.Location = new Point(3, 37);
+            lblCurrentTokenTypeLink.Name = "lblCurrentTokenTypeLink";
+            lblCurrentTokenTypeLink.Size = new Size(198, 37);
+            lblCurrentTokenTypeLink.TabIndex = 2;
+            lblCurrentTokenTypeLink.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // dgvTokens
             // 
@@ -157,58 +200,80 @@
             dgvTokens.AllowUserToDeleteRows = false;
             dgvTokens.AllowUserToResizeColumns = false;
             dgvTokens.AllowUserToResizeRows = false;
-            dgvTokens.Anchor = AnchorStyles.Top;
+            dgvTokens.Anchor = AnchorStyles.Bottom;
             dgvTokens.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvTokens.Location = new Point(3, 44);
+            dgvTokens.Location = new Point(3, 103);
             dgvTokens.Name = "dgvTokens";
             dgvTokens.Size = new Size(899, 329);
             dgvTokens.TabIndex = 2;
             // 
-            // flowLayoutPanel2
+            // menuStrip1
             // 
-            flowLayoutPanel2.Controls.Add(txtCodigo);
-            flowLayoutPanel2.Controls.Add(flowLayoutPanel1);
-            flowLayoutPanel2.Dock = DockStyle.Fill;
-            flowLayoutPanel2.Location = new Point(0, 0);
-            flowLayoutPanel2.Name = "flowLayoutPanel2";
-            flowLayoutPanel2.Size = new Size(440, 450);
-            flowLayoutPanel2.TabIndex = 6;
+            menuStrip1.Items.AddRange(new ToolStripItem[] { smiEditar });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(1362, 24);
+            menuStrip1.TabIndex = 8;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // smiEditar
+            // 
+            smiEditar.DropDownItems.AddRange(new ToolStripItem[] { smiConfigFilePath });
+            smiEditar.Name = "smiEditar";
+            smiEditar.Size = new Size(49, 20);
+            smiEditar.Text = "Editar";
+            // 
+            // smiConfigFilePath
+            // 
+            smiConfigFilePath.Name = "smiConfigFilePath";
+            smiConfigFilePath.Size = new Size(215, 22);
+            smiConfigFilePath.Text = "Caminho do Código-fonte";
+            smiConfigFilePath.Click += smiEditarilePath_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1358, 450);
+            ClientSize = new Size(1362, 450);
             Controls.Add(splitContainer1);
+            Controls.Add(menuStrip1);
+            MainMenuStrip = menuStrip1;
             Name = "Form1";
             Text = "Form1";
-            flowLayoutPanel1.ResumeLayout(false);
-            flowLayoutPanel1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel1.PerformLayout();
             splitContainer1.Panel2.ResumeLayout(false);
             splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            flwFileOpen.ResumeLayout(false);
+            flwFileOpen.PerformLayout();
             flpRight.ResumeLayout(false);
-            flpRight.PerformLayout();
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTokens).EndInit();
-            flowLayoutPanel2.ResumeLayout(false);
-            flowLayoutPanel2.PerformLayout();
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
-
-        private Button btnFileRead;
-        private TextBox txtFilePath;
         private Label lblFilePath;
-        private Button btnFileOpen;
-        private FlowLayoutPanel flowLayoutPanel1;
-        private TextBox txtCodigo;
         private SplitContainer splitContainer1;
         private FlowLayoutPanel flpRight;
-        private Label lblTokenList;
         private DataGridView dgvTokens;
-        private FlowLayoutPanel flowLayoutPanel2;
+        private TableLayoutPanel tableLayoutPanel1;
+        private TextBox txtCurrentToken;
+        private Label lblTokenAtual;
+        private LinkLabel lblCurrentTokenTypeLink;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem smiEditar;
+        private ToolStripMenuItem smiConfigFilePath;
+        private FlowLayoutPanel flwFileOpen;
+        private Button btnFileOpen;
+        private TextBox txtFilePath;
+        private Button btnCodigoClean;
+        private TextBox txtCodigo;
     }
 }

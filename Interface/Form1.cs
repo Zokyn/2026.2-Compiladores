@@ -12,10 +12,11 @@ namespace Interface
             ConfiguraCodeBlock();
             ConfigurarGrid();
 
-            string? defaultPath = Environment.GetEnvironmentVariable("FILEPATH");
+            /*string? defaultPath = Environment.GetEnvironmentVariable("FILEPATH");
             if (defaultPath is null) return;
-            ProcessaArquivo(defaultPath);
+            ProcessaArquivo(defaultPath);*/
         }
+
         private void ConfiguraCodeBlock()
         {
             txtCodigo.BackColor = Color.FromArgb(40, 44, 52);
@@ -113,7 +114,7 @@ namespace Interface
             ProcessaArquivo(dialog.FileName);
         }
 
-        private void ProcessaArquivo(string fileName)
+        public void ProcessaArquivo(string fileName)
         {
             txtFilePath.Text = fileName;
 
@@ -165,7 +166,25 @@ namespace Interface
         {
             if (txtCodigo.SelectionLength > 0) return;
             SelecionarTokenNoGrid(txtCodigo.GetCharIndexFromPosition(e.Location));
+            txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
+            lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
         }
 
+        private void smiEditarilePath_Click(object sender, EventArgs e)
+        {
+            using (var dlg = new frmOpenFileReader())
+            {
+
+                if (!string.IsNullOrEmpty(dlg.FileName))
+                    ProcessaArquivo(dlg.FileName);
+            }
+        }
+
+        private void btnCodigoClean_Click(object sender, EventArgs e)
+        {
+            txtCodigo.Text = string.Empty;
+            txtFilePath.Text = string.Empty;
+            dgvTokens.DataSource = null;
+        }
     }
 }
