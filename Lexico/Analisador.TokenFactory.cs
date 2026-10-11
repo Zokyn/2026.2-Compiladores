@@ -1,6 +1,6 @@
 ﻿namespace Lexico
 {
-    public partial class Lexico
+    public partial class Analisador
     {
         public partial class TokenFactory
         {
@@ -10,7 +10,7 @@
             /// </summary>
             /// <returns>Token a partir do literal, caso contrário levanta exception.</returns>
             /// <exception cref="Exception"></exception>
-            public static Token GeraTokenLiteral(Lexico lex)
+            public static Token GeraTokenLiteral(Analisador lex)
             {
                 (int linha, int coluna) = lex.LinhaColuna;
                 lex.ProximoCaractere(); // Para consumir as aspas de abertura
@@ -61,7 +61,7 @@
             /// um caractere que não seja letra, dígito ou sublinhado (_).
             /// </summary>
             /// <returns>Token de Identificador ou Palavra-chave</returns>
-            public static Token GeraTokenIdentificadorOuPalavraChave(Lexico lex, string entrada)
+            public static Token GeraTokenIdentificadorOuPalavraChave(Analisador lex, string entrada)
             {
                 (int linha, int coluna) = lex.LinhaColuna;
                 int inicio = lex.Posicao;
@@ -74,11 +74,11 @@
 
                 string lexema = entrada.Substring(inicio, lex.Posicao - inicio);
 
-                if (Lexico.Componentes.Contains(lexema))
+                if (Analisador.Componentes.Contains(lexema))
                 {
                     return new Token(TokenType.Componente, lexema, lexema.ToLowerInvariant(), (linha, coluna));
                 }
-                else if (Lexico.Controles.Contains(lexema))
+                else if (Analisador.Controles.Contains(lexema))
                 {
                     return new Token(TokenType.Controle, lexema, lexema.ToLowerInvariant(), (linha, coluna));
                 }

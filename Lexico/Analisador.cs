@@ -6,7 +6,7 @@ namespace Lexico
     /// Analisador Léxico (Lexer) para o compilador. 
     /// Responsável por ler o código-fonte de entrada e gerar uma lista de tokens.
     /// </summary>
-    public partial class Lexico(string entrada)
+    public partial class Analisador(string entrada)
     {
         // LISTAS DE SIMBOLOS
         /// <summary>
