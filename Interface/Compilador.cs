@@ -3,20 +3,24 @@ using DotNetEnv;
 
 namespace Interface
 {
-    public partial class Form1 : Form
+    public partial class Compilador : Form
     {
-        public Form1()
+        public Compilador()
         {
             Env.Load();
             InitializeComponent();
             ConfiguraCodeBlock();
             ConfigurarGrid();
-
-            /*string? defaultPath = Environment.GetEnvironmentVariable("FILEPATH");
-            if (defaultPath is null) return;
-            ProcessaArquivo(defaultPath);*/
+            ConfiguraControles();
+            //
+            LeCodigoFonteLocal();
         }
-
+        private void LeCodigoFonteLocal()
+        {
+            string? defaultPath = Environment.GetEnvironmentVariable("FILEPATH");
+            if (defaultPath is null) return;
+            ProcessaArquivo(defaultPath);
+        }
         private void ConfiguraCodeBlock()
         {
             txtCodigo.BackColor = Color.FromArgb(40, 44, 52);
@@ -53,6 +57,22 @@ namespace Interface
                     dgvTokens.Columns[col]!.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             };
         }
+        private void ConfiguraControles()
+        {
+            txtCurrentToken.TextAlign = HorizontalAlignment.Center;
+            txtCurrentToken.Font = new Font("Segoe UI", 12f, FontStyle.Regular);
+
+            lblCurrentTokenTypeLink.Font = new Font("Arial, sans serif", 14f, FontStyle.Bold);
+            lblCurrentTokenTypeLink.BorderStyle = BorderStyle.FixedSingle;
+        }
+        private void LimpaSelecaoGridTokens()
+        {
+            int? indexSelected = dgvTokens.CurrentRow?.Index;
+
+            if (!indexSelected.HasValue) return;
+            else 
+                dgvTokens.Rows[indexSelected.Value].Selected = false;
+        }
         private void PreencherGridTokens(IReadOnlyList<Token> tokens)
         {
             var linhas = tokens.Select((t, i) => new TokenItem
@@ -68,6 +88,8 @@ namespace Interface
             }).ToList();
 
             dgvTokens.DataSource = linhas;
+
+            LimpaSelecaoGridTokens();
         }
 
         private static string? EncontrarCaminhoSolucao()
@@ -165,6 +187,7 @@ namespace Interface
         private void txtCodigo_MouseDown(object sender, MouseEventArgs e)
         {
             if (txtCodigo.SelectionLength > 0) return;
+
             SelecionarTokenNoGrid(txtCodigo.GetCharIndexFromPosition(e.Location));
             txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
             lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
@@ -185,6 +208,14 @@ namespace Interface
             txtCodigo.Text = string.Empty;
             txtFilePath.Text = string.Empty;
             dgvTokens.DataSource = null;
+        }
+
+        private void dgvTokens_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (txtCodigo.SelectionLength > 0) return;
+
+            txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
+            lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
         }
     }
 }

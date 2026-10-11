@@ -1,6 +1,6 @@
 ﻿namespace Interface
 {
-    partial class Form1
+    partial class Compilador
     {
         /// <summary>
         ///  Required designer variable.
@@ -200,12 +200,13 @@
             dgvTokens.AllowUserToDeleteRows = false;
             dgvTokens.AllowUserToResizeColumns = false;
             dgvTokens.AllowUserToResizeRows = false;
-            dgvTokens.Anchor = AnchorStyles.Bottom;
+            dgvTokens.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvTokens.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvTokens.Location = new Point(3, 103);
             dgvTokens.Name = "dgvTokens";
             dgvTokens.Size = new Size(899, 329);
             dgvTokens.TabIndex = 2;
+            dgvTokens.CellClick += dgvTokens_CellClick;
             // 
             // menuStrip1
             // 
@@ -230,7 +231,7 @@
             smiConfigFilePath.Text = "Caminho do Código-fonte";
             smiConfigFilePath.Click += smiEditarilePath_Click;
             // 
-            // Form1
+            // Compilador
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -238,7 +239,7 @@
             Controls.Add(splitContainer1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
-            Name = "Form1";
+            Name = "Compilador";
             Text = "Form1";
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel1.PerformLayout();
