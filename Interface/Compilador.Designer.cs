@@ -32,7 +32,7 @@
             flwFileOpen = new FlowLayoutPanel();
             btnFileOpen = new Button();
             txtFilePath = new TextBox();
-            btnCodigoClean = new Button();
+            btnLimpaCodigo = new Button();
             txtCodigo = new TextBox();
             flpRight = new FlowLayoutPanel();
             tableLayoutPanel1 = new TableLayoutPanel();
@@ -78,7 +78,7 @@
             flwFileOpen.AutoSize = true;
             flwFileOpen.Controls.Add(btnFileOpen);
             flwFileOpen.Controls.Add(txtFilePath);
-            flwFileOpen.Controls.Add(btnCodigoClean);
+            flwFileOpen.Controls.Add(btnLimpaCodigo);
             flwFileOpen.Location = new Point(0, 389);
             flwFileOpen.Margin = new Padding(0);
             flwFileOpen.MinimumSize = new Size(24, 24);
@@ -107,13 +107,13 @@
             // 
             // btnCodigoClean
             // 
-            btnCodigoClean.Location = new Point(364, 7);
-            btnCodigoClean.Name = "btnCodigoClean";
-            btnCodigoClean.Size = new Size(75, 23);
-            btnCodigoClean.TabIndex = 0;
-            btnCodigoClean.Text = "Limpar";
-            btnCodigoClean.UseVisualStyleBackColor = true;
-            btnCodigoClean.Click += btnCodigoClean_Click;
+            btnLimpaCodigo.Location = new Point(364, 7);
+            btnLimpaCodigo.Name = "btnCodigoClean";
+            btnLimpaCodigo.Size = new Size(75, 23);
+            btnLimpaCodigo.TabIndex = 0;
+            btnLimpaCodigo.Text = "Limpar";
+            btnLimpaCodigo.UseVisualStyleBackColor = true;
+            btnLimpaCodigo.Click += btnCodigoClean_Click;
             // 
             // txtCodigo
             // 
@@ -274,7 +274,7 @@
         private FlowLayoutPanel flwFileOpen;
         private Button btnFileOpen;
         private TextBox txtFilePath;
-        private Button btnCodigoClean;
+        private Button btnLimpaCodigo;
         private TextBox txtCodigo;
     }
 }

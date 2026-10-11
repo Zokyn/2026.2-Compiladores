@@ -19,7 +19,8 @@ namespace Interface
         {
             string? defaultPath = Environment.GetEnvironmentVariable("FILEPATH");
             if (defaultPath is null) return;
-            ProcessaArquivo(defaultPath);
+            List<Token> tokens = ProcessaArquivo(defaultPath);
+            PreencherGridTokens(tokens);
         }
         private void ConfiguraCodeBlock()
         {
@@ -106,7 +107,7 @@ namespace Interface
             return null;
         }
 
-        private void AbrirCodigoFonte(string? path = null)
+        private List<Token> AbrirCodigoFonte(string? path = null)
         {
             string root;
             if (path == null)
@@ -133,10 +134,12 @@ namespace Interface
                 throw new Exception("Dialog teve um comportamento inesperado");
             }
 
-            ProcessaArquivo(dialog.FileName);
+            List<Token> tokens = ProcessaArquivo(dialog.FileName);
+
+            return tokens;
         }
 
-        public void ProcessaArquivo(string fileName)
+        public List<Token> ProcessaArquivo(string fileName)
         {
             txtFilePath.Text = fileName;
 
@@ -148,7 +151,7 @@ namespace Interface
 
             List<Token> tokens = lexer.Tokenizar();
 
-            PreencherGridTokens(tokens);
+            return tokens;
         }
 
         private void SelecionarTokenNoGrid(int index)
@@ -174,7 +177,11 @@ namespace Interface
 
         private void btnFileOpen_Click(object sender, EventArgs e)
         {
-            AbrirCodigoFonte();
+            List<Token> tokens = AbrirCodigoFonte();
+
+            btnLimpaCodigo.Enabled = !(txtFilePath.Text == string.Empty);
+
+            PreencherGridTokens(tokens);
         }
         private void txtCodigo_MouseUp(object sender, MouseEventArgs e)
         {
@@ -199,7 +206,11 @@ namespace Interface
             {
 
                 if (!string.IsNullOrEmpty(dlg.FileName))
-                    ProcessaArquivo(dlg.FileName);
+                {
+                    List<Token> tokens = ProcessaArquivo(dlg.FileName);
+
+                    PreencherGridTokens(tokens);
+                }
             }
         }
 
@@ -208,6 +219,12 @@ namespace Interface
             txtCodigo.Text = string.Empty;
             txtFilePath.Text = string.Empty;
             dgvTokens.DataSource = null;
+            txtCurrentToken.Text = string.Empty;
+            txtCurrentToken.Enabled = false;
+            lblCurrentTokenTypeLink.Text = string.Empty;
+
+            btnLimpaCodigo.Enabled = !(txtFilePath.Text == string.Empty);
+
         }
 
         private void dgvTokens_CellClick(object sender, DataGridViewCellEventArgs e)
