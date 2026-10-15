@@ -35,13 +35,21 @@ namespace Lexico
         /// </summary>
         Numero,
         /// <summary>
-        /// Símbolo de "abre" e "fecha chaves", '{' e '}'. Usado para abrir e fechar um bloco de código.
+        /// Símbolo de "abre chaves", '{'. Usado para abrir um bloco de código.
         /// </summary>
-        DelimitadorBloco,
+        AbreBloco,
         /// <summary>
-        /// Símbolo de "abre" e "fecha parênteses", '(' e ')'. Usado para abrir e fechar um construtor de componente.
+        /// Símbolo de "fecha chaves",  '}'. Usado para fechar um bloco de código.
         /// </summary>
-        DelimitadorConstrutor,
+        FechaBloco,
+        /// <summary>
+        /// Símbolo de "abre parênteses", '('. Usado para abrir um construtor de componente.
+        /// </summary>
+        AbreConstrutor,
+        /// <summary>
+        /// Símbolo de "fecha parênteses", ')'. Usado para fechar um construtor de componente.
+        /// </summary>
+        FechaConstrutor,
         /// <summary>
         /// Símbolo de "ponto e vírgula" e "virgula", ';' e ','. Usado para separar pares chave-valor de atributos em 
         /// bloco de código e separar argumentos dos atributos em construtores.
@@ -51,6 +59,10 @@ namespace Lexico
         /// Símbolo de "fim de arquivo" (invísvel), usado para indicar o final do código-fonte.
         /// </summary>
         FimDeArquivo,
+
+        Comentarios,
+
+        EspacosVazios,
 
         Erro,
     }

@@ -16,7 +16,9 @@
         /// Par-ordenado da posição (linha e coluna) da declaração do token.
         /// </summary>
         public (int, int) Posicao { get; }
-        
+        public int Linha => Posicao.Item1;
+        public int Coluna => Posicao.Item2;
+
         public Token(TokenType tipo, string lexema, string valor, (int, int) posicao)
         {
             Tipo = tipo;

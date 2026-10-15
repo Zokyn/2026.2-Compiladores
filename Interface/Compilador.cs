@@ -145,7 +145,7 @@ namespace Interface
         {
             if (string.IsNullOrEmpty(_codigofonte)) return null;
 
-            var lexer = new AnalisadorLexico(_codigofonte);
+            var lexer = new Lexer(_codigofonte);
 
             List<Token> tokens = lexer.Tokenizar();
 

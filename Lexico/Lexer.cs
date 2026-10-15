@@ -6,7 +6,7 @@ namespace Lexico
     /// Analisador Léxico (Lexer) para o compilador. 
     /// Responsável por ler o código-fonte de entrada e gerar uma lista de tokens.
     /// </summary>
-    public partial class AnalisadorLexico(string entrada)
+    public partial class Lexer(string entrada)
     {
         // LISTAS DE SIMBOLOS
         /// <summary>
@@ -80,8 +80,10 @@ namespace Lexico
             | (?<Atribuidor>     [:] )
             | (?<AcessoMembro> [.] )
             | (?<Numero>      \d+(?:\.\d+)? )
-            | (?<DelimitadorBloco> [{}] )
-            | (?<DelimitadorConstrutor> [()] )
+            | (?<AbreBloco> [{] )
+            | (?<FechaBloco> [}] )
+            | (?<AbreConstrutor> [(] )
+            | (?<FechaConstrutor> [)] )
             | (?<Separador> [,;] )
             | (?<Erro>        . )
         ", RegexOptions.IgnorePatternWhitespace);
@@ -94,8 +96,10 @@ namespace Lexico
             { "Atribuidor", TokenType.Atribuidor },
             { "AcessoMembro", TokenType.AcessoMembro },
             { "Numero", TokenType.Numero },
-            { "DelimitadorBloco", TokenType.DelimitadorBloco },
-            { "DelimitadorConstrutor", TokenType.DelimitadorConstrutor },
+            { "AbreBloco", TokenType.AbreBloco },
+            { "FechaBloco", TokenType.FechaBloco },
+            { "AbreConstrutor", TokenType.AbreConstrutor },
+            { "FechaConstrutor", TokenType.FechaConstrutor },
             { "Separador", TokenType.Separador },
             { "Erro", TokenType.Erro }
         };

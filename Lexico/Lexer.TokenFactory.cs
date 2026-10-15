@@ -1,6 +1,6 @@
 ﻿namespace Lexico
 {
-    public partial class AnalisadorLexico
+    public partial class Lexer
     {
         public partial class TokenFactory
         {
@@ -10,7 +10,7 @@
             /// </summary>
             /// <returns>Token a partir do literal, caso contrário levanta exception.</returns>
             /// <exception cref="Exception"></exception>
-            public static Token GeraTokenLiteral(AnalisadorLexico lex)
+            public static Token GeraTokenLiteral(Lexer lex)
             {
                 (int linha, int coluna) = lex.LinhaColuna;
                 lex.ProximoCaractere(); // Para consumir as aspas de abertura
@@ -61,7 +61,7 @@
             /// um caractere que não seja letra, dígito ou sublinhado (_).
             /// </summary>
             /// <returns>Token de Identificador ou Palavra-chave</returns>
-            public static Token GeraTokenIdentificadorOuPalavraChave(AnalisadorLexico lex, string entrada)
+            public static Token GeraTokenIdentificadorOuPalavraChave(Lexer lex, string entrada)
             {
                 (int linha, int coluna) = lex.LinhaColuna;
                 int inicio = lex.Posicao;
