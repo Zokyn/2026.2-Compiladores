@@ -35,28 +35,35 @@
             btnLimpaCodigo = new Button();
             txtCodigo = new TextBox();
             flpRight = new FlowLayoutPanel();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            dgvTokens = new DataGridView();
             tableLayoutPanel1 = new TableLayoutPanel();
             txtCurrentToken = new TextBox();
-            lblTokenAtual = new Label();
             lblCurrentTokenTypeLink = new LinkLabel();
-            dgvTokens = new DataGridView();
+            lblTokenAtual = new Label();
             menuStrip1 = new MenuStrip();
             smiEditar = new ToolStripMenuItem();
             smiEditarFilename = new ToolStripMenuItem();
+            tabControl1 = new TabControl();
+            tabPage1 = new TabPage();
+            tabPage2 = new TabPage();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             flwFileOpen.SuspendLayout();
             flpRight.SuspendLayout();
-            tableLayoutPanel1.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTokens).BeginInit();
+            tableLayoutPanel1.SuspendLayout();
             menuStrip1.SuspendLayout();
+            tabControl1.SuspendLayout();
+            tabPage1.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
             // 
-            splitContainer1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            splitContainer1.Dock = DockStyle.Fill;
             splitContainer1.Location = new Point(0, 24);
             splitContainer1.Name = "splitContainer1";
             // 
@@ -69,8 +76,8 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(flpRight);
-            splitContainer1.Size = new Size(1362, 426);
-            splitContainer1.SplitterDistance = 451;
+            splitContainer1.Size = new Size(1084, 426);
+            splitContainer1.SplitterDistance = 450;
             splitContainer1.TabIndex = 7;
             // 
             // flwFileOpen
@@ -123,7 +130,7 @@
             txtCodigo.Name = "txtCodigo";
             txtCodigo.ReadOnly = true;
             txtCodigo.ScrollBars = ScrollBars.Both;
-            txtCodigo.Size = new Size(452, 390);
+            txtCodigo.Size = new Size(451, 390);
             txtCodigo.TabIndex = 5;
             txtCodigo.MouseDown += txtCodigo_MouseDown;
             txtCodigo.MouseUp += txtCodigo_MouseUp;
@@ -132,41 +139,85 @@
             // 
             flpRight.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             flpRight.AutoSize = true;
-            flpRight.Controls.Add(tableLayoutPanel1);
-            flpRight.Controls.Add(dgvTokens);
+            flpRight.Controls.Add(tabControl1);
             flpRight.FlowDirection = FlowDirection.TopDown;
             flpRight.Location = new Point(0, 0);
             flpRight.Margin = new Padding(16);
             flpRight.Name = "flpRight";
-            flpRight.Size = new Size(1045, 800);
+            flpRight.Size = new Size(779, 800);
             flpRight.TabIndex = 1;
+            // 
+            // tableLayoutPanel2
+            // 
+            tableLayoutPanel2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            tableLayoutPanel2.ColumnCount = 1;
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel2.Controls.Add(tableLayoutPanel1, 0, 0);
+            tableLayoutPanel2.Controls.Add(dgvTokens, 0, 1);
+            tableLayoutPanel2.Location = new Point(0, 0);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 2;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 64F));
+            tableLayoutPanel2.RowStyles.Add(new RowStyle());
+            tableLayoutPanel2.Size = new Size(627, 423);
+            tableLayoutPanel2.TabIndex = 3;
+            // 
+            // dgvTokens
+            // 
+            dgvTokens.AllowUserToAddRows = false;
+            dgvTokens.AllowUserToDeleteRows = false;
+            dgvTokens.AllowUserToResizeColumns = false;
+            dgvTokens.AllowUserToResizeRows = false;
+            dgvTokens.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            tableLayoutPanel2.SetColumnSpan(dgvTokens, 2);
+            dgvTokens.Dock = DockStyle.Fill;
+            dgvTokens.Location = new Point(3, 67);
+            dgvTokens.Name = "dgvTokens";
+            dgvTokens.Size = new Size(621, 353);
+            dgvTokens.TabIndex = 2;
+            dgvTokens.CellClick += dgvTokens_CellClick;
+            dgvTokens.CellContentClick += dgvTokens_CellContentClick;
             // 
             // tableLayoutPanel1
             // 
+            tableLayoutPanel1.AutoSize = true;
+            tableLayoutPanel1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             tableLayoutPanel1.BackColor = SystemColors.ButtonShadow;
             tableLayoutPanel1.ColumnCount = 2;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 22.7086182F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 77.29138F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 128F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
             tableLayoutPanel1.Controls.Add(txtCurrentToken, 1, 1);
-            tableLayoutPanel1.Controls.Add(lblTokenAtual, 1, 0);
             tableLayoutPanel1.Controls.Add(lblCurrentTokenTypeLink, 0, 1);
+            tableLayoutPanel1.Controls.Add(lblTokenAtual, 1, 0);
             tableLayoutPanel1.Location = new Point(3, 3);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 3;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel1.Size = new Size(899, 94);
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 90.90909F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090909F));
+            tableLayoutPanel1.Size = new Size(621, 58);
             tableLayoutPanel1.TabIndex = 2;
             // 
             // txtCurrentToken
             // 
             txtCurrentToken.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            txtCurrentToken.Location = new Point(207, 40);
+            txtCurrentToken.Location = new Point(131, 22);
             txtCurrentToken.Multiline = true;
             txtCurrentToken.Name = "txtCurrentToken";
-            txtCurrentToken.Size = new Size(689, 31);
+            txtCurrentToken.Size = new Size(490, 31);
             txtCurrentToken.TabIndex = 0;
+            // 
+            // lblCurrentTokenTypeLink
+            // 
+            lblCurrentTokenTypeLink.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblCurrentTokenTypeLink.BackColor = SystemColors.ButtonFace;
+            lblCurrentTokenTypeLink.Font = new Font("Segoe UI Black", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblCurrentTokenTypeLink.LinkColor = Color.SteelBlue;
+            lblCurrentTokenTypeLink.Location = new Point(3, 19);
+            lblCurrentTokenTypeLink.Name = "lblCurrentTokenTypeLink";
+            lblCurrentTokenTypeLink.Size = new Size(122, 37);
+            lblCurrentTokenTypeLink.TabIndex = 2;
+            lblCurrentTokenTypeLink.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lblTokenAtual
             // 
@@ -175,45 +226,19 @@
             lblTokenAtual.CausesValidation = false;
             lblTokenAtual.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             lblTokenAtual.ForeColor = SystemColors.Control;
-            lblTokenAtual.Location = new Point(207, 8);
+            lblTokenAtual.Location = new Point(131, 0);
             lblTokenAtual.Name = "lblTokenAtual";
-            lblTokenAtual.Size = new Size(689, 21);
+            lblTokenAtual.Size = new Size(490, 19);
             lblTokenAtual.TabIndex = 1;
             lblTokenAtual.Text = "Token Atual";
             lblTokenAtual.TextAlign = ContentAlignment.TopCenter;
-            // 
-            // lblCurrentTokenTypeLink
-            // 
-            lblCurrentTokenTypeLink.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lblCurrentTokenTypeLink.BackColor = SystemColors.ButtonFace;
-            lblCurrentTokenTypeLink.Font = new Font("Segoe UI Black", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblCurrentTokenTypeLink.LinkColor = Color.SteelBlue;
-            lblCurrentTokenTypeLink.Location = new Point(3, 37);
-            lblCurrentTokenTypeLink.Name = "lblCurrentTokenTypeLink";
-            lblCurrentTokenTypeLink.Size = new Size(198, 37);
-            lblCurrentTokenTypeLink.TabIndex = 2;
-            lblCurrentTokenTypeLink.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // dgvTokens
-            // 
-            dgvTokens.AllowUserToAddRows = false;
-            dgvTokens.AllowUserToDeleteRows = false;
-            dgvTokens.AllowUserToResizeColumns = false;
-            dgvTokens.AllowUserToResizeRows = false;
-            dgvTokens.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvTokens.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvTokens.Location = new Point(3, 103);
-            dgvTokens.Name = "dgvTokens";
-            dgvTokens.Size = new Size(899, 329);
-            dgvTokens.TabIndex = 2;
-            dgvTokens.CellClick += dgvTokens_CellClick;
             // 
             // menuStrip1
             // 
             menuStrip1.Items.AddRange(new ToolStripItem[] { smiEditar });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(1362, 24);
+            menuStrip1.Size = new Size(1084, 24);
             menuStrip1.TabIndex = 8;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -231,11 +256,42 @@
             smiEditarFilename.Text = "Caminho do Código-fonte";
             smiEditarFilename.Click += smiEditarFilename_Click;
             // 
+            // tabControl1
+            // 
+            tabControl1.Controls.Add(tabPage1);
+            tabControl1.Controls.Add(tabPage2);
+            tabControl1.Location = new Point(3, 3);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(627, 423);
+            tabControl1.TabIndex = 4;
+            // 
+            // tabPage1
+            // 
+            tabPage1.Controls.Add(tableLayoutPanel2);
+            tabPage1.Location = new Point(4, 24);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(619, 395);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "tabPage1";
+            tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            tabPage2.Location = new Point(4, 24);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(619, 395);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "tabPage2";
+            tabPage2.UseVisualStyleBackColor = true;
+            // 
             // Compilador
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1362, 450);
+            ClientSize = new Size(1084, 450);
             Controls.Add(splitContainer1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
@@ -250,11 +306,15 @@
             flwFileOpen.ResumeLayout(false);
             flwFileOpen.PerformLayout();
             flpRight.ResumeLayout(false);
+            tableLayoutPanel2.ResumeLayout(false);
+            tableLayoutPanel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvTokens).EndInit();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvTokens).EndInit();
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            tabControl1.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -265,9 +325,7 @@
         private FlowLayoutPanel flpRight;
         private DataGridView dgvTokens;
         private TableLayoutPanel tableLayoutPanel1;
-        private TextBox txtCurrentToken;
         private Label lblTokenAtual;
-        private LinkLabel lblCurrentTokenTypeLink;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem smiEditar;
         private ToolStripMenuItem smiEditarFilename;
@@ -276,5 +334,11 @@
         private TextBox txtFilePath;
         private Button btnLimpaCodigo;
         private TextBox txtCodigo;
+        private TextBox txtCurrentToken;
+        private LinkLabel lblCurrentTokenTypeLink;
+        private TableLayoutPanel tableLayoutPanel2;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
     }
 }

@@ -79,7 +79,7 @@ namespace Interface
             lblCurrentTokenTypeLink.Font = new Font("Arial, sans serif", 14f, FontStyle.Bold);
             lblCurrentTokenTypeLink.BorderStyle = BorderStyle.FixedSingle;
         }
-        
+
         // EXPLORAÇÃO E LEITURA DE ARQUIVO
         private static string? EncontraCaminhoSolucao()
         {
@@ -180,7 +180,7 @@ namespace Interface
         /// <param name="tokens">Lista read-only preenchida ou não de Tokens a serem convertidos para TokenLinha.</param>
         private void PreencheGridTokens(IReadOnlyList<Token>? tokens)
         {
-            if (tokens == null || tokens.Count < 0) return; 
+            if (tokens == null || tokens.Count < 0) return;
 
             var linhas = tokens.Select((t, i) => new TokenItem
             {
@@ -230,7 +230,7 @@ namespace Interface
         /// <summary>Abre o Explorar de Arquivos pelo SubMenuItem smiEditarFilename.</summary>
         private void smiEditarFilename_Click(object sender, EventArgs e)
         {
-            if(!AbreExplorarCodigo()) return;
+            if (!AbreExplorarCodigo()) return;
             List<Token>? tokens = ProcessaArquivo();
 
             EscreveTextoCodigo();
@@ -239,7 +239,7 @@ namespace Interface
         /// <summary>Abre o Explorar de Arquivos pelo Botão btnAbrirCodigo.</summary>
         private void btnAbrirCodigo_Click(object sender, EventArgs e)
         {
-            if(!AbreExplorarCodigo()) return;
+            if (!AbreExplorarCodigo()) return;
 
             btnLimpaCodigo.Enabled = !(txtFilePath.Text == string.Empty);
 
@@ -294,6 +294,11 @@ namespace Interface
             SelecionaTokenNoGrid(txtCodigo.GetCharIndexFromPosition(e.Location));
             txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
             lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
+        }
+
+        private void dgvTokens_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

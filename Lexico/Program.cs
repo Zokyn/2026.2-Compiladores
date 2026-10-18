@@ -8,6 +8,7 @@ namespace Lexico
             Env.Load();
             string filename = Environment.GetEnvironmentVariable("FILEPATH") ?? "";
             string? entradaDeTexto = File.ReadAllText(filename);
+
             string entrada = entradaDeTexto ?? @"
 dados produtos {
   produto(nome: ""Camiseta"", descricao: ""Algodão"", promocao: verdadeiro)
