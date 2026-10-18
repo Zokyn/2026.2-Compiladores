@@ -35,30 +35,32 @@
             btnLimpaCodigo = new Button();
             txtCodigo = new TextBox();
             flpRight = new FlowLayoutPanel();
+            tabEtapas = new TabControl();
+            tabLexico = new TabPage();
             tableLayoutPanel2 = new TableLayoutPanel();
-            dgvTokens = new DataGridView();
             tableLayoutPanel1 = new TableLayoutPanel();
             txtCurrentToken = new TextBox();
             lblCurrentTokenTypeLink = new LinkLabel();
             lblTokenAtual = new Label();
+            dgvTokens = new DataGridView();
+            tabSintatico = new TabPage();
+            treeParser = new TreeView();
             menuStrip1 = new MenuStrip();
             smiEditar = new ToolStripMenuItem();
             smiEditarFilename = new ToolStripMenuItem();
-            tabControl1 = new TabControl();
-            tabPage1 = new TabPage();
-            tabPage2 = new TabPage();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             flwFileOpen.SuspendLayout();
             flpRight.SuspendLayout();
+            tabEtapas.SuspendLayout();
+            tabLexico.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvTokens).BeginInit();
             tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvTokens).BeginInit();
+            tabSintatico.SuspendLayout();
             menuStrip1.SuspendLayout();
-            tabControl1.SuspendLayout();
-            tabPage1.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
@@ -139,13 +141,34 @@
             // 
             flpRight.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             flpRight.AutoSize = true;
-            flpRight.Controls.Add(tabControl1);
+            flpRight.Controls.Add(tabEtapas);
             flpRight.FlowDirection = FlowDirection.TopDown;
             flpRight.Location = new Point(0, 0);
             flpRight.Margin = new Padding(16);
             flpRight.Name = "flpRight";
             flpRight.Size = new Size(779, 800);
             flpRight.TabIndex = 1;
+            // 
+            // tabEtapas
+            // 
+            tabEtapas.Controls.Add(tabLexico);
+            tabEtapas.Controls.Add(tabSintatico);
+            tabEtapas.Location = new Point(3, 3);
+            tabEtapas.Name = "tabEtapas";
+            tabEtapas.SelectedIndex = 0;
+            tabEtapas.Size = new Size(627, 423);
+            tabEtapas.TabIndex = 4;
+            // 
+            // tabLexico
+            // 
+            tabLexico.Controls.Add(tableLayoutPanel2);
+            tabLexico.Location = new Point(4, 24);
+            tabLexico.Name = "tabLexico";
+            tabLexico.Padding = new Padding(3);
+            tabLexico.Size = new Size(619, 395);
+            tabLexico.TabIndex = 0;
+            tabLexico.Text = "Lexico";
+            tabLexico.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel2
             // 
@@ -161,22 +184,6 @@
             tableLayoutPanel2.RowStyles.Add(new RowStyle());
             tableLayoutPanel2.Size = new Size(627, 423);
             tableLayoutPanel2.TabIndex = 3;
-            // 
-            // dgvTokens
-            // 
-            dgvTokens.AllowUserToAddRows = false;
-            dgvTokens.AllowUserToDeleteRows = false;
-            dgvTokens.AllowUserToResizeColumns = false;
-            dgvTokens.AllowUserToResizeRows = false;
-            dgvTokens.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            tableLayoutPanel2.SetColumnSpan(dgvTokens, 2);
-            dgvTokens.Dock = DockStyle.Fill;
-            dgvTokens.Location = new Point(3, 67);
-            dgvTokens.Name = "dgvTokens";
-            dgvTokens.Size = new Size(621, 353);
-            dgvTokens.TabIndex = 2;
-            dgvTokens.CellClick += dgvTokens_CellClick;
-            dgvTokens.CellContentClick += dgvTokens_CellContentClick;
             // 
             // tableLayoutPanel1
             // 
@@ -233,6 +240,41 @@
             lblTokenAtual.Text = "Token Atual";
             lblTokenAtual.TextAlign = ContentAlignment.TopCenter;
             // 
+            // dgvTokens
+            // 
+            dgvTokens.AllowUserToAddRows = false;
+            dgvTokens.AllowUserToDeleteRows = false;
+            dgvTokens.AllowUserToResizeColumns = false;
+            dgvTokens.AllowUserToResizeRows = false;
+            dgvTokens.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            tableLayoutPanel2.SetColumnSpan(dgvTokens, 2);
+            dgvTokens.Dock = DockStyle.Fill;
+            dgvTokens.Location = new Point(3, 67);
+            dgvTokens.Name = "dgvTokens";
+            dgvTokens.Size = new Size(621, 353);
+            dgvTokens.TabIndex = 2;
+            dgvTokens.CellClick += dgvTokens_CellClick;
+            dgvTokens.CellContentClick += dgvTokens_CellContentClick;
+            // 
+            // tabSintatico
+            // 
+            tabSintatico.Controls.Add(treeParser);
+            tabSintatico.Location = new Point(4, 24);
+            tabSintatico.Name = "tabSintatico";
+            tabSintatico.Padding = new Padding(3);
+            tabSintatico.Size = new Size(619, 395);
+            tabSintatico.TabIndex = 1;
+            tabSintatico.Text = "Sintatico";
+            tabSintatico.UseVisualStyleBackColor = true;
+            // 
+            // treeParser
+            // 
+            treeParser.Dock = DockStyle.Fill;
+            treeParser.Location = new Point(3, 3);
+            treeParser.Name = "treeParser";
+            treeParser.Size = new Size(613, 389);
+            treeParser.TabIndex = 0;
+            // 
             // menuStrip1
             // 
             menuStrip1.Items.AddRange(new ToolStripItem[] { smiEditar });
@@ -256,37 +298,6 @@
             smiEditarFilename.Text = "Caminho do Código-fonte";
             smiEditarFilename.Click += smiEditarFilename_Click;
             // 
-            // tabControl1
-            // 
-            tabControl1.Controls.Add(tabPage1);
-            tabControl1.Controls.Add(tabPage2);
-            tabControl1.Location = new Point(3, 3);
-            tabControl1.Name = "tabControl1";
-            tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(627, 423);
-            tabControl1.TabIndex = 4;
-            // 
-            // tabPage1
-            // 
-            tabPage1.Controls.Add(tableLayoutPanel2);
-            tabPage1.Location = new Point(4, 24);
-            tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(619, 395);
-            tabPage1.TabIndex = 0;
-            tabPage1.Text = "tabPage1";
-            tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // tabPage2
-            // 
-            tabPage2.Location = new Point(4, 24);
-            tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(619, 395);
-            tabPage2.TabIndex = 1;
-            tabPage2.Text = "tabPage2";
-            tabPage2.UseVisualStyleBackColor = true;
-            // 
             // Compilador
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -306,15 +317,16 @@
             flwFileOpen.ResumeLayout(false);
             flwFileOpen.PerformLayout();
             flpRight.ResumeLayout(false);
+            tabEtapas.ResumeLayout(false);
+            tabLexico.ResumeLayout(false);
             tableLayoutPanel2.ResumeLayout(false);
             tableLayoutPanel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvTokens).EndInit();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvTokens).EndInit();
+            tabSintatico.ResumeLayout(false);
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
-            tabControl1.ResumeLayout(false);
-            tabPage1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -337,8 +349,9 @@
         private TextBox txtCurrentToken;
         private LinkLabel lblCurrentTokenTypeLink;
         private TableLayoutPanel tableLayoutPanel2;
-        private TabControl tabControl1;
-        private TabPage tabPage1;
-        private TabPage tabPage2;
+        private TabControl tabEtapas;
+        private TabPage tabLexico;
+        private TabPage tabSintatico;
+        private TreeView treeParser;
     }
 }

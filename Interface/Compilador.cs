@@ -16,6 +16,7 @@ namespace Interface
             ConfiguraCodeBlock();
             ConfiguraGrid();
             ConfiguraControles();
+            ConfiguraTreeParser();
             //
             LeCodigoFonteLocal();
         }
@@ -78,6 +79,16 @@ namespace Interface
 
             lblCurrentTokenTypeLink.Font = new Font("Arial, sans serif", 14f, FontStyle.Bold);
             lblCurrentTokenTypeLink.BorderStyle = BorderStyle.FixedSingle;
+        }
+
+
+
+        private void ConfiguraTreeParser()
+        {
+            treeParser.BeginUpdate();
+            treeParser.Nodes.Clear();
+
+            treeParser.EndUpdate();
         }
 
         // EXPLORAÇÃO E LEITURA DE ARQUIVO
