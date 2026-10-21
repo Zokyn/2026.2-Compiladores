@@ -1,0 +1,34 @@
+dados turma {
+  aluno(nome: "João", matricula: 20262011, notaFinal: 7.0),
+  aluno(nome: "Carlos", matricula: 20253545, notaFinal: 8.2),
+  aluno(nome: "Amanda", matricula: 20201306, notaFinal: 3.6)
+}
+
+dados disciplina = "Estrutura de Dados"
+
+dados professor(nome: "Roberto Carlos", matricula 00002130, disciplina)
+
+dados sala {
+  turma, 
+  professor,
+  materia: disciplina,
+  semestre: "2026.2",
+  media: (turma[0].notaFinal + turma.notaFinal[1] + turma.notaFinal[2])/3.0
+}
+
+pagina(pag-notas-finais, "Notas") {
+  secao(sec-notas, "Notas Finais") {
+    para aluno em turma {
+      cartao(titulo: aluno.notaFinal, texto: aluno.nome) {
+        se aluno.notaFinal > 7.0 {
+          selo("REPROVADO")
+        }
+      }
+    } 
+  }
+  secao(sec-resumo) {
+    cartao(texto: "Materia: " + sala.materia + " " + sala.semestre),
+    cartao(texto: "<b>Alunos Matriculados</b>: " + sala.turma.contagem)
+    cartao(texto: "<i>Media da Turma</i>: " + sala.turma.media)
+  }
+}

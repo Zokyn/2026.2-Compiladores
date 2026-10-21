@@ -1,0 +1,22 @@
+[ vars_opc ] -> campo opcional
+
+<documento>         ::= [ <declaracao> ] <pagina> 
+<declaracao>        ::= "dados" <identificador> "{" <conjunto_dados> "}"
+<conjunto_dados>    ::= <dado> | <dado> , <mais_dado>
+<mais_dado>         ::= <dado> , <dado> | <vazio>
+<dado>              ::=  <identificador> "(" <atributo> [ <lista_atributos> ] ")"
+<lista_atributos>   ::= "," <atributo>, <mais_atributo> | <vazio>
+<atributo>          ::= <identificador> ":" <expressao> | <identificador ":" <funcao>
+<vazio>             ::= 
+<expressao          ::= <valor> | <operacao>
+<valor>             ::= <numero> | <identificador> | <texto_literal>
+<expressao>         ::= <numero> (+|-|/|*|^) <numero> | <funcao>  
+<funcao>            ::= <identificador> "(" <corpo_da_funcao>  ")" 
+<corpo_da_funcao>   ::= <expressao>  | <expressao> ";" <mais_expressao>
+<mais_expressao>    ::= <expressao> ";"
+<texto_literal>     ::= "\"" <caracteres> "\""
+<caracteres>        ::= [a-zA-Z0-9_]*
+<numero>            ::= <numero_inteiro> | <numero_real>
+<numero_inteiro>    ::= [0-9]
+<numero_real>       ::= [0-9]"."[0-9] | "."[0-9]
+ 
