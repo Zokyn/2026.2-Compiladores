@@ -45,13 +45,15 @@ namespace Sintatico
         private Token Consumir(TokenType esperado, string? contexto = null)
         {
             if (Verificar(esperado)) return AvancarToken();
+            else return TokenAtual;
 
-            var token = TokenAtual;
-            throw new ErroSintatico(
+            var e = new ErroSintatico(
                 $"Esperado '{esperado}' mas encontrado " +
-                $"{token.Tipo} ('{token.Valor}')" +
+                $"{TokenAtual.Tipo} ('{TokenAtual.Valor}')" +
                 (contexto != null ? $"no contexto {contexto ?? "desconhecido"}" : ""),
-                token.Posicao.Item1, token.Posicao.Item2);
+                TokenAtual.Posicao.Item1, TokenAtual.Posicao.Item2);
+            _resultado.Erros.Add(e);
+            return TokenAtual;
         }
 
         private void Sincronizar(params TokenType[] pontos)
@@ -72,12 +74,18 @@ namespace Sintatico
                 try
                 {
                     documento.Corpo.Add(Item());
-                } catch (ErroSintatico e)
+                } 
+                catch (ErroSintatico e)
                 {
+                    //var ex = new ErroSintatico($"Erro Sintático: {e.Message}", e.Linha, e.Coluna)
                     _resultado.Erros.Add(e);
-                    throw new ErroSintatico( $"Erro Sintático: {e.Message}", e.Linha, e.Coluna);
-                
+                    //throw new ErroSintatico( $"Erro Sintático: {e.Message}", e.Linha, e.Coluna);
+
                     Sincronizar(TokenType.AbreBloco, TokenType.FechaBloco);
+                }
+                finally
+                {
+                    AvancarToken();
                 }
             }
             return documento;
@@ -87,9 +95,9 @@ namespace Sintatico
         {
             return TokenAtual.Tipo switch
             {
-                TokenType.AbreBloco => Elemento(),
-                TokenType.Controle => Elemento(),
-                TokenType.Componente => Elemento(),
+               /* TokenType.AbreBloco => Elemento(),
+                TokenType.Controle => Elemento(),*/
+                TokenType.Componente => Expressao(),
                 _ => throw new ErroSintatico($"Item inesperado: " +
                     $"[{(TokenAtual.Tipo != TokenType.Erro ? TokenAtual.Tipo : "DESCONHECIDO")}]'{TokenAtual.Valor}'", TokenAtual.Posicao.Item1, TokenAtual.Posicao.Item2)
             };

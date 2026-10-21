@@ -44,7 +44,12 @@
             lblTokenAtual = new Label();
             dgvTokens = new DataGridView();
             tabSintatico = new TabPage();
+            splitContainer2 = new SplitContainer();
+            lblTreeNaoCarregada = new Label();
             treeParser = new TreeView();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            lblErroSintaticoList = new Label();
+            lstErrosSintaticos = new ListView();
             menuStrip1 = new MenuStrip();
             smiEditar = new ToolStripMenuItem();
             smiEditarFilename = new ToolStripMenuItem();
@@ -60,6 +65,11 @@
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTokens).BeginInit();
             tabSintatico.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
+            splitContainer2.Panel1.SuspendLayout();
+            splitContainer2.Panel2.SuspendLayout();
+            splitContainer2.SuspendLayout();
+            flowLayoutPanel1.SuspendLayout();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -258,7 +268,7 @@
             // 
             // tabSintatico
             // 
-            tabSintatico.Controls.Add(treeParser);
+            tabSintatico.Controls.Add(splitContainer2);
             tabSintatico.Location = new Point(4, 24);
             tabSintatico.Name = "tabSintatico";
             tabSintatico.Padding = new Padding(3);
@@ -267,13 +277,75 @@
             tabSintatico.Text = "Sintatico";
             tabSintatico.UseVisualStyleBackColor = true;
             // 
+            // splitContainer2
+            // 
+            splitContainer2.Dock = DockStyle.Fill;
+            splitContainer2.Location = new Point(3, 3);
+            splitContainer2.Name = "splitContainer2";
+            // 
+            // splitContainer2.Panel1
+            // 
+            splitContainer2.Panel1.Controls.Add(lblTreeNaoCarregada);
+            splitContainer2.Panel1.Controls.Add(treeParser);
+            // 
+            // splitContainer2.Panel2
+            // 
+            splitContainer2.Panel2.Controls.Add(flowLayoutPanel1);
+            splitContainer2.Panel2.Paint += splitContainer2_Panel2_Paint;
+            splitContainer2.Size = new Size(613, 389);
+            splitContainer2.SplitterDistance = 445;
+            splitContainer2.TabIndex = 1;
+            // 
+            // lblTreeNaoCarregada
+            // 
+            lblTreeNaoCarregada.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblTreeNaoCarregada.AutoSize = true;
+            lblTreeNaoCarregada.Location = new Point(101, 345);
+            lblTreeNaoCarregada.Name = "lblTreeNaoCarregada";
+            lblTreeNaoCarregada.Size = new Size(272, 15);
+            lblTreeNaoCarregada.TabIndex = 3;
+            lblTreeNaoCarregada.Text = "Árvore Sintática não carregada. Nada a apresentar.";
+            // 
             // treeParser
             // 
             treeParser.Dock = DockStyle.Fill;
-            treeParser.Location = new Point(3, 3);
+            treeParser.Location = new Point(0, 0);
             treeParser.Name = "treeParser";
-            treeParser.Size = new Size(613, 389);
+            treeParser.Size = new Size(445, 389);
             treeParser.TabIndex = 0;
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.AutoSize = true;
+            flowLayoutPanel1.Controls.Add(lblErroSintaticoList);
+            flowLayoutPanel1.Controls.Add(lstErrosSintaticos);
+            flowLayoutPanel1.Dock = DockStyle.Fill;
+            flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
+            flowLayoutPanel1.Location = new Point(0, 0);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(164, 389);
+            flowLayoutPanel1.TabIndex = 0;
+            // 
+            // lblErroSintaticoList
+            // 
+            lblErroSintaticoList.BackColor = Color.Black;
+            lblErroSintaticoList.BorderStyle = BorderStyle.FixedSingle;
+            lblErroSintaticoList.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblErroSintaticoList.ForeColor = SystemColors.ActiveCaption;
+            lblErroSintaticoList.Location = new Point(3, 0);
+            lblErroSintaticoList.Name = "lblErroSintaticoList";
+            lblErroSintaticoList.Size = new Size(156, 35);
+            lblErroSintaticoList.TabIndex = 2;
+            lblErroSintaticoList.Text = "Erro(s) encontrado(s)";
+            lblErroSintaticoList.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lstErrosSintaticos
+            // 
+            lstErrosSintaticos.Location = new Point(3, 38);
+            lstErrosSintaticos.Name = "lstErrosSintaticos";
+            lstErrosSintaticos.Size = new Size(156, 340);
+            lstErrosSintaticos.TabIndex = 1;
+            lstErrosSintaticos.UseCompatibleStateImageBehavior = false;
             // 
             // menuStrip1
             // 
@@ -325,6 +397,13 @@
             tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTokens).EndInit();
             tabSintatico.ResumeLayout(false);
+            splitContainer2.Panel1.ResumeLayout(false);
+            splitContainer2.Panel1.PerformLayout();
+            splitContainer2.Panel2.ResumeLayout(false);
+            splitContainer2.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
+            splitContainer2.ResumeLayout(false);
+            flowLayoutPanel1.ResumeLayout(false);
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ResumeLayout(false);
@@ -353,5 +432,10 @@
         private TabPage tabLexico;
         private TabPage tabSintatico;
         private TreeView treeParser;
+        private Label lblErroSintaticoList;
+        private ListView lstErrosSintaticos;
+        private Label lblTreeNaoCarregada;
+        private SplitContainer splitContainer2;
+        private FlowLayoutPanel flowLayoutPanel1;
     }
 }

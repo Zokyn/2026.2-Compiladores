@@ -2,6 +2,7 @@ using DotNetEnv;
 using Lexico;
 using Sintatico;
 using Sintatico.Nodes;
+using Superpower.Model;
 using System.ComponentModel.Design.Serialization;
 
 namespace Interface
@@ -12,7 +13,8 @@ namespace Interface
         private string _filename { get; set; } = "";
         private string _codigofonte { get; set; } = string.Empty;
         private List<Token>? _tokens { get; set; } = null;
-        
+        private ResultadoParser _result { get; set; }
+
         public Compilador()
         {
             Env.Load();
@@ -24,6 +26,7 @@ namespace Interface
             LeCodigoFonteLocal();
             PreencheGridTokens();
             PreencheArvoreSintatica();
+            ListaErrosSintaticos();
         }
         private void LeCodigoFonteLocal()
         {
@@ -250,6 +253,7 @@ namespace Interface
 
         private void PreencheArvoreSintatica()
         {
+            bool preencheuArvore = false;
             try
             {
                 if (_tokens == null || _tokens.Count == 0) return;
@@ -259,6 +263,7 @@ namespace Interface
 
                 Node raiz = result.Arvore;
 
+                _result = result;
                 treeParser.BeginUpdate();
                 treeParser.Nodes.Clear();
 
@@ -269,21 +274,56 @@ namespace Interface
                 }
 
                 treeParser.EndUpdate();
-            } catch (ErroSintatico es)
+                preencheuArvore = true;
+            }
+            catch (ErroSintatico es)
             {
                 Console.WriteLine($"Erro sintático: {es.Message}");
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine($"Erro: {e.Message}");
             }
             finally
             {
+                treeParser.Visible = preencheuArvore;
+                lblTreeNaoCarregada.Visible = !preencheuArvore;
+            }
+           
+        }
 
+        private void ListaErrosSintaticos()
+        {
+            lblErroSintaticoList.Text = "";
+
+            if (_result == null || _result.Erros.Count > 1) return;
+
+            List<ErroSintatico> erros = _result.Erros;
+
+            foreach (ErroSintatico erro in erros) {
+                ListViewItem lstItem = new ListViewItem(erro.Message);
+
+                lstItem.SubItems.Add($"{erro.Linha},{erro.Coluna}");
+
+                lstErrosSintaticos.Items.Add(lstItem);
+            }
+            
+            switch (erros.Count)
+            {
+                case 0:
+                    lblErroSintaticoList.Text = "Nenhum erros sintáticos";
+                    break;
+                case 1:
+                    lblErroSintaticoList.Text = "Erro sintático";
+                    break;
+                default:
+                    lblErroSintaticoList.Text = $"{erros.Count} erros sintáticos";
+                    break;
             }
         }
 
         // EVENTOS 
-        /// <summary>Abre o Explorar de Arquivos pelo SubMenuItem smiEditarFilename.</summary>
+            /// <summary>Abre o Explorar de Arquivos pelo SubMenuItem smiEditarFilename.</summary>
         private void smiEditarFilename_Click(object sender, EventArgs e)
         {
             if (!AbreExplorarCodigo()) return;
@@ -353,6 +393,11 @@ namespace Interface
         }
 
         private void dgvTokens_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void splitContainer2_Panel2_Paint(object sender, PaintEventArgs e)
         {
 
         }
