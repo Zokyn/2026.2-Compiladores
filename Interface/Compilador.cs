@@ -1,6 +1,8 @@
 using DotNetEnv;
 using Lexico;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using Sintatico;
+using Sintatico.Nodes;
+using System.ComponentModel.Design.Serialization;
 
 namespace Interface
 {
@@ -9,6 +11,8 @@ namespace Interface
         private string _root { get; set; } = "./";
         private string _filename { get; set; } = "";
         private string _codigofonte { get; set; } = string.Empty;
+        private List<Token>? _tokens { get; set; } = null;
+        
         public Compilador()
         {
             Env.Load();
@@ -16,9 +20,10 @@ namespace Interface
             ConfiguraCodeBlock();
             ConfiguraGrid();
             ConfiguraControles();
-            ConfiguraTreeParser();
             //
             LeCodigoFonteLocal();
+            PreencheGridTokens();
+            PreencheArvoreSintatica();
         }
         private void LeCodigoFonteLocal()
         {
@@ -34,7 +39,7 @@ namespace Interface
 
             if (!string.IsNullOrEmpty(_codigofonte)) EscreveTextoCodigo();
 
-            if (tokens != null && tokens?.Count > 0) PreencheGridTokens(tokens);
+            if (tokens != null && tokens?.Count > 0) _tokens = tokens;
         }
         private void ConfiguraCodeBlock()
         {
@@ -81,12 +86,36 @@ namespace Interface
             lblCurrentTokenTypeLink.BorderStyle = BorderStyle.FixedSingle;
         }
 
-
-
-        private void ConfiguraTreeParser()
+        private static TreeNode ConverterNodeParaTreeNode(Node node)
         {
+            var treeNode = new TreeNode(node.Descricao);
+
+            foreach (var child in node.Filhos)
+            {
+                treeNode.Nodes.Add(ConverterNodeParaTreeNode(child));
+            }
+
+            return treeNode;
+
+        }
+
+        private void PreencheArvoreSintatica()
+        {
+            if (_tokens == null || _tokens.Count == 0) return;
+
+            Parser p = new Parser(_tokens);
+            ResultadoParser result = p.Parse();
+
+            Node raiz = result.Arvore;
+
             treeParser.BeginUpdate();
             treeParser.Nodes.Clear();
+
+            if (raiz != null)
+            {
+                treeParser.Nodes.Add(ConverterNodeParaTreeNode(raiz));
+                treeParser.ExpandAll();
+            }
 
             treeParser.EndUpdate();
         }
@@ -189,11 +218,11 @@ namespace Interface
         /// os demais controles da interface.
         /// </summary>
         /// <param name="tokens">Lista read-only preenchida ou não de Tokens a serem convertidos para TokenLinha.</param>
-        private void PreencheGridTokens(IReadOnlyList<Token>? tokens)
+        private void PreencheGridTokens()
         {
-            if (tokens == null || tokens.Count < 0) return;
+            if (_tokens == null || _tokens.Count < 0) return;
 
-            var linhas = tokens.Select((t, i) => new TokenItem
+            var linhas = _tokens.Select((t, i) => new TokenItem
             {
                 Id = i + 1,
                 Tipo = Utils.GetNomeByType(t.Tipo),
@@ -245,7 +274,7 @@ namespace Interface
             List<Token>? tokens = ProcessaArquivo();
 
             EscreveTextoCodigo();
-            PreencheGridTokens(tokens);
+            PreencheGridTokens();
         }
         /// <summary>Abre o Explorar de Arquivos pelo Botão btnAbrirCodigo.</summary>
         private void btnAbrirCodigo_Click(object sender, EventArgs e)
@@ -257,7 +286,7 @@ namespace Interface
             List<Token>? tokens = ProcessaArquivo();
 
             EscreveTextoCodigo();
-            PreencheGridTokens(tokens);
+            PreencheGridTokens();
         }
         /// <summary>Limpa o Código da interface clicando no Botão btnLimpaCodigo.</summary>
         private void btnLimpaCodigo_Click(object sender, EventArgs e)

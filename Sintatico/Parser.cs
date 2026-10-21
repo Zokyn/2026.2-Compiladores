@@ -6,20 +6,18 @@ namespace Sintatico
     {
         private readonly List<Token> _tokens;
         private int _posicao;
-        private readonly ResultadoParse _resultado = new();
+        private readonly ResultadoParser _resultado = new();
 
         public Parser(IEnumerable<Token> tokens)
         {
             _tokens = tokens.Where(t => t.Tipo != TokenType.EspacosVazios
                                     && t.Tipo != TokenType.Comentarios).ToList();
         }
-
-        public ResultadoParse Parse()
+        public ResultadoParser Parse()
         {
-            _resultado.Arvore = new NodeDocumento();
+            _resultado.Arvore = Documento();
             return _resultado;
         }
-
         private bool FimDeTokens => _posicao >= _tokens.Count;
 
         private Token TokenAtual =>

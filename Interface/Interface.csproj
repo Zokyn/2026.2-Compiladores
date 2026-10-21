@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Lexico\Lexico.csproj" />
+    <ProjectReference Include="..\Sintatico\Sintatico.csproj" />
   </ItemGroup>
 
   <ItemGroup>
