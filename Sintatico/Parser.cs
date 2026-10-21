@@ -75,6 +75,8 @@ namespace Sintatico
                 } catch (ErroSintatico e)
                 {
                     _resultado.Erros.Add(e);
+                    throw new ErroSintatico( $"Erro Sintático: {e.Message}", e.Linha, e.Coluna);
+                
                     Sincronizar(TokenType.AbreBloco, TokenType.FechaBloco);
                 }
             }

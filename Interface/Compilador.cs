@@ -86,39 +86,7 @@ namespace Interface
             lblCurrentTokenTypeLink.BorderStyle = BorderStyle.FixedSingle;
         }
 
-        private static TreeNode ConverterNodeParaTreeNode(Node node)
-        {
-            var treeNode = new TreeNode(node.Descricao);
 
-            foreach (var child in node.Filhos)
-            {
-                treeNode.Nodes.Add(ConverterNodeParaTreeNode(child));
-            }
-
-            return treeNode;
-
-        }
-
-        private void PreencheArvoreSintatica()
-        {
-            if (_tokens == null || _tokens.Count == 0) return;
-
-            Parser p = new Parser(_tokens);
-            ResultadoParser result = p.Parse();
-
-            Node raiz = result.Arvore;
-
-            treeParser.BeginUpdate();
-            treeParser.Nodes.Clear();
-
-            if (raiz != null)
-            {
-                treeParser.Nodes.Add(ConverterNodeParaTreeNode(raiz));
-                treeParser.ExpandAll();
-            }
-
-            treeParser.EndUpdate();
-        }
 
         // EXPLORAÇÃO E LEITURA DE ARQUIVO
         private static string? EncontraCaminhoSolucao()
@@ -264,6 +232,54 @@ namespace Interface
             dgvTokens.ClearSelection();
             dgvTokens.Rows[pos].Selected = true;
             dgvTokens.CurrentCell = dgvTokens.Rows[pos].Cells[0];
+        }
+
+        // Analise Sintática
+        private static TreeNode ConverterNodeParaTreeNode(Node node)
+        {
+            var treeNode = new TreeNode(node.Descricao);
+
+            foreach (var child in node.Filhos)
+            {
+                treeNode.Nodes.Add(ConverterNodeParaTreeNode(child));
+            }
+
+            return treeNode;
+
+        }
+
+        private void PreencheArvoreSintatica()
+        {
+            try
+            {
+                if (_tokens == null || _tokens.Count == 0) return;
+
+                Parser p = new Parser(_tokens);
+                ResultadoParser result = p.Parse();
+
+                Node raiz = result.Arvore;
+
+                treeParser.BeginUpdate();
+                treeParser.Nodes.Clear();
+
+                if (raiz != null)
+                {
+                    treeParser.Nodes.Add(ConverterNodeParaTreeNode(raiz));
+                    treeParser.ExpandAll();
+                }
+
+                treeParser.EndUpdate();
+            } catch (ErroSintatico es)
+            {
+                Console.WriteLine($"Erro sintático: {es.Message}");
+            } catch (Exception e)
+            {
+                Console.WriteLine($"Erro: {e.Message}");
+            }
+            finally
+            {
+
+            }
         }
 
         // EVENTOS 
