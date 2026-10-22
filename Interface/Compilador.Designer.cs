@@ -341,6 +341,8 @@
             // 
             // lstErrosSintaticos
             // 
+            lstErrosSintaticos.Activation = ItemActivation.OneClick;
+            lstErrosSintaticos.GridLines = true;
             lstErrosSintaticos.Location = new Point(3, 38);
             lstErrosSintaticos.Name = "lstErrosSintaticos";
             lstErrosSintaticos.Size = new Size(156, 340);

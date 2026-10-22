@@ -320,15 +320,32 @@ namespace Interface
             }
         }
 
+        private void PreencheEstruturasControle()
+        {
+            if (_tokens != null)
+            {
+                EscreveTextoCodigo();
+                PreencheGridTokens();
+                PreencheArvoreSintatica();
+                ListaErrosSintaticos();
+            }
+            else
+            {
+                dgvTokens.DataSource = null;
+                treeParser.Nodes.Clear();
+                lstErrosSintaticos.Items.Clear();
+            }
+        }
+
         // EVENTOS 
             /// <summary>Abre o Explorar de Arquivos pelo SubMenuItem smiEditarFilename.</summary>
         private void smiEditarFilename_Click(object sender, EventArgs e)
         {
+            _tokens = null;
             if (!AbreExplorarCodigo()) return;
-            List<Token>? tokens = ProcessaArquivo();
+            _tokens = ProcessaArquivo();
 
-            EscreveTextoCodigo();
-            PreencheGridTokens();
+            PreencheEstruturasControle();
         }
         /// <summary>Abre o Explorar de Arquivos pelo Botão btnAbrirCodigo.</summary>
         private void btnAbrirCodigo_Click(object sender, EventArgs e)
@@ -337,10 +354,9 @@ namespace Interface
 
             btnLimpaCodigo.Enabled = !(txtFilePath.Text == string.Empty);
 
-            List<Token>? tokens = ProcessaArquivo();
+            _tokens = ProcessaArquivo();
 
-            EscreveTextoCodigo();
-            PreencheGridTokens();
+            PreencheEstruturasControle();
         }
         /// <summary>Limpa o Código da interface clicando no Botão btnLimpaCodigo.</summary>
         private void btnLimpaCodigo_Click(object sender, EventArgs e)

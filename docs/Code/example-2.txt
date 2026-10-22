@@ -4,7 +4,7 @@ dados turma [
   aluno(nome: "Amanda", matricula: 20201306, notaFinal: 3.6)
 ]
 
-dados disciplina = "Estrutura de Dados"
+dados disciplina: "Estrutura de Dados"
 
 dados professor(nome: "Roberto Carlos", matricula 00002130, disciplina)
 
@@ -13,7 +13,6 @@ dados sala {
   professor: professor,
   disciplina: disciplina,
   semestre: "2026.2",
-  media: (turma[0].notaFinal + turma.notaFinal[1] + turma.notaFinal[2])/3.0
 }
 
 pagina pag-notas-finais("Notas") {
@@ -27,8 +26,7 @@ pagina pag-notas-finais("Notas") {
     } 
   }
   secao(sec-resumo) {
-    cartao(texto: "Materia: " + sala.disciplina + " " + sala.semestre),
-    cartao(texto: "<b>Alunos Matriculados</b>: " + sala.turma.contagem)
-    cartao(texto: "<i>Media da Turma</i>: " + sala.turma.media)
+    cartao(texto: ["Materia: ", sala.disciplina, " ", sala.semestre]),
+    cartao(texto: ["<b>Alunos Matriculados</b>: ", sala.turma.contagem])
   }
 }
