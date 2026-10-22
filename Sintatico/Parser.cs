@@ -396,10 +396,6 @@ namespace Sintatico
         }
 
         // ---------------------------------------------------------------- Auxiliares
-
-        private Token EspiarToken(int n = 1) =>
-            _posicao + n < _tokens.Count ? _tokens[_posicao + n] : _tokens[^1];
-
         /// <summary>Consome o token atual, que era esperado pela gramática, e sai do modo pânico.</summary>
         private Token AvancarToken()
         {
@@ -414,12 +410,17 @@ namespace Sintatico
         {
             if (!FimDeTokens && !Verificar(TokenType.FimDeArquivo)) _posicao++;
         }
-
+        /// <summary>Verifica se o TokenAtual é to TokenType passado como parâmetro.</summary>
         private bool Verificar(TokenType tipo) => !FimDeTokens && TokenAtual.Tipo == tipo;
-
+        /// <summary>Verifica se o TokenAtual é o controle passado como string palavra.</summary>
         private bool VerificarControle(string palavra) =>
             Verificar(TokenType.Controle) && TokenAtual.Valor == palavra;
-
+        /// <summary>
+        /// Consome o TokenAtual, comparando, com o método <see cref="Verificar(TokenType)"/>,
+        /// com o TokenType esperado e se for verdade, avança o Token, caso contrário, 
+        /// armazena o erro por meio do <see cref="RegistrarErro(string)"/>.
+        /// </summary>
+        /// <returns><see cref="TokenType"/> TokenAtual do Parser.</returns>
         private Token Consumir(TokenType esperado, string? contexto = null)
         {
             if (Verificar(esperado)) return AvancarToken();
@@ -429,7 +430,11 @@ namespace Sintatico
                 $", mas encontrado {Descrever(TokenAtual)}");
             return TokenAtual;
         }
-
+        /// <summary>
+        /// Método que chama o <see cref="VerificarControle(string)"/> e registra 
+        /// o erro caso não seja validado nenhum controle.
+        /// </summary>
+        /// <returns><see cref="TokenType"/> TokenAtual do Parser.</returns>
         private Token ConsumirControle(string palavra)
         {
             if (VerificarControle(palavra)) return AvancarToken();
@@ -462,14 +467,26 @@ namespace Sintatico
         }
 
         private void RegistrarErro(string mensagem) => RegistrarErro(mensagem, TokenAtual);
-
+        /// <summary>
+        /// Registra erro, armazenando a mensagem e um Token de entrada (por padrão, TokenAtual).
+        /// Caso já esteja em modo Pânico, ele retorna, ignorando esse erro. Caso contrário, ativa
+        /// o modo pânico, adiciona o erro a lista do ResultParser para ser listado na lista de erros
+        /// posteriormente.
+        /// </summary>
+        /// <param name="mensagem">Mensagem de erro gerado pela regra de produção do Parser.</param>
+        /// <param name="token">Token lido que levantou o erro, com informações de linha e coluna.</param>
         private void RegistrarErro(string mensagem, Token token)
         {
             if (_emPanico) return;
             _emPanico = true;
             _resultado.Erros.Add(new ErroSintatico(mensagem, token.Linha, token.Coluna));
         }
-
+        /// <summary>Atribui, a partir do Node passado como parâmetro, a um Node, ou qualquer filho dele 
+        /// a linha e coluna do token encontrado. </summary>
+        /// <typeparam name="T">Tipo herdado de node.</typeparam>
+        /// <param name="node">Node que terá campos atulizados.</param>
+        /// <param name="token">Token com linha e coluna que foi encontrado.</param>
+        /// <returns>Node ou classe derivada de Node com coluna de linha atualizados.</returns>
         private static T Posicionar<T>(T node, Token token) where T : Node
         {
             node.Linha = token.Linha;
@@ -483,7 +500,9 @@ namespace Sintatico
             string exemplo = Utils.GetExampleByType(tipo);
             return exemplo.Length <= 2 ? $"'{exemplo}'" : Utils.GetNomeByType(tipo);
         }
-
+        /// <summary>Método que transforma o Token recebido em texto, iniciado por seu tipo e seguido do lexema.</summary>
+        /// <param name="token">Token que será descrito</param>
+        /// <returns>Contéudo de texto do tipo do Token e seu lexema.</returns>
         private static string Descrever(Token token) =>
             token.Tipo == TokenType.FimDeArquivo ? "fim de arquivo" : $"{Nome(token.Tipo)} '{token.Lexema}'";
     }
