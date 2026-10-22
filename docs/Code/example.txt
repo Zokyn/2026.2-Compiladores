@@ -1,6 +1,6 @@
 dados produtos {
-  produto(nome: "Camiseta", descricao: "Algod�o", promocao: verdadeiro)
-  produto(nome: "Caneca", descricao: "Cer�mica", promocao: falso)
+  produto(nome: "Camiseta", descricao: "Algodão", promocao: verdadeiro)
+  produto(nome: "Caneca", descricao: "Cerâmica", promocao: falso)
 }
 
 pagina(pag-loja, "Loja Declara") {
