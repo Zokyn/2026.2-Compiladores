@@ -1,6 +1,7 @@
 using DotNetEnv;
 using Lexico;
 using Sintatico;
+using Sintatico.Nodes;
 
 namespace Interface
 {
@@ -258,7 +259,7 @@ namespace Interface
                 Parser p = new Parser(_tokens);
                 ResultadoParser result = p.Parse();
 
-                Node raiz = result.Arvore;
+                Node? raiz = result.Arvore;
 
                 _result = result;
                 treeParser.BeginUpdate();
@@ -293,7 +294,7 @@ namespace Interface
         {
             lblErroSintaticoList.Text = "";
 
-            if (_result == null || _result.Erros.Count > 1) return;
+            if (_result == null) return;
 
             List<ErroSintatico> erros = _result.Erros;
 

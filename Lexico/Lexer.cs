@@ -17,7 +17,8 @@ namespace Lexico
             "pagina",
             "secao",
             "cartao",
-            "botao"
+            "botao",
+            "selo"
         };
         /// <summary>
         /// Lista de Palavras Chaves de Controles
@@ -26,8 +27,14 @@ namespace Lexico
         {
             "para",
             "em",
-            "se"
+            "se",
+            "enquanto",
+            "sendo"
         };
+        /// <summary>
+        /// Palavra-chave de declaração de dados
+        /// </summary>
+        public const string PalavraDados = "dados";
         // PROPRIEDADES
         /// <summary>String de entrada; código-fonte do compilador.</summary>
         private readonly string _entrada = entrada ?? throw new ArgumentNullException(nameof(entrada));
@@ -77,17 +84,21 @@ namespace Lexico
             (?<EspacosVazios>[ \t\r\n]+) 
             | (?<Identificador> [a-zA-Z_][a-zA-Z0-9_]* (?:-[a-zA-Z0-9_]+)* )
             | (?<TextoLiteral>""[^""\n]*"")
+            | (?<NumeroReal>[0-9]*\.[0-9]+)
             | (?<NumeroInteiro>[0-9]+)
-            | (?<NumeroReal>[0-9]*.[0-9]+)
             | (?<AbreConstrutor> [(] )
             | (?<FechaConstrutor> [)] )
             | (?<AbreBloco> [{] )
             | (?<FechaBloco> [}] )
-            | (?<AbreTupla> [\]] )
-            | (?<FechaTupla> [\[] )
+            | (?<AbreTupla> [\[] )
+            | (?<FechaTupla> [\]] )
             | (?<Atribuidor>     [:] )
             | (?<Separador> [,] )
             | (?<Acesso> [.] )
+            | (?<OperadorRelacional> == | != | >= | <= | > | < )
+            | (?<OperadorLogico> && | \|\| )
+            | (?<Incremento> \+\+ )
+            | (?<Decremento> -- )
             | (?<Erro>        . )
         ", RegexOptions.IgnorePatternWhitespace);
 
@@ -96,7 +107,7 @@ namespace Lexico
             { "Identificador", TokenType.Identificador },
             { "TextoLiteral", TokenType.TextoLiteral },
             { "NumeroInteiro", TokenType.NumeroInteiro },
-            { "NumeroReal", TokenType.NumeroInteiro },
+            { "NumeroReal", TokenType.NumeroReal },
             { "AbreConstrutor", TokenType.AbreConstrutor },
             { "FechaConstrutor", TokenType.FechaConstrutor },
             { "AbreBloco", TokenType.AbreBloco },
@@ -106,6 +117,10 @@ namespace Lexico
             { "Separador", TokenType.Separador },
             { "Atribuidor", TokenType.Atribuidor },
             { "Acesso", TokenType.Acesso },
+            { "OperadorRelacional", TokenType.OperadorRelacional },
+            { "OperadorLogico", TokenType.OperadorLogico },
+            { "Incremento", TokenType.Incremento },
+            { "Decremento", TokenType.Decremento },
             { "EspacosVazios", null },
             { "Erro", TokenType.Erro }
             //Fim de Arquivo não tem match
@@ -148,21 +163,26 @@ namespace Lexico
                 {
                     if (tipo.HasValue)
                     {
-                        // Se um identificador pode ser um Identificador, PalavraChaveControle ou PalavraCaComponente,
+                        // Se um identificador pode ser um Identificador, Dados, Controle ou Componente,
                         // então verifica se o valor do identificador está nas listas de palavras-chave.
                         if (tipo.Value == TokenType.Identificador)
                         {
-                            if (Componentes.Contains(m.Value)) // pagina, cartao, secao, botao
+                            if (Componentes.Contains(m.Value)) // pagina, cartao, secao, botao, selo
                                 tipo = TokenType.Componente;
-                            else
-                                tipo = TokenType.Identificador;
+                            else if (Controles.Contains(m.Value)) // para, em, se, enquanto, sendo
+                                tipo = TokenType.Controle;
+                            else if (m.Value == PalavraDados) // dados
+                                tipo = TokenType.Dados;
                         }
-                        tokens.Add(new Token(tipo.Value, m.Value, m.Value, (linhaAtual, colunaAtual)));
+                        // O valor do texto literal é o conteúdo sem as aspas delimitadoras.
+                        string valor = tipo.Value == TokenType.TextoLiteral ? m.Value[1..^1] : m.Value;
+                        tokens.Add(new Token(tipo.Value, m.Value, valor, (linhaAtual, colunaAtual)));
                     }
                 }
             }
 
-            tokens.Add(TokenFactory.GeraFimDeArquivo(linhaAtual, colunaAtual));
+            // O fim de arquivo fica na posição logo após o último caractere da entrada.
+            tokens.Add(TokenFactory.GeraFimDeArquivo(linhaAtual, _entrada.Length - ultimaQuebraLinha));
             return tokens;
         }
     }
