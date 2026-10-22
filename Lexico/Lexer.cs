@@ -76,32 +76,39 @@ namespace Lexico
         public Regex Expressoes = new Regex(@"
             (?<EspacosVazios>[ \t\r\n]+) 
             | (?<Identificador> [a-zA-Z_][a-zA-Z0-9_]* (?:-[a-zA-Z0-9_]+)* )
-            | (?<Texto>""[^""\n]*"")
-            | (?<Atribuidor>     [:] )
-            | (?<AcessoMembro> [.] )
-            | (?<Numero>      \d+(?:\.\d+)? )
-            | (?<AbreBloco> [{] )
-            | (?<FechaBloco> [}] )
+            | (?<TextoLiteral>""[^""\n]*"")
+            | (?<NumeroInteiro>[0-9]+)
+            | (?<NumeroReal>[0-9]*.[0-9]+)
             | (?<AbreConstrutor> [(] )
             | (?<FechaConstrutor> [)] )
-            | (?<Separador> [,;] )
+            | (?<AbreBloco> [{] )
+            | (?<FechaBloco> [}] )
+            | (?<AbreTupla> [\]] )
+            | (?<FechaTupla> [\[] )
+            | (?<Atribuidor>     [:] )
+            | (?<Separador> [,] )
+            | (?<Acesso> [.] )
             | (?<Erro>        . )
         ", RegexOptions.IgnorePatternWhitespace);
 
         public readonly Dictionary<string, TokenType?> Grupos = new Dictionary<string, TokenType?>
         {
-            { "EspacosVazios", null },
             { "Identificador", TokenType.Identificador },
-            { "Texto", TokenType.TextoLiteral },
-            { "Atribuidor", TokenType.Atribuidor },
-            { "AcessoMembro", TokenType.AcessoMembro },
-            { "Numero", TokenType.Numero },
-            { "AbreBloco", TokenType.AbreBloco },
-            { "FechaBloco", TokenType.FechaBloco },
+            { "TextoLiteral", TokenType.TextoLiteral },
+            { "NumeroInteiro", TokenType.NumeroInteiro },
+            { "NumeroReal", TokenType.NumeroInteiro },
             { "AbreConstrutor", TokenType.AbreConstrutor },
             { "FechaConstrutor", TokenType.FechaConstrutor },
+            { "AbreBloco", TokenType.AbreBloco },
+            { "FechaBloco", TokenType.FechaBloco },
+            { "AbreTupla", TokenType.AbreTupla },
+            { "FechaTupla", TokenType.FechaTupla },
             { "Separador", TokenType.Separador },
+            { "Atribuidor", TokenType.Atribuidor },
+            { "Acesso", TokenType.Acesso },
+            { "EspacosVazios", null },
             { "Erro", TokenType.Erro }
+            //Fim de Arquivo não tem match
         };
         /// <summary>
         /// Dado o conjunto de caracteres de entrada, o Lexer gera uma lista de tokens.
@@ -145,9 +152,7 @@ namespace Lexico
                         // então verifica se o valor do identificador está nas listas de palavras-chave.
                         if (tipo.Value == TokenType.Identificador)
                         {
-                            if (Controles.Contains(m.Value)) // para, em, se
-                                tipo = TokenType.Controle;
-                            else if (Componentes.Contains(m.Value)) // pagina, cartao, secao, botao
+                            if (Componentes.Contains(m.Value)) // pagina, cartao, secao, botao
                                 tipo = TokenType.Componente;
                             else
                                 tipo = TokenType.Identificador;
@@ -157,7 +162,7 @@ namespace Lexico
                 }
             }
 
-            tokens.Add(TokenFactory.GeraTokenFimDeArquivo(linhaAtual, colunaAtual));
+            tokens.Add(TokenFactory.GeraFimDeArquivo(linhaAtual, colunaAtual));
             return tokens;
         }
     }

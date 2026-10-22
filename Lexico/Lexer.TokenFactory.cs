@@ -5,12 +5,37 @@
         public partial class TokenFactory
         {
             /// <summary>
+            /// Método interno para ler identificadores ou palavras-chave. O método consome os caracteres do identificador até encontrar 
+            /// um caractere que não seja letra, dígito ou sublinhado (_).
+            /// </summary>
+            /// <returns>Token de Identificador ou Palavra-chave</returns>
+            public static Token GeraIdentificadorOuComponente(Lexer lex, string entrada)
+            {
+                (int linha, int coluna) = lex.LinhaColuna;
+                int inicio = lex.Posicao;
+
+                while (!lex.IsFimDoCodigo() &&
+                    (char.IsLetterOrDigit(lex.CaractereAtual) || lex.CaractereAtual == '_'))
+                {
+                    lex.ProximoCaractere();
+                }
+
+                string lexema = entrada.Substring(inicio, lex.Posicao - inicio);
+
+                if (Componentes.Contains(lexema))
+                {
+                    return new Token(TokenType.Componente, lexema, lexema.ToLowerInvariant(), (linha, coluna));
+                }
+
+                return new Token(TokenType.Identificador, lexema, lexema, (linha, coluna));
+            }
+            /// <summary>
             /// Método interno para ler um literal de texto delimitado por aspas duplas. 
             /// O método consome os caracteres do literal até encontrar a aspa de fechamento.
             /// </summary>
             /// <returns>Token a partir do literal, caso contrário levanta exception.</returns>
             /// <exception cref="Exception"></exception>
-            public static Token GeraTokenLiteral(Lexer lex)
+            public static Token GeraTextoLiteral(Lexer lex)
             {
                 (int linha, int coluna) = lex.LinhaColuna;
                 lex.ProximoCaractere(); // Para consumir as aspas de abertura
@@ -41,46 +66,51 @@
                     conteudo += c;
                     lex.ProximoCaractere();
                 }
-
-
                 return new Token(TokenType.TextoLiteral, $"\"{conteudo}\"", conteudo.ToString(), (linha, coluna));
             }
+
+            public static Token GeraNumero(Lexer lex, string entrada)
+            {
+                (int linha, int coluna) = lex.LinhaColuna;
+                int inicio = lex.Posicao;
+                if (lex.CaractereAtual == '.')
+                {
+                    inicio = inicio++;
+                    lex.ProximoCaractere();
+                }
+                while (!lex.IsFimDoCodigo() && char.IsDigit(lex.CaractereAtual))
+                {
+                    lex.ProximoCaractere();
+                }
+                // Verifica se é um número real (com ponto decimal)
+                if (!lex.IsFimDoCodigo() && lex.CaractereAtual == '.')
+                {
+                    lex.ProximoCaractere(); // Consome o ponto decimal
+                    while (!lex.IsFimDoCodigo() && char.IsDigit(lex.CaractereAtual))
+                    {
+                        lex.ProximoCaractere();
+                    }
+
+                    string lexema = entrada.Substring(inicio, lex.Posicao - inicio);
+                    return new Token(TokenType.NumeroReal, lexema, lexema, (linha, coluna));
+                }
+                else
+                {
+                    string lexema = entrada.Substring(inicio, lex.Posicao - inicio);
+                    return new Token(TokenType.NumeroInteiro, lexema, lexema, (linha, coluna));
+                }
+            }
+
             /// <summary>
             /// Método interno para geração de token de fim de arquivo o terminar a cadeia de entrada.
             /// </summary>
             /// <returns>Token de Fim de Arquivo.</returns>
-            public static Token GeraTokenFimDeArquivo(int linha, int coluna) => new(
+            public static Token GeraFimDeArquivo(int linha, int coluna) => new(
                 TokenType.FimDeArquivo,
                 string.Empty,
-                "FimDoArquivo",
+                "FimDeArquivo",
                 (linha, coluna)
             );
-
-            /// <summary>
-            /// Método interno para ler identificadores ou palavras-chave. O método consome os caracteres do identificador até encontrar 
-            /// um caractere que não seja letra, dígito ou sublinhado (_).
-            /// </summary>
-            /// <returns>Token de Identificador ou Palavra-chave</returns>
-            public static Token GeraTokenIdentificadorOuPalavraChave(Lexer lex, string entrada)
-            {
-                (int linha, int coluna) = lex.LinhaColuna;
-                int inicio = lex.Posicao;
-
-                while (!lex.IsFimDoCodigo() &&
-                    (char.IsLetterOrDigit(lex.CaractereAtual) || lex.CaractereAtual == '_'))
-                {
-                    lex.ProximoCaractere();
-                }
-
-                string lexema = entrada.Substring(inicio, lex.Posicao - inicio);
-
-                if (Componentes.Contains(lexema))
-                {
-                    return new Token(TokenType.Componente, lexema, lexema.ToLowerInvariant(), (linha, coluna));
-                }
-
-                return new Token(TokenType.Identificador, lexema, lexema, (linha, coluna));
-            }
             /// <summary>
             /// Método estático de fabriação de Token.
             /// </summary>

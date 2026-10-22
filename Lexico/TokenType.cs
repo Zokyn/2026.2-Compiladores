@@ -4,11 +4,12 @@ namespace Lexico
 {
     public enum TokenType
     {
+        Componente,    // pagina, secao, cartao, botao
         Identificador,  // controle, componente e dados
         TextoLiteral,   // "AAAAA", "Hello World", "Hi"
         NumeroReal,     // 1.05, .5, 0.0, -3.14, ...
         NumeroInteiro,  // 1, 2, -4, 0, ...
-        AbreConstruror, // (
+        AbreConstrutor, // (
         FechaConstrutor,// )
         AbreBloco,  // {
         FechaBloco, // }
@@ -16,7 +17,8 @@ namespace Lexico
         FechaTupla, // ]
         Atribuidor, // :
         Separador,  // ,
-        FimDeArquivo,
+        Acesso, // .
+        FimDeArquivo, // EOF ou FDA
 
         Comentarios, // > 
         EspacosVazios, // \t, \n, \r, ' '

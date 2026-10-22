@@ -1,6 +1,6 @@
-﻿namespace Sintatico.Nodes
+﻿namespace Sintatico.Node
 {
-    public class NodeDocumento : Node
+    public class Documento : Node
     {
         public List<Node> Corpo { get; } = new();
         public override string Descricao => "Documento";

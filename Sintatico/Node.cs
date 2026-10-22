@@ -1,4 +1,4 @@
-﻿namespace Sintatico.Nodes
+﻿namespace Sintatico.Node
 {
     public abstract class Node
     {
