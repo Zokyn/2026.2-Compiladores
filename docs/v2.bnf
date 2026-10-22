@@ -1,0 +1,42 @@
+# v1
+"""
+
+"""
+
+<documento>             ::= [ <declaracao> ] <componente> 
+<declaracao>            ::= "dados" IDENTIFICADOR <bloco_dados>
+<bloco_dados>           ::= ABRE_BLOCO <dado> <mais_dado> FECHA_BLOCO | ε
+<lista_dados>           ::= ABRE_LISTA <argumento> <mais_argumento> FECHA_LISTA 
+
+<dado>                  ::= IDENTIFICADOR <bloco_construtor> 
+<mais_dado>             ::= SEPARADOR <dado> <mais_dado> | ε
+
+<atribuicao>            ::= IDENTIFICADOR ATRIBUIDOR <valor> | <valor>
+<mais_atribuicao>       ::= SEPARADOR <atribuicao> <mais_atribuicao> | ε
+
+<argumento>             ::= <valor> 
+<mais_argumento>        ::= SEPARADOR <argumento> <mais_argumento> | ε
+
+<componente>            ::= <classe_componente> IDENTIFICADOR <bloco_construtor> [ <bloco_componente> ]
+
+<bloco_construtor>      ::= ABRE_CONSTRUTOR <atribuicao> <mais_atribuicao> FECHA_CONSTRUTOR 
+                        ::= ABRE_CONSTRUTOR <argumento> <mais_argumento> FECHA_CONSTRUTOR 
+
+<bloco_componente>      ::= ABRE_BLOCO <componente> <mais_componente> FECHA_BLOCO
+<mais_componente>       ::= SEPARADOR <componente> <mais_componente> | ε
+
+<iteracao>              ::= "para" IDENTIFICADOR "em" <lista_dados> [ <bloco_componente> ]
+                        ::= "para" IDENTIFICADOR "enquanto" <condicao> "sendo" <passo> [ <bloco_componente> ]
+                        ::= "enquanto" <condicao> [ <bloco_componente> ]
+
+<passo>                 ::= <atribuicao> | <incremento> | <decremento>
+
+<incremento>            ::= IDENTIFICADOR "++"
+<decremento>            ::= IDENTIFICADOR "--"
+
+<condicao>              ::= <valor> <operador_relacional> <valor>
+                        ::= <condicao> <operador_logico> <condicao>
+
+<classe_componente>     ::= "pagina" | "botao" | "seccao" | "cartao" | "selo"
+
+<valor>                 ::= NUMERO_REAL | NUMERO_INTEIRO | IDENTIFICADOR | TEXTO_LITERAL

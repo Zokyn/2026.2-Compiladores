@@ -92,7 +92,7 @@ namespace Lexico
         {
             { "EspacosVazios", null },
             { "Identificador", TokenType.Identificador },
-            { "Texto", TokenType.Texto },
+            { "Texto", TokenType.TextoLiteral },
             { "Atribuidor", TokenType.Atribuidor },
             { "AcessoMembro", TokenType.AcessoMembro },
             { "Numero", TokenType.Numero },

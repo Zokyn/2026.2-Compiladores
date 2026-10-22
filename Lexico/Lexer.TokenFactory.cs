@@ -43,7 +43,7 @@
                 }
 
 
-                return new Token(TokenType.Texto, $"\"{conteudo}\"", conteudo.ToString(), (linha, coluna));
+                return new Token(TokenType.TextoLiteral, $"\"{conteudo}\"", conteudo.ToString(), (linha, coluna));
             }
             /// <summary>
             /// Método interno para geração de token de fim de arquivo o terminar a cadeia de entrada.
@@ -77,10 +77,6 @@
                 if (Componentes.Contains(lexema))
                 {
                     return new Token(TokenType.Componente, lexema, lexema.ToLowerInvariant(), (linha, coluna));
-                }
-                else if (Controles.Contains(lexema))
-                {
-                    return new Token(TokenType.Controle, lexema, lexema.ToLowerInvariant(), (linha, coluna));
                 }
 
                 return new Token(TokenType.Identificador, lexema, lexema, (linha, coluna));

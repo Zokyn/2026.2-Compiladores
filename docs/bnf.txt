@@ -1,22 +1,26 @@
-[ vars_opc ] -> campo opcional
+<!-- [ vars_opc ] -> campo opcional -->
 
-<documento>         ::= [ <declaracao> ] <pagina> 
-<declaracao>        ::= "dados" <identificador> "{" <conjunto_dados> "}"
-<conjunto_dados>    ::= <dado> | <dado> , <mais_dado>
-<mais_dado>         ::= <dado> , <dado> | <vazio>
-<dado>              ::=  <identificador> "(" <atributo> [ <lista_atributos> ] ")"
-<lista_atributos>   ::= "," <atributo>, <mais_atributo> | <vazio>
-<atributo>          ::= <identificador> ":" <expressao> | <identificador ":" <funcao>
-<vazio>             ::= 
-<expressao          ::= <valor> | <operacao>
-<valor>             ::= <numero> | <identificador> | <texto_literal>
-<expressao>         ::= <numero> (+|-|/|*|^) <numero> | <funcao>  
-<funcao>            ::= <identificador> "(" <corpo_da_funcao>  ")" 
-<corpo_da_funcao>   ::= <expressao>  | <expressao> ";" <mais_expressao>
-<mais_expressao>    ::= <expressao> ";"
-<texto_literal>     ::= "\"" <caracteres> "\""
-<caracteres>        ::= [a-zA-Z0-9_]*
-<numero>            ::= <numero_inteiro> | <numero_real>
-<numero_inteiro>    ::= [0-9]
-<numero_real>       ::= [0-9]"."[0-9] | "."[0-9]
- 
+<documento>             ::= [ <declaracao> ] <componente> 
+<declaracao>            ::= "dados" IDENTIFICADOR <bloco_dados>
+<bloco_dados>           ::= "{" <dado> <mais_dado> "}" | ε
+<mais_dado>             ::= "," <mais_dado> | ε
+<dado>                  ::=  IDENTIFICADOR "(" <atributo> [ <mais_atributo> ] ")" | IDENTIFICADOR "=" <valor> | IDENTIFICADOR "=" <funcao>
+<atributo>              ::= IDENTIFICADOR ":" <expressao>
+
+<componente>            ::= <classe_componente> IDENTIFICADOR  <bloco_construtor>  [ <bloco_componente> ]
+<bloco_componente>      ::= "{" <mais_componente> "}" | ε
+<mais_componente>       ::= "," <componente> <mais_componente> | ε
+
+<bloco_construtor>      ::= "("<atributo> [ <mais_atributo> ] ")" | ε 
+<mais_atributo>         ::= <atributo> "," <mais_atributo> | ε
+
+<classe_componente>     ::= "pagina" | "botao" | "seccao" | "cartao" | "selo"
+
+<valor>                 ::= NUMERO_REAL | NUMERO_INTEIRO | IDENTIFICADOR 
+
+<funcao>                ::= IDENTIFICADOR "(" <corpo_da_funcao>  ")" 
+<corpo_da_funcao>       ::= <expressao>  | <expressao> <mais_expressao>
+
+<expressao>             ::= <valor> <operacao>
+<operacao>              ::= OPERADOR <valor> <operacao> | ε
+<mais_expressao>        ::= <expressao> <mais_expressao> | ε
