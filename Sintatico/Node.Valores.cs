@@ -5,15 +5,7 @@ namespace Sintatico.Nodes
     {
         public string Valor { get; set; } = "";
         public bool Real { get; set; }
-        public override string Descricao => Real ? $"(Real) {Valor}" : $"(Inteiro) {Valor}";
-    }
-
-    // <acesso> ::= IDENTIFICADOR <resto_acesso>, ex.: turma[0].nome
-    public class Acesso : Node
-    {
-        public string Nome { get; set; } = "";
-        public List<string> Caminho { get; } = new();
-        public override string Descricao => $"(Acesso) {Nome}{string.Concat(Caminho)}";
+        public override string Descricao => Real ? $"(Número Real) {Valor}f" : $"(Número Inteiro) {Valor}";
     }
 
     // <comparacao> com OPERADOR_RELACIONAL e <condicao> com OPERADOR_LOGICO

@@ -154,7 +154,7 @@ namespace Sintatico
             if (Verificar(TokenType.AbreConstrutor))
                 return Posicionar(new Instancia { Nome = identificador.Valor, Construtor = BlocoConstrutor() }, identificador);
 
-            return RestoAcesso(Posicionar(new Acesso { Nome = identificador.Valor }, identificador));
+            return Acesso();
         }
 
         // ---------------------------------------------------------------- Componentes
@@ -232,19 +232,21 @@ namespace Sintatico
         }
 
         // <argumento>       ::= IDENTIFICADOR <resto_argumento> | <literal>
-        // <resto_argumento> ::= ATRIBUIDOR <valor> | <resto_acesso>
+        // <resto_argumento> ::= <valor> | <vazio>
         private Node Argumento()
         {
             if (!Verificar(TokenType.Identificador)) return Literal();
 
             var identificador = AvancarToken();
 
+            Node argumento = Valor();
+
             if (Verificar(TokenType.Atribuidor))
             {
                 AvancarToken();
                 return Posicionar(new Atribuicao { Nome = identificador.Valor, Valor = Valor() }, identificador);
             }
-            return RestoAcesso(Posicionar(new Acesso { Nome = identificador.Valor }, identificador));
+            return argumento;
         }
 
         // ---------------------------------------------------------------- Controle
@@ -344,36 +346,55 @@ namespace Sintatico
         // ---------------------------------------------------------------- Valores
 
         // <valor> ::= <acesso> | <literal>
-        private Node Valor() =>
-            Verificar(TokenType.Identificador) ? Acesso() : Literal();
+        private Node Valor() => Verificar(TokenType.Identificador) ? Acesso() : Literal();
 
         // <acesso> ::= IDENTIFICADOR <resto_acesso>
         private Acesso Acesso()
         {
-            var identificador = Consumir(TokenType.Identificador, "acesso");
-            return RestoAcesso(Posicionar(new Acesso { Nome = identificador.Valor }, identificador));
-        }
+            // 1. Lê identificador base, considerado "nome" do acesso.
+            // Ex.: carro.cor, esse identificador inicial seria "carro"
+            Token identificador = Consumir(TokenType.Identificador, "acesso");
 
-        // <resto_acesso> ::= ACESSO IDENTIFICADOR <resto_acesso>
-        //                  | ABRE_TUPLA NUMERO_INTEIRO FECHA_TUPLA <resto_acesso>
-        //                  | ε
-        private Acesso RestoAcesso(Acesso acesso)
-        {
-            while (true)
+            Acesso nodeAtual = Posicionar(new AcessoOrigem { Valor = identificador.Valor }, identificador);
+
+            bool fimDaArvore = false; 
+            while (!fimDaArvore)
             {
-                if (Verificar(TokenType.Acesso))
+                if (Verificar(TokenType.Acesso)) // carro.cor 
                 {
-                    AvancarToken();
-                    acesso.Caminho.Add("." + Consumir(TokenType.Identificador, "acesso").Valor);
+                    // Acesso a identificadores membro de um objeto, como atributos ou proprieadades
+                    AvancarToken(); // Pula o símbolo terminal "." 
+
+                    var membro = Consumir(TokenType.Identificador, "membro do objeto");
+
+                    nodeAtual = new AcessoMembro
+                    {
+                        Origem = nodeAtual,
+                        Membro = membro.Valor
+                    };
                 }
-                else if (Verificar(TokenType.AbreTupla))
+                else if (Verificar(TokenType.AbreTupla)) // carro.rodas[0]
                 {
-                    AvancarToken();
-                    acesso.Caminho.Add($"[{Consumir(TokenType.NumeroInteiro, "índice").Valor}]");
+                    // Acesso a um número inteiro cercado por delimitadores de tuplas, acessando um
+                    // item da colecao
+                    AvancarToken(); // Pula o símbolo terminal "[" 
+
+                    var indice = Consumir(TokenType.NumeroInteiro, "índice");
+
                     ConsumirFechamento(TokenType.FechaTupla, "índice");
+
+                    nodeAtual = new AcessoIndice
+                    {
+                        Colecao = nodeAtual,
+                        Indice = int.Parse(indice.Valor)
+                    };
                 }
-                else return acesso;
+                else
+                {
+                    fimDaArvore = true;
+                }
             }
+            return nodeAtual;
         }
 
         // <literal> ::= TEXTO_LITERAL | NUMERO_INTEIRO | NUMERO_REAL

@@ -81,8 +81,9 @@ do tipo Controle cujo Valor é a própria palavra.
 
 # ---------------------------------------------------------------- Valores
 <valor>                     ::= <acesso> | <literal>
-<acesso>                    ::= IDENTIFICADOR <resto_acesso>
-<resto_acesso>              ::= ACESSO IDENTIFICADOR <resto_acesso>
-                              | ABRE_TUPLA NUMERO_INTEIRO FECHA_TUPLA <resto_acesso>
-                              | ε
+<acesso>                    ::= IDENTIFICADOR <mais_acesso> 
+<mais_acesso>               ::= <sufixo> <mais_acesso> | ε
+<sufixo>                    ::= <sufixo_membro> | <sufixo_indice>
+<sufixo_membro>             ::= ACESSO IDENTIFICADOR
+<sufixo_indice>             ::= ABRE_TUPLA NUMERO_INTEIRO FECHA_TUPLA
 <literal>                   ::= TEXTO_LITERAL | NUMERO_INTEIRO | NUMERO_REAL
