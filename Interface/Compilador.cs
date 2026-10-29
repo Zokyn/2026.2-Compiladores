@@ -292,6 +292,7 @@ namespace Interface
 
         private void ListaErrosSintaticos()
         {
+            lstErrosSintaticos.Columns.Clear();
             lblErroSintaticoList.Text = "";
 
             if (_result == null) return;
@@ -301,6 +302,8 @@ namespace Interface
             foreach (ErroSintatico erro in erros)
             {
                 ListViewItem lstItem = new(erro.Message);
+
+
 
                 lstErrosSintaticos.Items.Add(lstItem);
             }
@@ -412,7 +415,12 @@ namespace Interface
 
         private void lstErrosSintaticos_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            
+
+        }
+
+        private void flpSintaticoErroListContainer_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

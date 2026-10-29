@@ -34,10 +34,9 @@
             txtFilePath = new TextBox();
             btnLimpaCodigo = new Button();
             txtCodigo = new TextBox();
-            flpRight = new FlowLayoutPanel();
             tabEtapas = new TabControl();
             tabLexico = new TabPage();
-            tableLayoutPanel2 = new TableLayoutPanel();
+            tlpLexerMain = new TableLayoutPanel();
             tableLayoutPanel1 = new TableLayoutPanel();
             txtCurrentToken = new TextBox();
             lblCurrentTokenTypeLink = new LinkLabel();
@@ -47,7 +46,6 @@
             splitContainer2 = new SplitContainer();
             lblTreeNaoCarregada = new Label();
             treeParser = new TreeView();
-            flowLayoutPanel1 = new FlowLayoutPanel();
             lblErroSintaticoList = new Label();
             lstErrosSintaticos = new ListView();
             menuStrip1 = new MenuStrip();
@@ -58,10 +56,9 @@
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             flwFileOpen.SuspendLayout();
-            flpRight.SuspendLayout();
             tabEtapas.SuspendLayout();
             tabLexico.SuspendLayout();
-            tableLayoutPanel2.SuspendLayout();
+            tlpLexerMain.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTokens).BeginInit();
             tabSintatico.SuspendLayout();
@@ -69,13 +66,13 @@
             splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
             splitContainer2.SuspendLayout();
-            flowLayoutPanel1.SuspendLayout();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
             // 
             splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.FixedPanel = FixedPanel.Panel1;
             splitContainer1.Location = new Point(0, 24);
             splitContainer1.Name = "splitContainer1";
             // 
@@ -87,13 +84,14 @@
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(flpRight);
+            splitContainer1.Panel2.Controls.Add(tabEtapas);
             splitContainer1.Size = new Size(1084, 426);
             splitContainer1.SplitterDistance = 450;
             splitContainer1.TabIndex = 7;
             // 
             // flwFileOpen
             // 
+            flwFileOpen.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             flwFileOpen.AutoSize = true;
             flwFileOpen.Controls.Add(btnAbrirCodigo);
             flwFileOpen.Controls.Add(txtFilePath);
@@ -136,64 +134,55 @@
             // 
             // txtCodigo
             // 
-            txtCodigo.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            txtCodigo.Dock = DockStyle.Top;
             txtCodigo.Location = new Point(0, 0);
             txtCodigo.Multiline = true;
             txtCodigo.Name = "txtCodigo";
             txtCodigo.ReadOnly = true;
             txtCodigo.ScrollBars = ScrollBars.Both;
-            txtCodigo.Size = new Size(451, 390);
+            txtCodigo.Size = new Size(450, 390);
             txtCodigo.TabIndex = 5;
+            txtCodigo.WordWrap = false;
             txtCodigo.MouseDown += txtCodigo_MouseDown;
             txtCodigo.MouseUp += txtCodigo_MouseUp;
-            // 
-            // flpRight
-            // 
-            flpRight.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            flpRight.AutoSize = true;
-            flpRight.Controls.Add(tabEtapas);
-            flpRight.FlowDirection = FlowDirection.TopDown;
-            flpRight.Location = new Point(0, 0);
-            flpRight.Margin = new Padding(16);
-            flpRight.Name = "flpRight";
-            flpRight.Size = new Size(779, 800);
-            flpRight.TabIndex = 1;
             // 
             // tabEtapas
             // 
             tabEtapas.Controls.Add(tabLexico);
             tabEtapas.Controls.Add(tabSintatico);
-            tabEtapas.Location = new Point(3, 3);
+            tabEtapas.Dock = DockStyle.Fill;
+            tabEtapas.Location = new Point(0, 0);
             tabEtapas.Name = "tabEtapas";
             tabEtapas.SelectedIndex = 0;
-            tabEtapas.Size = new Size(627, 423);
+            tabEtapas.Size = new Size(630, 426);
             tabEtapas.TabIndex = 4;
             // 
             // tabLexico
             // 
-            tabLexico.Controls.Add(tableLayoutPanel2);
+            tabLexico.Controls.Add(tlpLexerMain);
             tabLexico.Location = new Point(4, 24);
             tabLexico.Name = "tabLexico";
             tabLexico.Padding = new Padding(3);
-            tabLexico.Size = new Size(619, 395);
+            tabLexico.Size = new Size(622, 398);
             tabLexico.TabIndex = 0;
             tabLexico.Text = "Lexico";
             tabLexico.UseVisualStyleBackColor = true;
             // 
-            // tableLayoutPanel2
+            // tlpLexerMain
             // 
-            tableLayoutPanel2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            tableLayoutPanel2.ColumnCount = 1;
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel2.Controls.Add(tableLayoutPanel1, 0, 0);
-            tableLayoutPanel2.Controls.Add(dgvTokens, 0, 1);
-            tableLayoutPanel2.Location = new Point(0, 0);
-            tableLayoutPanel2.Name = "tableLayoutPanel2";
-            tableLayoutPanel2.RowCount = 2;
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 64F));
-            tableLayoutPanel2.RowStyles.Add(new RowStyle());
-            tableLayoutPanel2.Size = new Size(627, 423);
-            tableLayoutPanel2.TabIndex = 3;
+            tlpLexerMain.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            tlpLexerMain.ColumnCount = 1;
+            tlpLexerMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlpLexerMain.Controls.Add(tableLayoutPanel1, 0, 0);
+            tlpLexerMain.Controls.Add(dgvTokens, 0, 1);
+            tlpLexerMain.Dock = DockStyle.Fill;
+            tlpLexerMain.Location = new Point(3, 3);
+            tlpLexerMain.Name = "tlpLexerMain";
+            tlpLexerMain.RowCount = 2;
+            tlpLexerMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 64F));
+            tlpLexerMain.RowStyles.Add(new RowStyle());
+            tlpLexerMain.Size = new Size(616, 392);
+            tlpLexerMain.TabIndex = 3;
             // 
             // tableLayoutPanel1
             // 
@@ -212,7 +201,7 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 90.90909F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090909F));
-            tableLayoutPanel1.Size = new Size(621, 58);
+            tableLayoutPanel1.Size = new Size(610, 58);
             tableLayoutPanel1.TabIndex = 2;
             // 
             // txtCurrentToken
@@ -257,11 +246,11 @@
             dgvTokens.AllowUserToResizeColumns = false;
             dgvTokens.AllowUserToResizeRows = false;
             dgvTokens.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            tableLayoutPanel2.SetColumnSpan(dgvTokens, 2);
+            tlpLexerMain.SetColumnSpan(dgvTokens, 2);
             dgvTokens.Dock = DockStyle.Fill;
             dgvTokens.Location = new Point(3, 67);
             dgvTokens.Name = "dgvTokens";
-            dgvTokens.Size = new Size(621, 353);
+            dgvTokens.Size = new Size(610, 353);
             dgvTokens.TabIndex = 2;
             dgvTokens.CellClick += dgvTokens_CellClick;
             // 
@@ -271,7 +260,7 @@
             tabSintatico.Location = new Point(4, 24);
             tabSintatico.Name = "tabSintatico";
             tabSintatico.Padding = new Padding(3);
-            tabSintatico.Size = new Size(619, 395);
+            tabSintatico.Size = new Size(622, 398);
             tabSintatico.TabIndex = 1;
             tabSintatico.Text = "Sintatico";
             tabSintatico.UseVisualStyleBackColor = true;
@@ -289,18 +278,19 @@
             // 
             // splitContainer2.Panel2
             // 
-            splitContainer2.Panel2.Controls.Add(flowLayoutPanel1);
+            splitContainer2.Panel2.Controls.Add(lblErroSintaticoList);
+            splitContainer2.Panel2.Controls.Add(lstErrosSintaticos);
             splitContainer2.Panel2.Paint += splitContainer2_Panel2_Paint;
             splitContainer2.Panel2MinSize = 128;
-            splitContainer2.Size = new Size(613, 389);
-            splitContainer2.SplitterDistance = 445;
+            splitContainer2.Size = new Size(616, 392);
+            splitContainer2.SplitterDistance = 447;
             splitContainer2.TabIndex = 1;
             // 
             // lblTreeNaoCarregada
             // 
             lblTreeNaoCarregada.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblTreeNaoCarregada.AutoSize = true;
-            lblTreeNaoCarregada.Location = new Point(101, 345);
+            lblTreeNaoCarregada.Location = new Point(95, 345);
             lblTreeNaoCarregada.Name = "lblTreeNaoCarregada";
             lblTreeNaoCarregada.Size = new Size(272, 15);
             lblTreeNaoCarregada.TabIndex = 3;
@@ -311,30 +301,21 @@
             treeParser.Dock = DockStyle.Fill;
             treeParser.Location = new Point(0, 0);
             treeParser.Name = "treeParser";
-            treeParser.Size = new Size(445, 389);
+            treeParser.Size = new Size(447, 392);
             treeParser.TabIndex = 0;
-            // 
-            // flowLayoutPanel1
-            // 
-            flowLayoutPanel1.AutoSize = true;
-            flowLayoutPanel1.Controls.Add(lblErroSintaticoList);
-            flowLayoutPanel1.Controls.Add(lstErrosSintaticos);
-            flowLayoutPanel1.Dock = DockStyle.Fill;
-            flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
-            flowLayoutPanel1.Location = new Point(0, 0);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(164, 389);
-            flowLayoutPanel1.TabIndex = 0;
             // 
             // lblErroSintaticoList
             // 
+            lblErroSintaticoList.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblErroSintaticoList.AutoSize = true;
             lblErroSintaticoList.BackColor = Color.Black;
             lblErroSintaticoList.BorderStyle = BorderStyle.FixedSingle;
             lblErroSintaticoList.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblErroSintaticoList.ForeColor = SystemColors.ActiveCaption;
-            lblErroSintaticoList.Location = new Point(3, 0);
+            lblErroSintaticoList.Location = new Point(0, 368);
+            lblErroSintaticoList.MinimumSize = new Size(0, 24);
             lblErroSintaticoList.Name = "lblErroSintaticoList";
-            lblErroSintaticoList.Size = new Size(156, 35);
+            lblErroSintaticoList.Size = new Size(125, 24);
             lblErroSintaticoList.TabIndex = 2;
             lblErroSintaticoList.Text = "Erro(s) encontrado(s)";
             lblErroSintaticoList.TextAlign = ContentAlignment.MiddleCenter;
@@ -342,14 +323,16 @@
             // lstErrosSintaticos
             // 
             lstErrosSintaticos.Activation = ItemActivation.OneClick;
-            lstErrosSintaticos.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lstErrosSintaticos.Dock = DockStyle.Fill;
+            lstErrosSintaticos.FullRowSelect = true;
             lstErrosSintaticos.GridLines = true;
-            lstErrosSintaticos.Location = new Point(3, 38);
+            lstErrosSintaticos.Location = new Point(0, 0);
+            lstErrosSintaticos.MultiSelect = false;
             lstErrosSintaticos.Name = "lstErrosSintaticos";
-            lstErrosSintaticos.Size = new Size(156, 340);
+            lstErrosSintaticos.Size = new Size(165, 392);
             lstErrosSintaticos.TabIndex = 1;
             lstErrosSintaticos.UseCompatibleStateImageBehavior = false;
-            lstErrosSintaticos.View = View.Tile;
+            lstErrosSintaticos.View = View.List;
             lstErrosSintaticos.ColumnClick += lstErrosSintaticos_ColumnClick;
             // 
             // menuStrip1
@@ -388,16 +371,14 @@
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel1.PerformLayout();
             splitContainer1.Panel2.ResumeLayout(false);
-            splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             flwFileOpen.ResumeLayout(false);
             flwFileOpen.PerformLayout();
-            flpRight.ResumeLayout(false);
             tabEtapas.ResumeLayout(false);
             tabLexico.ResumeLayout(false);
-            tableLayoutPanel2.ResumeLayout(false);
-            tableLayoutPanel2.PerformLayout();
+            tlpLexerMain.ResumeLayout(false);
+            tlpLexerMain.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTokens).EndInit();
@@ -408,7 +389,6 @@
             splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
             splitContainer2.ResumeLayout(false);
-            flowLayoutPanel1.ResumeLayout(false);
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ResumeLayout(false);
@@ -418,7 +398,6 @@
         #endregion
         private Label lblFilePath;
         private SplitContainer splitContainer1;
-        private FlowLayoutPanel flpRight;
         private DataGridView dgvTokens;
         private TableLayoutPanel tableLayoutPanel1;
         private Label lblTokenAtual;
@@ -432,7 +411,7 @@
         private TextBox txtCodigo;
         private TextBox txtCurrentToken;
         private LinkLabel lblCurrentTokenTypeLink;
-        private TableLayoutPanel tableLayoutPanel2;
+        private TableLayoutPanel tlpLexerMain;
         private TabControl tabEtapas;
         private TabPage tabLexico;
         private TabPage tabSintatico;
@@ -441,6 +420,5 @@
         private ListView lstErrosSintaticos;
         private Label lblTreeNaoCarregada;
         private SplitContainer splitContainer2;
-        private FlowLayoutPanel flowLayoutPanel1;
     }
 }
