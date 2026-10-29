@@ -1,6 +1,6 @@
 ﻿namespace Lexico
 {
-    public class Token(TokenType tipo, string lexema, string valor, (int, int) posicao)
+    public class Token(TokenType tipo, string lexema, string valor, int posicao, (int, int) linhaColuna)
     {
         /// <summary>Tipo do Token, dado o enum <see cref="TokenType">TokenType</see>.</summary>
         public TokenType Tipo { get; } = tipo;
@@ -15,9 +15,10 @@
         /// <summary>
         /// Par-ordenado da posição (linha e coluna) da declaração do token.
         /// </summary>
-        public (int linha, int coluna) LinhaColuna { get; } = posicao;
+        public (int linha, int coluna) LinhaColuna { get; } = linhaColuna;
         public int Linha => LinhaColuna.linha;
         public int Coluna => LinhaColuna.coluna;
+        public int Posicao { get; } = posicao;
 
         public override string ToString()
         {

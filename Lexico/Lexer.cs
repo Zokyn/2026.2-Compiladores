@@ -176,13 +176,13 @@ namespace Lexico
                         }
                         // O valor do texto literal é o conteúdo sem as aspas delimitadoras.
                         string valor = tipo.Value == TokenType.TextoLiteral ? m.Value[1..^1] : m.Value;
-                        tokens.Add(new Token(tipo.Value, m.Value, valor, (linhaAtual, colunaAtual)));
+                        tokens.Add(new Token(tipo.Value, m.Value, valor, Posicao, (linhaAtual, colunaAtual)));
                     }
                 }
             }
 
             // O fim de arquivo fica na posição logo após o último caractere da entrada.
-            tokens.Add(TokenFactory.GeraFimDeArquivo(linhaAtual, _entrada.Length - ultimaQuebraLinha));
+            tokens.Add(new Token(TokenType.FimDeArquivo, "EOF", "FimDoArquivo", _entrada.Length - ultimaQuebraLinha, (linhaAtual, colunaAtual)));
             return tokens;
         }
     }
