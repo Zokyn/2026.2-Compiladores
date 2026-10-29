@@ -1,8 +1,10 @@
-﻿namespace Sintatico
+﻿using Sintatico.Nodes;
+
+namespace Sintatico
 {
     public class ResultadoParser
     {
-        public Nodes.Documento? Arvore { get; set; }
+        public Documento? Arvore { get; set; }
         public List<ErroSintatico> Erros { get; } = new();
         public bool Sucesso => Erros.Count == 0;
     }
