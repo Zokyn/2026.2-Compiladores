@@ -264,7 +264,6 @@
             dgvTokens.Size = new Size(621, 353);
             dgvTokens.TabIndex = 2;
             dgvTokens.CellClick += dgvTokens_CellClick;
-            dgvTokens.CellContentClick += dgvTokens_CellContentClick;
             // 
             // tabSintatico
             // 
@@ -292,6 +291,7 @@
             // 
             splitContainer2.Panel2.Controls.Add(flowLayoutPanel1);
             splitContainer2.Panel2.Paint += splitContainer2_Panel2_Paint;
+            splitContainer2.Panel2MinSize = 128;
             splitContainer2.Size = new Size(613, 389);
             splitContainer2.SplitterDistance = 445;
             splitContainer2.TabIndex = 1;
@@ -342,12 +342,15 @@
             // lstErrosSintaticos
             // 
             lstErrosSintaticos.Activation = ItemActivation.OneClick;
+            lstErrosSintaticos.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lstErrosSintaticos.GridLines = true;
             lstErrosSintaticos.Location = new Point(3, 38);
             lstErrosSintaticos.Name = "lstErrosSintaticos";
             lstErrosSintaticos.Size = new Size(156, 340);
             lstErrosSintaticos.TabIndex = 1;
             lstErrosSintaticos.UseCompatibleStateImageBehavior = false;
+            lstErrosSintaticos.View = View.Tile;
+            lstErrosSintaticos.ColumnClick += lstErrosSintaticos_ColumnClick;
             // 
             // menuStrip1
             // 

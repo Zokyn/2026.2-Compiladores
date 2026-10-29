@@ -1,45 +1,37 @@
 ﻿namespace Lexico
 {
-    public class Token
+    public class Token(TokenType tipo, string lexema, string valor, (int, int) posicao)
     {
         /// <summary>Tipo do Token, dado o enum <see cref="TokenType">TokenType</see>.</summary>
-        public TokenType Tipo { get; }
+        public TokenType Tipo { get; } = tipo;
         /// <summary>Cadeia de caracteres retirada do código-fonte (entrada).</summary>
-        public string Lexema { get; }
+        public string Lexema { get; } = lexema;
 
         /// <summary>Valor processado do token, quando aplicável, podendo ser 
         /// o valor de texto sem as aspas delimitadoras, número inteiros ou só
         /// o próprio lexema. É a parte relevante para o compilador.</summary>
-        public string Valor { get; }
+        public string Valor { get; } = valor;
 
         /// <summary>
         /// Par-ordenado da posição (linha e coluna) da declaração do token.
         /// </summary>
-        public (int, int) Posicao { get; }
-        public int Linha => Posicao.Item1;
-        public int Coluna => Posicao.Item2;
-
-        public Token(TokenType tipo, string lexema, string valor, (int, int) posicao)
-        {
-            Tipo = tipo;
-            Lexema = lexema;
-            Valor = valor;
-            Posicao = posicao;
-        }
+        public (int linha, int coluna) LinhaColuna { get; } = posicao;
+        public int Linha => LinhaColuna.linha;
+        public int Coluna => LinhaColuna.coluna;
 
         public override string ToString()
         {
-            return $"({Tipo}) '{Valor}' {GetPosicaoString()}";
+            return $"({Tipo}) '{Valor}' {GetLinhaColunaString()}";
         }
 
-        private string GetPosicaoString()
+        private string GetLinhaColunaString()
         {
-            return $"[{Posicao.Item1},{Posicao.Item2}]";
+            return $"[{LinhaColuna.Item1},{LinhaColuna.Item2}]";
         }
 
         private string GetPosicaoExtensaString()
         {
-            return $"Linha {Posicao.Item1}, Coluna {Posicao.Item2}";
+            return $"Linha {LinhaColuna.Item1}, Coluna {LinhaColuna.Item2}";
         }
         private string ToExtensaString()
         {

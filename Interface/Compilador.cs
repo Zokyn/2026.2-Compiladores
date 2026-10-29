@@ -196,8 +196,8 @@ namespace Interface
                 Id = i + 1,
                 Tipo = Utils.GetNomeByType(t.Tipo),
                 Lexema = t.Lexema,
-                Linha = t.Posicao.Item1,
-                Coluna = t.Posicao.Item2,
+                Linha = t.Linha,
+                Coluna = t.Coluna,
                 Comprimento = t.Lexema.Length,
                 Categoria = Utils.GetCategoriaByType(t.Tipo),
                 TipoEnum = t.Tipo
@@ -287,7 +287,7 @@ namespace Interface
                 treeParser.Visible = preencheuArvore;
                 lblTreeNaoCarregada.Visible = !preencheuArvore;
             }
-           
+
         }
 
         private void ListaErrosSintaticos()
@@ -298,14 +298,13 @@ namespace Interface
 
             List<ErroSintatico> erros = _result.Erros;
 
-            foreach (ErroSintatico erro in erros) {
-                ListViewItem lstItem = new ListViewItem(erro.Message);
-
-                lstItem.SubItems.Add($"{erro.Linha},{erro.Coluna}");
+            foreach (ErroSintatico erro in erros)
+            {
+                ListViewItem lstItem = new(erro.Message);
 
                 lstErrosSintaticos.Items.Add(lstItem);
             }
-            
+
             switch (erros.Count)
             {
                 case 0:
@@ -338,7 +337,7 @@ namespace Interface
         }
 
         // EVENTOS 
-            /// <summary>Abre o Explorar de Arquivos pelo SubMenuItem smiEditarFilename.</summary>
+        /// <summary>Abre o Explorar de Arquivos pelo SubMenuItem smiEditarFilename.</summary>
         private void smiEditarFilename_Click(object sender, EventArgs e)
         {
             _tokens = null;
@@ -406,14 +405,14 @@ namespace Interface
             lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
         }
 
-        private void dgvTokens_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void splitContainer2_Panel2_Paint(object sender, PaintEventArgs e)
         {
 
         }
 
-        private void splitContainer2_Panel2_Paint(object sender, PaintEventArgs e)
+        private void lstErrosSintaticos_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-
+            
         }
     }
 }
