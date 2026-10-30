@@ -380,18 +380,7 @@ namespace Interface
         /// <summary>Seleciona token pelo clique em linha do DataGridView dgvTokens.</summary>
         private void dgvTokens_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            txtCodigo.HideSelection = false;
-            //if (txtCodigo.SelectionLength > 0) return;
 
-            txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
-            lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
-
-            int? startPosition = (int?)(dgvTokens.CurrentRow?.Cells["Inicio"].Value);
-            int? comprimento = (int?)dgvTokens.CurrentRow?.Cells["Comprimento"].Value;
-
-            if (!startPosition.HasValue || !comprimento.HasValue) return;
-            txtCodigo.Select(startPosition.Value, comprimento.Value);
-            dgvTokens.Focus();
         }
         /// <summary>
         /// Ao soltar o clique no bloco de código, se não estiver selecionando nada, 
@@ -433,6 +422,22 @@ namespace Interface
         private void flpSintaticoErroListContainer_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void dgvTokens_SelectionChanged(object sender, EventArgs e)
+        {
+            txtCodigo.HideSelection = false;
+            //if (txtCodigo.SelectionLength > 0) return;
+
+            txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
+            lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
+
+            int? startPosition = (int?)(dgvTokens.CurrentRow?.Cells["Inicio"].Value);
+            int? comprimento = (int?)dgvTokens.CurrentRow?.Cells["Comprimento"].Value;
+
+            if (!startPosition.HasValue || !comprimento.HasValue) return;
+            txtCodigo.Select(startPosition.Value, comprimento.Value);
+            dgvTokens.Focus();
         }
     }
 }

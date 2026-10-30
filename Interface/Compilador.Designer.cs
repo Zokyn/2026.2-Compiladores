@@ -250,9 +250,10 @@
             dgvTokens.Dock = DockStyle.Fill;
             dgvTokens.Location = new Point(3, 67);
             dgvTokens.Name = "dgvTokens";
-            dgvTokens.Size = new Size(610, 353);
+            dgvTokens.Size = new Size(610, 322);
             dgvTokens.TabIndex = 2;
             dgvTokens.CellClick += dgvTokens_CellClick;
+            dgvTokens.SelectionChanged += dgvTokens_SelectionChanged;
             // 
             // tabSintatico
             // 

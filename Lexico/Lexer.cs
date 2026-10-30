@@ -184,7 +184,7 @@ namespace Lexico
             }
 
             // O fim de arquivo fica na posição logo após o último caractere da entrada.
-            tokens.Add(new Token(TokenType.FimDeArquivo, "EOF", "FimDoArquivo", _entrada.Length - ultimaQuebraLinha, (linhaAtual, colunaAtual)));
+            tokens.Add(new Token(TokenType.FimDeArquivo, "", "FDA", _entrada.Length, (linhaAtual, colunaAtual)));
             return tokens;
         }
     }
