@@ -198,7 +198,7 @@ namespace Interface
                 Id = i + 1,
                 Tipo = Utils.GetNomeByType(t.Tipo),
                 Inicio = t.Posicao,
-                Fim = t.Comprimento,
+                Fim = t.Posicao + t.Comprimento,
                 Lexema = t.Lexema,
                 Linha = t.Linha,
                 Coluna = t.Coluna,
@@ -380,10 +380,18 @@ namespace Interface
         /// <summary>Seleciona token pelo clique em linha do DataGridView dgvTokens.</summary>
         private void dgvTokens_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (txtCodigo.SelectionLength > 0) return;
+            txtCodigo.HideSelection = false;
+            //if (txtCodigo.SelectionLength > 0) return;
 
             txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
             lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
+
+            int? startPosition = (int?)(dgvTokens.CurrentRow?.Cells["Inicio"].Value);
+            int? comprimento = (int?)dgvTokens.CurrentRow?.Cells["Comprimento"].Value;
+
+            if (!startPosition.HasValue || !comprimento.HasValue) return;
+            txtCodigo.Select(startPosition.Value, comprimento.Value);
+            dgvTokens.Focus();
         }
         /// <summary>
         /// Ao soltar o clique no bloco de código, se não estiver selecionando nada, 

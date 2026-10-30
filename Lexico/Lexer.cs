@@ -121,7 +121,7 @@ namespace Lexico
             { "OperadorLogico", TokenType.OperadorLogico },
             { "Incremento", TokenType.Incremento },
             { "Decremento", TokenType.Decremento },
-            { "EspacosVazios", null },
+            { "EspacosVazios", TokenType.EspacosVazios },
             { "Erro", TokenType.Erro }
             //Fim de Arquivo não tem match
         };
@@ -147,16 +147,16 @@ namespace Lexico
                 //throw new ErroLexico($"Caractere inesperado '{m.Value}'", linhaAtual, colunaAtual);
 
                 // Se for um valor em branco, segue o cursor para frente e quebra linha, caso necessário.
-                if (tipo == null)
+                if (tipo == TokenType.EspacosVazios)
                 {
                     for (int i = 0; i < m.Length; i++)
                     {
                         if (m.Value[i] == '\n')
                         {
-                            _posicao++;
                             linhaAtual++;
                             ultimaQuebraLinha = m.Index + i;
                         }
+                        _posicao++;
                     }
                     continue;
                 }
