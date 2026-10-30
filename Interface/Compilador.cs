@@ -18,7 +18,7 @@ namespace Interface
             Env.Load();
             InitializeComponent();
             ConfiguraCodeBlock();
-            ConfiguraGrid();
+            ConfiguraGridTokens();
             ConfiguraControles();
             //
             LeCodigoFonteLocal();
@@ -49,7 +49,7 @@ namespace Interface
             txtCodigo.Font = new Font("Segoe UI", 10f, FontStyle.Bold);
             txtCodigo.TextAlign = HorizontalAlignment.Left;
         }
-        private void ConfiguraGrid()
+        private void ConfiguraGridTokens()
         {
             dgvTokens.AutoGenerateColumns = true;
             dgvTokens.ReadOnly = true;
@@ -74,7 +74,7 @@ namespace Interface
             {
                 if (dgvTokens.Columns["TipoEnum"] is { } c) c.Visible = false;
                 dgvTokens.Columns["Id"]!.HeaderText = "#";
-                foreach (var col in new[] { "Id", "Lexema", "Linha", "Coluna", "Comprimento" })
+                foreach (var col in new[] { "Id", "Lexema", "Posicao", "Linha", "Coluna", "Comprimento" })
                     dgvTokens.Columns[col]!.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             };
         }
@@ -195,6 +195,7 @@ namespace Interface
             {
                 Id = i + 1,
                 Tipo = Utils.GetNomeByType(t.Tipo),
+                Posicao = t.Posicao,
                 Lexema = t.Lexema,
                 Linha = t.Linha,
                 Coluna = t.Coluna,

@@ -153,6 +153,7 @@ namespace Lexico
                     {
                         if (m.Value[i] == '\n')
                         {
+                            _posicao++;
                             linhaAtual++;
                             ultimaQuebraLinha = m.Index + i;
                         }
@@ -178,6 +179,7 @@ namespace Lexico
                         string valor = tipo.Value == TokenType.TextoLiteral ? m.Value[1..^1] : m.Value;
                         tokens.Add(new Token(tipo.Value, m.Value, valor, Posicao, (linhaAtual, colunaAtual)));
                     }
+                    _posicao += m.Length;
                 }
             }
 
