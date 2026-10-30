@@ -12,7 +12,9 @@ namespace Interface
         private string _codigofonte { get; set; } = string.Empty;
         private List<Token>? _tokens { get; set; } = null;
         private ResultadoParser _result { get; set; }
-
+        private static string[] ColumnNames = {
+                "Id", "Lexema", "Inicio", "Fim", "Linha", "Coluna", "Comprimento"
+            };
         public Compilador()
         {
             Env.Load();
@@ -74,7 +76,7 @@ namespace Interface
             {
                 if (dgvTokens.Columns["TipoEnum"] is { } c) c.Visible = false;
                 dgvTokens.Columns["Id"]!.HeaderText = "#";
-                foreach (var col in new[] { "Id", "Lexema", "Posicao", "Linha", "Coluna", "Comprimento" })
+                foreach (var col in ColumnNames)
                     dgvTokens.Columns[col]!.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             };
         }
@@ -195,7 +197,8 @@ namespace Interface
             {
                 Id = i + 1,
                 Tipo = Utils.GetNomeByType(t.Tipo),
-                Posicao = t.Posicao,
+                Inicio = t.Posicao,
+                Fim = t.Comprimento,
                 Lexema = t.Lexema,
                 Linha = t.Linha,
                 Coluna = t.Coluna,

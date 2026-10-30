@@ -19,6 +19,7 @@
         public int Linha => LinhaColuna.linha;
         public int Coluna => LinhaColuna.coluna;
         public int Posicao { get; } = posicao;
+        public int Comprimento { get; } = lexema.Length;
 
         public override string ToString()
         {
