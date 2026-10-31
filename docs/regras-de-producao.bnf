@@ -24,45 +24,48 @@ Palavras entre aspas ("para", "em", "se", "enquanto", "sendo") são tokens
 do tipo Controle cujo Valor é a própria palavra.
 """
 
-# ---------------------------------------------------------------- Documento
+# Documento
+
 <documento>                 ::= <declaracoes> <componente> FIM_DE_ARQUIVO
 <declaracoes>               ::= <declaracao> <declaracoes> | ε
 
-# ---------------------------------------------------------------- Dados
-<declaracao>                ::= DADOS IDENTIFICADOR <definicao_dados>
-<definicao_dados>           ::= <bloco_dados>
-                              | <lista_dados>
-                              | <bloco_construtor>
+# Dados
+# Ex.: `dados turma <dados>` 
+<declaracao>                ::= DADOS IDENTIFICADOR <dados>
+<dados>                     ::= <conjunto_dados>
+                              | <construtor>
                               | ATRIBUIDOR <valor>
 
-<bloco_dados>               ::= ABRE_BLOCO <itens_dados> FECHA_BLOCO
-<itens_dados>               ::= <item_dados> <separador_opcional> <itens_dados> | ε
-<item_dados>                ::= IDENTIFICADOR <resto_item_dados>
-<resto_item_dados>          ::= <bloco_construtor> | ATRIBUIDOR <valor>
+# Conjunto de Dados
+# Ex.: ["abobóra", "tomate", "maçã"] ou [aluno(turma, matricula, nota), aluno(...), ...]
+<conjunto_dados>            ::= ABRE_TUPLA <cojunto_itens> FECHA_TUPLA
+<cojunto_itens>             ::= <item_do_conjunto> <mais_itens>
+<mais_itens>                ::= SEPARADOR <item_do_conjunto> <mais_itens> | ε
+<item_do_conjunto>          ::= IDENTIFICADOR <resto_item_do_conjunto> | <literal>
+<resto_item_lista>          ::= <construtor> | <resto_acesso>
 
-<lista_dados>               ::= ABRE_TUPLA <itens_lista> FECHA_TUPLA
-<itens_lista>               ::= <item_lista> <mais_itens_lista> | ε
-<mais_itens_lista>          ::= SEPARADOR <item_lista> <mais_itens_lista> | ε
-<item_lista>                ::= IDENTIFICADOR <resto_item_lista> | <literal>
-<resto_item_lista>          ::= <bloco_construtor> | <resto_acesso>
+# Componentes
 
-# ---------------------------------------------------------------- Componentes
-<componente>                ::= COMPONENTE <nome_componente> <bloco_construtor> <bloco_componente_opcional>
+<componente>                ::= COMPONENTE <nome_componente> <construtor> <bloco_componente_opcional>
 <nome_componente>           ::= IDENTIFICADOR | ε
 
-<bloco_componente_opcional> ::= <bloco_componente> | ε
-<bloco_componente>          ::= ABRE_BLOCO <conteudo> FECHA_BLOCO
-<conteudo>                  ::= <elemento> <separador_opcional> <conteudo> | ε
-<elemento>                  ::= <componente> | <iteracao> | <condicional>
-<separador_opcional>        ::= SEPARADOR | ε
+# Construtor
 
-<bloco_construtor>          ::= ABRE_CONSTRUTOR <argumentos> FECHA_CONSTRUTOR
-<argumentos>                ::= <argumento> <mais_argumentos> | ε
+<construtor>                ::= ABRE_CONSTRUTOR <lista_argumentos> FECHA_CONSTRUTOR
+<lista_argumentos>          ::= <argumento> <mais_argumentos> | ε
 <mais_argumentos>           ::= SEPARADOR <argumento> <mais_argumentos> | ε
 <argumento>                 ::= IDENTIFICADOR <resto_argumento> | <literal>
 <resto_argumento>           ::= ATRIBUIDOR <valor> | <resto_acesso>
 
-# ---------------------------------------------------------------- Controle
+# Bloco Componente
+
+<bloco_componente_opcional> ::= <bloco_componente> | ε
+<bloco_componente>          ::= ABRE_BLOCO <conteudo> FECHA_BLOCO
+<conteudo>                  ::= <elemento> <mais_conteudo>
+<elemento>                  ::= <componente> | <iteracao> | <condicional>
+<mais_conteudo>             ::= SEPARADOR <conteudo> | ε
+
+# Controle
 <iteracao>                  ::= "para" IDENTIFICADOR <resto_para> <bloco_componente>
                               | "enquanto" <condicao> <bloco_componente>
 <resto_para>                ::= "em" <colecao>
@@ -79,7 +82,7 @@ do tipo Controle cujo Valor é a própria palavra.
 <comparacao>                ::= <valor> <resto_comparacao>
 <resto_comparacao>          ::= OPERADOR_RELACIONAL <valor> | ε
 
-# ---------------------------------------------------------------- Valores
+# Valores
 <valor>                     ::= <acesso> | <literal>
 <acesso>                    ::= IDENTIFICADOR <mais_acesso> 
 <mais_acesso>               ::= <sufixo> <mais_acesso> | ε
