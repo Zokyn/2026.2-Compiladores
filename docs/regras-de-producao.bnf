@@ -1,4 +1,4 @@
-# v1.2
+# v1.3
 """
 Gramática LL(1) para o analisador sintático descendente recursivo.
 Cada não-terminal <x> corresponde a um método X() no Parser.
@@ -42,7 +42,7 @@ do tipo Controle cujo Valor é a própria palavra.
 <conjunto_itens>             ::= <item_do_conjunto> <mais_itens>
 <mais_itens>                ::= SEPARADOR <item_do_conjunto> <mais_itens> | ε
 <item_do_conjunto>          ::= IDENTIFICADOR <resto_item_do_conjunto> | <literal>
-<resto_item_do_conjunto>    ::= <construtor> | <acesso> | ε
+<resto_item_do_conjunto>    ::= <construtor> | <acesso>
 
 # Componentes
 
@@ -55,7 +55,7 @@ do tipo Controle cujo Valor é a própria palavra.
 <lista_argumentos>          ::= <argumento> <mais_argumentos> | ε
 <mais_argumentos>           ::= SEPARADOR <argumento> <mais_argumentos> | ε
 <argumento>                 ::= IDENTIFICADOR <resto_argumento> | <literal>
-<resto_argumento>           ::= ATRIBUIDOR <valor> | <acesso> | ε
+<resto_argumento>           ::= ATRIBUIDOR <valor> | <acesso>
 
 # Bloco Componente
 
@@ -83,9 +83,9 @@ do tipo Controle cujo Valor é a própria palavra.
 <resto_comparacao>          ::= OPERADOR_RELACIONAL <valor> | ε
 
 # Valores
-<valor>                     ::= <literal> | <colecao>
+<valor>                     ::= <literal> | IDENTIFICADOR <acesso>
 <acesso>                    ::= <sufixo> <acesso> | ε
-<sufixo>                    ::= <sufixo_membro> | <sufixo_indice> | ε
+<sufixo>                    ::= <sufixo_membro> | <sufixo_indice> 
 <sufixo_membro>             ::= ACESSO IDENTIFICADOR
 <sufixo_indice>             ::= ABRE_TUPLA NUMERO_INTEIRO FECHA_TUPLA
 <literal>                   ::= TEXTO_LITERAL | NUMERO_INTEIRO | NUMERO_REAL
