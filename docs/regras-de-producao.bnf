@@ -1,4 +1,4 @@
-# v1
+# v1.1
 """
 Gramática LL(1) para o analisador sintático descendente recursivo.
 Cada não-terminal <x> corresponde a um método X() no Parser.
@@ -38,11 +38,11 @@ do tipo Controle cujo Valor é a própria palavra.
 
 # Conjunto de Dados
 # Ex.: ["abobóra", "tomate", "maçã"] ou [aluno(turma, matricula, nota), aluno(...), ...]
-<conjunto_dados>            ::= ABRE_TUPLA <cojunto_itens> FECHA_TUPLA
-<cojunto_itens>             ::= <item_do_conjunto> <mais_itens>
+<conjunto_dados>            ::= ABRE_TUPLA <conjunto_itens> FECHA_TUPLA
+<conjunto_itens>             ::= <item_do_conjunto> <mais_itens>
 <mais_itens>                ::= SEPARADOR <item_do_conjunto> <mais_itens> | ε
 <item_do_conjunto>          ::= IDENTIFICADOR <resto_item_do_conjunto> | <literal>
-<resto_item_lista>          ::= <construtor> | <resto_acesso>
+<resto_item_do_conjunto>    ::= <construtor> | <sufixo>
 
 # Componentes
 
@@ -55,7 +55,7 @@ do tipo Controle cujo Valor é a própria palavra.
 <lista_argumentos>          ::= <argumento> <mais_argumentos> | ε
 <mais_argumentos>           ::= SEPARADOR <argumento> <mais_argumentos> | ε
 <argumento>                 ::= IDENTIFICADOR <resto_argumento> | <literal>
-<resto_argumento>           ::= ATRIBUIDOR <valor> | <resto_acesso>
+<resto_argumento>           ::= ATRIBUIDOR <valor> | <sufixo>
 
 # Bloco Componente
 
@@ -63,14 +63,14 @@ do tipo Controle cujo Valor é a própria palavra.
 <bloco_componente>          ::= ABRE_BLOCO <conteudo> FECHA_BLOCO
 <conteudo>                  ::= <elemento> <mais_conteudo>
 <elemento>                  ::= <componente> | <iteracao> | <condicional>
-<mais_conteudo>             ::= SEPARADOR <conteudo> | ε
+<mais_conteudo>             ::= SEPARADOR <elemento> <mais_conteudo> | ε
 
 # Controle
 <iteracao>                  ::= "para" IDENTIFICADOR <resto_para> <bloco_componente>
                               | "enquanto" <condicao> <bloco_componente>
 <resto_para>                ::= "em" <colecao>
                               | "enquanto" <condicao> "sendo" <passo>
-<colecao>                   ::= <acesso> | <lista_dados>
+<colecao>                   ::= IDENTIFICADOR <mais_acesso> | <conjunto_dados>  
 
 <passo>                     ::= IDENTIFICADOR <resto_passo>
 <resto_passo>               ::= ATRIBUIDOR <valor> | INCREMENTO | DECREMENTO
@@ -83,8 +83,7 @@ do tipo Controle cujo Valor é a própria palavra.
 <resto_comparacao>          ::= OPERADOR_RELACIONAL <valor> | ε
 
 # Valores
-<valor>                     ::= <acesso> | <literal>
-<acesso>                    ::= IDENTIFICADOR <mais_acesso> 
+<valor>                     ::= <literal> | IDENTIFICADOR <mais_acesso>
 <mais_acesso>               ::= <sufixo> <mais_acesso> | ε
 <sufixo>                    ::= <sufixo_membro> | <sufixo_indice>
 <sufixo_membro>             ::= ACESSO IDENTIFICADOR
