@@ -1,4 +1,4 @@
-# v1.1
+# v1.2
 """
 Gramática LL(1) para o analisador sintático descendente recursivo.
 Cada não-terminal <x> corresponde a um método X() no Parser.
@@ -42,7 +42,7 @@ do tipo Controle cujo Valor é a própria palavra.
 <conjunto_itens>             ::= <item_do_conjunto> <mais_itens>
 <mais_itens>                ::= SEPARADOR <item_do_conjunto> <mais_itens> | ε
 <item_do_conjunto>          ::= IDENTIFICADOR <resto_item_do_conjunto> | <literal>
-<resto_item_do_conjunto>    ::= <construtor> | <sufixo>
+<resto_item_do_conjunto>    ::= <construtor> | <acesso> | ε
 
 # Componentes
 
@@ -55,7 +55,7 @@ do tipo Controle cujo Valor é a própria palavra.
 <lista_argumentos>          ::= <argumento> <mais_argumentos> | ε
 <mais_argumentos>           ::= SEPARADOR <argumento> <mais_argumentos> | ε
 <argumento>                 ::= IDENTIFICADOR <resto_argumento> | <literal>
-<resto_argumento>           ::= ATRIBUIDOR <valor> | <sufixo>
+<resto_argumento>           ::= ATRIBUIDOR <valor> | <acesso> | ε
 
 # Bloco Componente
 
@@ -70,7 +70,7 @@ do tipo Controle cujo Valor é a própria palavra.
                               | "enquanto" <condicao> <bloco_componente>
 <resto_para>                ::= "em" <colecao>
                               | "enquanto" <condicao> "sendo" <passo>
-<colecao>                   ::= IDENTIFICADOR <mais_acesso> | <conjunto_dados>  
+<colecao>                   ::= IDENTIFICADOR <acesso> | <conjunto_dados>  
 
 <passo>                     ::= IDENTIFICADOR <resto_passo>
 <resto_passo>               ::= ATRIBUIDOR <valor> | INCREMENTO | DECREMENTO
@@ -83,9 +83,9 @@ do tipo Controle cujo Valor é a própria palavra.
 <resto_comparacao>          ::= OPERADOR_RELACIONAL <valor> | ε
 
 # Valores
-<valor>                     ::= <literal> | IDENTIFICADOR <mais_acesso>
-<mais_acesso>               ::= <sufixo> <mais_acesso> | ε
-<sufixo>                    ::= <sufixo_membro> | <sufixo_indice>
+<valor>                     ::= <literal> | <colecao>
+<acesso>                    ::= <sufixo> <acesso> | ε
+<sufixo>                    ::= <sufixo_membro> | <sufixo_indice> | ε
 <sufixo_membro>             ::= ACESSO IDENTIFICADOR
 <sufixo_indice>             ::= ABRE_TUPLA NUMERO_INTEIRO FECHA_TUPLA
 <literal>                   ::= TEXTO_LITERAL | NUMERO_INTEIRO | NUMERO_REAL
