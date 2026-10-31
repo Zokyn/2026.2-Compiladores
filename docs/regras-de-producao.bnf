@@ -1,4 +1,4 @@
-# v1.4
+# v1.5
 """
 Gramática LL(1) para o analisador sintático descendente recursivo.
 Cada não-terminal <x> corresponde a um método X() no Parser.
@@ -26,11 +26,12 @@ do tipo Controle cujo Valor é a própria palavra.
 
 # Documento
 
-<documento>                 ::= <declaracao> <componente> FIM_DE_ARQUIVO
+<documento>                 ::= <declaracoes> <componente> FIM_DE_ARQUIVO
 
 
 # Dados
 # Ex.: `dados turma <dados>` 
+<declaracoes>               ::= <declaracao> <declaracoes> | ε 
 <declaracao>                ::= DADOS IDENTIFICADOR <dados> | ε
 <dados>                     ::= <conjunto_dados>
                               | <construtor>
@@ -79,6 +80,9 @@ do tipo Controle cujo Valor é a própria palavra.
 
 <condicao>                  ::= <comparacao> <mais_condicao>
 <mais_condicao>             ::= OPERADOR_LOGICO <comparacao> <mais_condicao> | ε
+
+# Comparacao
+
 <comparacao>                ::= <valor> <resto_comparacao>
 <resto_comparacao>          ::= OPERADOR_RELACIONAL <valor> | ε
 
