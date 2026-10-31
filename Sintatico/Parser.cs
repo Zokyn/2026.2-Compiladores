@@ -32,10 +32,9 @@ namespace Sintatico
             return _resultado;
         }
 
-        // ---------------------------------------------------------------- Documento
-
+        #region Documento
         // <documento>   ::= <declaracoes> <componente> FIM_DE_ARQUIVO
-        // <declaracoes> ::= <declaracao> <declaracoes> | ε
+        // <declaracoes> ::= <declaracao> <declaracoes> | ε 
         private Documento Documento()
         {
             var documento = Posicionar(new Documento(), TokenAtual);
@@ -54,32 +53,28 @@ namespace Sintatico
             return documento;
         }
 
-        // ---------------------------------------------------------------- Dados
-
-        // <declaracao>      ::= DADOS IDENTIFICADOR <definicao_dados>
-        // <definicao_dados> ::= <bloco_dados> | <lista_dados> | <bloco_construtor> | ATRIBUIDOR <valor>
+        #region Dados
+        // <declaracao>     ::= DADOS IDENTIFICADOR <dados> | ε
+        // <dados>          ::= <conjunto_dados> | <construtor> | ATRIBUIDOR <valor>
         private Declaracao Declaracao()
         {
             var declaracao = Posicionar(new Declaracao(), Consumir(TokenType.Dados, "declaração de dados"));
-            declaracao.Nome = Consumir(TokenType.Identificador, "nome da declaração de dados").Valor;
+            declaracao.Nome = Consumir(TokenType.Identificador, "Nome da declaração").Valor;
 
             switch (TokenAtual.Tipo)
             {
-                case TokenType.AbreBloco:
-                    declaracao.Definicao = BlocoDados();
+                case TokenType.AbreConstrutor:
+                    declaracao.Definicao = BlocoConstrutor();
                     break;
                 case TokenType.AbreTupla:
                     declaracao.Definicao = ListaDados();
-                    break;
-                case TokenType.AbreConstrutor:
-                    declaracao.Definicao = BlocoConstrutor();
                     break;
                 case TokenType.Atribuidor:
                     AvancarToken();
                     declaracao.Definicao = Valor();
                     break;
                 default:
-                    RegistrarErro($"Esperado '{{', '[', '(' ou ':' após 'dados {declaracao.Nome}', mas encontrado {Descrever(TokenAtual)}");
+                    RegistrarErro($"Esperado '[', '(' ou ':' após 'dados {declaracao.Nome}', mas encontrado {Descrever(TokenAtual)}");
                     break;
             }
             return declaracao;
@@ -156,9 +151,9 @@ namespace Sintatico
 
             return Acesso();
         }
+        #endregion
 
-        // ---------------------------------------------------------------- Componentes
-
+        #region Componente
         // <componente>                ::= COMPONENTE <nome_componente> <bloco_construtor> <bloco_componente_opcional>
         // <nome_componente>           ::= IDENTIFICADOR | ε
         // <bloco_componente_opcional> ::= <bloco_componente> | ε
@@ -209,7 +204,9 @@ namespace Sintatico
             RegistrarErro($"Esperado componente, 'para', 'enquanto' ou 'se', mas encontrado {Descrever(TokenAtual)}");
             return null;
         }
+        #endregion
 
+        #region Construtor
         // <bloco_construtor> ::= ABRE_CONSTRUTOR <argumentos> FECHA_CONSTRUTOR
         // <argumentos>       ::= <argumento> <mais_argumentos> | ε
         // <mais_argumentos>  ::= SEPARADOR <argumento> <mais_argumentos> | ε
@@ -231,6 +228,7 @@ namespace Sintatico
             return construtor;
         }
 
+        #region Argumento
         // <argumento>       ::= IDENTIFICADOR <resto_argumento> | <literal>
         // <resto_argumento> ::= <valor> | <vazio>
         private Node Argumento()
@@ -246,11 +244,18 @@ namespace Sintatico
                 AvancarToken();
                 return Posicionar(new Atribuicao { Nome = identificador.Valor, Valor = Valor() }, identificador);
             }
+            if (Verificar(TokenType.Acesso))
+            {
+                return Acesso();
+            }
             return argumento;
         }
+        #endregion
 
-        // ---------------------------------------------------------------- Controle
+        #endregion
 
+        #region Controle
+        #region Iteracao
         // <iteracao>   ::= "para" IDENTIFICADOR <resto_para> <bloco_componente>
         //                | "enquanto" <condicao> <bloco_componente>
         // <resto_para> ::= "em" <colecao> | "enquanto" <condicao> "sendo" <passo>
@@ -307,7 +312,9 @@ namespace Sintatico
             RegistrarErro($"Esperado ':', '++' ou '--' no passo do 'para', mas encontrado {Descrever(TokenAtual)}");
             return Posicionar(new Invalido(), TokenAtual);
         }
+        #endregion
 
+        #region Condicional
         // <condicional> ::= "se" <condicao> <bloco_componente>
         private Condicional Condicional()
         {
@@ -316,7 +323,7 @@ namespace Sintatico
             BlocoComponente(condicional.Corpo);
             return condicional;
         }
-
+        #region Condicao
         // <condicao>      ::= <comparacao> <mais_condicao>
         // <mais_condicao> ::= OPERADOR_LOGICO <comparacao> <mais_condicao> | ε
         private Node Condicao()
@@ -330,24 +337,28 @@ namespace Sintatico
             }
             return esquerda;
         }
+        #endregion
+        #endregion
 
+        #region Comparacao
         // <comparacao>       ::= <valor> <resto_comparacao>
         // <resto_comparacao> ::= OPERADOR_RELACIONAL <valor> | ε
         private Node Comparacao()
         {
-            var esquerda = Valor();
+            Node esquerda = Valor();
 
             if (!Verificar(TokenType.OperadorRelacional)) return esquerda;
 
-            var operador = AvancarToken();
+            Token operador = AvancarToken();
             return Posicionar(new OperacaoBinaria { Operador = operador.Valor, Esquerda = esquerda, Direita = Valor() }, operador);
         }
+        #endregion
+        #endregion
 
-        // ---------------------------------------------------------------- Valores
-
+        #region Valor
         // <valor> ::= <acesso> | <literal>
         private Node Valor() => Verificar(TokenType.Identificador) ? Acesso() : Literal();
-
+        #region Acesso
         // <acesso> ::= IDENTIFICADOR <resto_acesso>
         private Acesso Acesso()
         {
@@ -396,7 +407,8 @@ namespace Sintatico
             }
             return nodeAtual;
         }
-
+        #endregion
+        #region Literal
         // <literal> ::= TEXTO_LITERAL | NUMERO_INTEIRO | NUMERO_REAL
         private Node Literal()
         {
@@ -415,7 +427,9 @@ namespace Sintatico
                     return Posicionar(new Invalido(), token);
             }
         }
-
+        #endregion
+        #endregion Valor
+        #endregion
         // ---------------------------------------------------------------- Auxiliares
         /// <summary>Consome o token atual, que era esperado pela gramática, e sai do modo pânico.</summary>
         private Token AvancarToken()
