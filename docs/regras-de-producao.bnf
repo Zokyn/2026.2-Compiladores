@@ -1,4 +1,4 @@
-# v1.3
+# v1.4
 """
 Gramática LL(1) para o analisador sintático descendente recursivo.
 Cada não-terminal <x> corresponde a um método X() no Parser.
@@ -26,23 +26,23 @@ do tipo Controle cujo Valor é a própria palavra.
 
 # Documento
 
-<documento>                 ::= <declaracoes> <componente> FIM_DE_ARQUIVO
-<declaracoes>               ::= <declaracao> <declaracoes> | ε
+<documento>                 ::= <declaracao> <componente> FIM_DE_ARQUIVO
+
 
 # Dados
 # Ex.: `dados turma <dados>` 
-<declaracao>                ::= DADOS IDENTIFICADOR <dados>
+<declaracao>                ::= DADOS IDENTIFICADOR <dados> | ε
 <dados>                     ::= <conjunto_dados>
                               | <construtor>
                               | ATRIBUIDOR <valor>
 
 # Conjunto de Dados
 # Ex.: ["abobóra", "tomate", "maçã"] ou [aluno(turma, matricula, nota), aluno(...), ...]
-<conjunto_dados>            ::= ABRE_TUPLA <conjunto_itens> FECHA_TUPLA
-<conjunto_itens>             ::= <item_do_conjunto> <mais_itens>
-<mais_itens>                ::= SEPARADOR <item_do_conjunto> <mais_itens> | ε
-<item_do_conjunto>          ::= IDENTIFICADOR <resto_item_do_conjunto> | <literal>
-<resto_item_do_conjunto>    ::= <construtor> | <acesso>
+<conjunto_dados>            ::= ABRE_TUPLA <itens_dados> FECHA_TUPLA
+<itens_dados>               ::= <item_dado> <mais_itens>
+<mais_itens>                ::= SEPARADOR <item_dado> <mais_itens> | ε
+<item_dado>                 ::= IDENTIFICADOR <resto_item_dado> | <literal>
+<resto_item_dado>           ::= <construtor> | <acesso>
 
 # Componentes
 
