@@ -1,0 +1,16 @@
+dados lista_de_cadeiras [
+    "gamer",
+    "de escritório",
+    "poltorna do papai",
+    "de plástico"
+]
+
+dados moveis [
+    cama(
+        tamanho: "casal",
+        comCabiceira: falso,
+        detalhes: "cama box casal"
+    ),
+    mesa: "mesa de madeira",
+    cadeira: lista_de_cadeiras[1]
+]

@@ -1,4 +1,4 @@
-# v1.5
+# v1.7
 """
 Gramática LL(1) para o analisador sintático descendente recursivo.
 Cada não-terminal <x> corresponde a um método X() no Parser.
@@ -28,40 +28,48 @@ do tipo Controle cujo Valor é a própria palavra.
 
 <documento>                 ::= <declaracoes> <componente> FIM_DE_ARQUIVO
 
-
 # Dados
 # Ex.: `dados turma <dados>` 
+
 <declaracoes>               ::= <declaracao> <declaracoes> | ε 
-<declaracao>                ::= DADOS IDENTIFICADOR <dados> | ε
-<dados>                     ::= <conjunto_dados>
+<declaracao>                ::= DADOS IDENTIFICADOR <dados>
+<dados>                     ::= ATRIBUIDOR <valor> 
+                              | <conjunto_dados> 
                               | <construtor>
-                              | ATRIBUIDOR <valor>
 
 # Conjunto de Dados
 # Ex.: ["abobóra", "tomate", "maçã"] ou [aluno(turma, matricula, nota), aluno(...), ...]
+
 <conjunto_dados>            ::= ABRE_TUPLA <itens_dados> FECHA_TUPLA
 <itens_dados>               ::= <item_dado> <mais_itens>
 <mais_itens>                ::= SEPARADOR <item_dado> <mais_itens> | ε
-<item_dado>                 ::= IDENTIFICADOR <resto_item_dado> | <literal>
-<resto_item_dado>           ::= <construtor> | <acesso>
+<item_dado>                 ::= IDENTIFICADOR <resto_item_dado> 
+                              | <literal>
+<resto_item_dado>           ::= ATRIBUIDOR <valor> 
+                              | <construtor> 
+                              | <mais_acesso>
 
 # Componentes
 
-<componente>                ::= COMPONENTE <nome_componente> <construtor> <bloco_componente_opcional>
+<componente>                ::= COMPONENTE <nome_componente> <construtor> <bloco_componente> <mais_componente>
 <nome_componente>           ::= IDENTIFICADOR | ε
 
 # Construtor
 
 <construtor>                ::= ABRE_CONSTRUTOR <lista_argumentos> FECHA_CONSTRUTOR
 <lista_argumentos>          ::= <argumento> <mais_argumentos> | ε
+
+# Argumento 
+
+<argumento>                 ::= IDENTIFICADOR <resto_argumento> | <literal> 
 <mais_argumentos>           ::= SEPARADOR <argumento> <mais_argumentos> | ε
-<argumento>                 ::= IDENTIFICADOR <resto_argumento> | <literal>
-<resto_argumento>           ::= ATRIBUIDOR <valor> | <acesso>
+<resto_argumento>           ::= ATRIBUIDOR <valor> | <construtor> | <mais_acesso>
 
 # Bloco Componente
 
 <bloco_componente_opcional> ::= <bloco_componente> | ε
 <bloco_componente>          ::= ABRE_BLOCO <conteudo> FECHA_BLOCO
+<mais_componente>           ::= ";" <componente> <mais_componente> | ε  
 <conteudo>                  ::= <elemento> <mais_conteudo>
 <elemento>                  ::= <componente> | <iteracao> | <condicional>
 <mais_conteudo>             ::= SEPARADOR <elemento> <mais_conteudo> | ε
@@ -71,7 +79,7 @@ do tipo Controle cujo Valor é a própria palavra.
                               | "enquanto" <condicao> <bloco_componente>
 <resto_para>                ::= "em" <colecao>
                               | "enquanto" <condicao> "sendo" <passo>
-<colecao>                   ::= IDENTIFICADOR <acesso> | <conjunto_dados>  
+<colecao>                   ::= <acesso> | <conjunto_dados>  
 
 <passo>                     ::= IDENTIFICADOR <resto_passo>
 <resto_passo>               ::= ATRIBUIDOR <valor> | INCREMENTO | DECREMENTO
@@ -87,9 +95,11 @@ do tipo Controle cujo Valor é a própria palavra.
 <resto_comparacao>          ::= OPERADOR_RELACIONAL <valor> | ε
 
 # Valores
-<valor>                     ::= <literal> | IDENTIFICADOR <acesso>
-<acesso>                    ::= <sufixo> <acesso> | ε
+<valor>                     ::= <literal> | <acesso>
+<acesso>                    ::= IDENTIFICADOR <mais_acesso>
+<mais_acesso>               ::= <sufixo> <mais_acesso> | ε
 <sufixo>                    ::= <membro_sufixo> | <indice_sufixo> 
 <membro_sufixo>             ::= ACESSO IDENTIFICADOR
-<indice_sufixo>             ::= ABRE_TUPLA NUMERO_INTEIRO FECHA_TUPLA
+<indice_sufixo>             ::= ABRE_TUPLA <indice> FECHA_TUPLA
+<indice>                    ::= NUMERO_INTEIRO | IDENTIFICADOR
 <literal>                   ::= TEXTO_LITERAL | NUMERO_INTEIRO | NUMERO_REAL
