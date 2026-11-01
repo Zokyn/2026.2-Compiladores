@@ -11,9 +11,9 @@ namespace Interface
         private string _filename { get; set; } = "";
         private string _codigofonte { get; set; } = string.Empty;
         private List<Token>? _tokens { get; set; } = null;
-        private ResultadoParser _result { get; set; }
+        private ResultadoParser? _result { get; set; } = null;
         private static string[] ColumnNames = {
-                "Id", "Lexema", "Inicio", "Fim", "Linha", "Coluna", "Comprimento"
+                "Id", "Lexema", "Inicio", "Fim", "Comprimento", "Linha", "Coluna",
             };
         public Compilador()
         {
@@ -306,9 +306,6 @@ namespace Interface
             foreach (ErroSintatico erro in erros)
             {
                 ListViewItem lstItem = new(erro.Message);
-
-
-
                 lstErrosSintaticos.Items.Add(lstItem);
             }
 
@@ -438,6 +435,11 @@ namespace Interface
             if (!startPosition.HasValue || !comprimento.HasValue) return;
             txtCodigo.Select(startPosition.Value, comprimento.Value);
             dgvTokens.Focus();
+        }
+
+        private void lstErrosSintaticos_DoubleClick(object sender, EventArgs e)
+        {
+            txtErroBox.Text = lstErrosSintaticos.SelectedItems[0].Text;
         }
     }
 }

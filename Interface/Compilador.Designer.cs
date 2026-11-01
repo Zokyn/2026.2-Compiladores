@@ -46,6 +46,7 @@
             splitContainer2 = new SplitContainer();
             lblTreeNaoCarregada = new Label();
             treeParser = new TreeView();
+            txtErroBox = new TextBox();
             lblErroSintaticoList = new Label();
             lstErrosSintaticos = new ListView();
             menuStrip1 = new MenuStrip();
@@ -279,6 +280,7 @@
             // 
             // splitContainer2.Panel2
             // 
+            splitContainer2.Panel2.Controls.Add(txtErroBox);
             splitContainer2.Panel2.Controls.Add(lblErroSintaticoList);
             splitContainer2.Panel2.Controls.Add(lstErrosSintaticos);
             splitContainer2.Panel2.Paint += splitContainer2_Panel2_Paint;
@@ -305,18 +307,32 @@
             treeParser.Size = new Size(447, 392);
             treeParser.TabIndex = 0;
             // 
+            // txtErroBox
+            // 
+            txtErroBox.BackColor = SystemColors.WindowFrame;
+            txtErroBox.Dock = DockStyle.Bottom;
+            txtErroBox.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            txtErroBox.ForeColor = SystemColors.Info;
+            txtErroBox.HideSelection = false;
+            txtErroBox.Location = new Point(0, 279);
+            txtErroBox.Multiline = true;
+            txtErroBox.Name = "txtErroBox";
+            txtErroBox.ReadOnly = true;
+            txtErroBox.Size = new Size(165, 113);
+            txtErroBox.TabIndex = 3;
+            txtErroBox.Text = "Nenhum Erro Selecionado.";
+            // 
             // lblErroSintaticoList
             // 
-            lblErroSintaticoList.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            lblErroSintaticoList.AutoSize = true;
+            lblErroSintaticoList.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             lblErroSintaticoList.BackColor = Color.Black;
             lblErroSintaticoList.BorderStyle = BorderStyle.FixedSingle;
-            lblErroSintaticoList.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblErroSintaticoList.Font = new Font("Segoe UI", 7F, FontStyle.Bold);
             lblErroSintaticoList.ForeColor = SystemColors.ActiveCaption;
-            lblErroSintaticoList.Location = new Point(0, 368);
+            lblErroSintaticoList.Location = new Point(0, 0);
             lblErroSintaticoList.MinimumSize = new Size(0, 24);
             lblErroSintaticoList.Name = "lblErroSintaticoList";
-            lblErroSintaticoList.Size = new Size(125, 24);
+            lblErroSintaticoList.Size = new Size(165, 24);
             lblErroSintaticoList.TabIndex = 2;
             lblErroSintaticoList.Text = "Erro(s) encontrado(s)";
             lblErroSintaticoList.TextAlign = ContentAlignment.MiddleCenter;
@@ -324,17 +340,18 @@
             // lstErrosSintaticos
             // 
             lstErrosSintaticos.Activation = ItemActivation.OneClick;
-            lstErrosSintaticos.Dock = DockStyle.Fill;
+            lstErrosSintaticos.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             lstErrosSintaticos.FullRowSelect = true;
             lstErrosSintaticos.GridLines = true;
-            lstErrosSintaticos.Location = new Point(0, 0);
+            lstErrosSintaticos.Location = new Point(0, 24);
             lstErrosSintaticos.MultiSelect = false;
             lstErrosSintaticos.Name = "lstErrosSintaticos";
-            lstErrosSintaticos.Size = new Size(165, 392);
+            lstErrosSintaticos.ShowGroups = false;
+            lstErrosSintaticos.Size = new Size(165, 246);
             lstErrosSintaticos.TabIndex = 1;
             lstErrosSintaticos.UseCompatibleStateImageBehavior = false;
             lstErrosSintaticos.View = View.List;
-            lstErrosSintaticos.ColumnClick += lstErrosSintaticos_ColumnClick;
+            lstErrosSintaticos.DoubleClick += lstErrosSintaticos_DoubleClick;
             // 
             // menuStrip1
             // 
@@ -421,5 +438,6 @@
         private ListView lstErrosSintaticos;
         private Label lblTreeNaoCarregada;
         private SplitContainer splitContainer2;
+        private TextBox txtErroBox;
     }
 }
