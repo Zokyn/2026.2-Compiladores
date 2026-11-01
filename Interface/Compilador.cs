@@ -2,6 +2,7 @@ using DotNetEnv;
 using Lexico;
 using Sintatico;
 using Sintatico.Nodes;
+using System.Text;
 
 namespace Interface
 {
@@ -12,9 +13,10 @@ namespace Interface
         private string _codigofonte { get; set; } = string.Empty;
         private List<Token>? _tokens { get; set; } = null;
         private ResultadoParser? _result { get; set; } = null;
-        private static string[] ColumnNames = {
+        public static string[] ColumnNames = {
                 "Id", "Lexema", "Inicio", "Fim", "Comprimento", "Linha", "Coluna",
             };
+        public static int Offset = 4;
         public Compilador()
         {
             Env.Load();
@@ -24,6 +26,7 @@ namespace Interface
             ConfiguraControles();
             //
             LeCodigoFonteLocal();
+            EscreveTextoCodigo();
             PreencheGridTokens();
             PreencheArvoreSintatica();
             ListaErrosSintaticos();
@@ -40,7 +43,7 @@ namespace Interface
 
             List<Token>? tokens = ProcessaArquivo();
 
-            if (!string.IsNullOrEmpty(_codigofonte)) EscreveTextoCodigo();
+
 
             if (tokens != null && tokens?.Count > 0) _tokens = tokens;
         }
@@ -180,6 +183,17 @@ namespace Interface
 
             txtCodigo.Text = _codigofonte.Replace("\r\n", "\n")
                                         .Replace("\n", Environment.NewLine); // codigo formatado
+            int totalLinhas = txtCodigo.Text.Length;
+
+            if (totalLinhas == 0) totalLinhas = 1;
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 1; i < totalLinhas; i++)
+            {
+                sb.AppendLine(i.ToString());
+            }
+
+            rtbCodigoLines.Text = sb.ToString();
         }
         /// <summary>
         /// A partir de uma lista IReadOnlyList de tokens (se tiver), trata os tokens e os 
@@ -414,7 +428,7 @@ namespace Interface
             txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
             lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
 
-            int? startPosition = (int?)(dgvTokens.CurrentRow?.Cells["Inicio"].Value);
+            int? startPosition = (int?)(dgvTokens.CurrentRow?.Cells["Inicio"].Value) + Offset;
             int? comprimento = (int?)dgvTokens.CurrentRow?.Cells["Comprimento"].Value;
 
             if (!startPosition.HasValue || !comprimento.HasValue) return;
@@ -426,5 +440,6 @@ namespace Interface
         {
             txtErroBox.Text = lstErrosSintaticos.SelectedItems[0].Text;
         }
+
     }
 }

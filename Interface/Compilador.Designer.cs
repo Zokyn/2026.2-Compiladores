@@ -29,11 +29,13 @@
         private void InitializeComponent()
         {
             splitContainer1 = new SplitContainer();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            rtbCodigoLines = new RichTextBox();
+            txtCodigo = new TextBox();
             flwFileOpen = new FlowLayoutPanel();
             btnAbrirCodigo = new Button();
             txtFilePath = new TextBox();
             btnLimpaCodigo = new Button();
-            txtCodigo = new TextBox();
             tabEtapas = new TabControl();
             tabLexico = new TabPage();
             tlpLexerMain = new TableLayoutPanel();
@@ -56,6 +58,7 @@
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            flowLayoutPanel1.SuspendLayout();
             flwFileOpen.SuspendLayout();
             tabEtapas.SuspendLayout();
             tabLexico.SuspendLayout();
@@ -79,8 +82,8 @@
             // 
             // splitContainer1.Panel1
             // 
+            splitContainer1.Panel1.Controls.Add(flowLayoutPanel1);
             splitContainer1.Panel1.Controls.Add(flwFileOpen);
-            splitContainer1.Panel1.Controls.Add(txtCodigo);
             splitContainer1.Panel1MinSize = 450;
             // 
             // splitContainer1.Panel2
@@ -89,6 +92,40 @@
             splitContainer1.Size = new Size(1084, 426);
             splitContainer1.SplitterDistance = 450;
             splitContainer1.TabIndex = 7;
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            flowLayoutPanel1.Controls.Add(rtbCodigoLines);
+            flowLayoutPanel1.Controls.Add(txtCodigo);
+            flowLayoutPanel1.Location = new Point(0, 0);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(450, 426);
+            flowLayoutPanel1.TabIndex = 7;
+            // 
+            // rtbCodigoLines
+            // 
+            rtbCodigoLines.Location = new Point(3, 3);
+            rtbCodigoLines.Name = "rtbCodigoLines";
+            rtbCodigoLines.ReadOnly = true;
+            rtbCodigoLines.ScrollBars = RichTextBoxScrollBars.None;
+            rtbCodigoLines.Size = new Size(42, 215);
+            rtbCodigoLines.TabIndex = 6;
+            rtbCodigoLines.Text = "";
+            rtbCodigoLines.WordWrap = false;
+            // 
+            // txtCodigo
+            // 
+            txtCodigo.Location = new Point(51, 3);
+            txtCodigo.Multiline = true;
+            txtCodigo.Name = "txtCodigo";
+            txtCodigo.ReadOnly = true;
+            txtCodigo.ScrollBars = ScrollBars.Both;
+            txtCodigo.Size = new Size(396, 215);
+            txtCodigo.TabIndex = 5;
+            txtCodigo.WordWrap = false;
+            txtCodigo.MouseDown += txtCodigo_MouseDown;
+            txtCodigo.MouseUp += txtCodigo_MouseUp;
             // 
             // flwFileOpen
             // 
@@ -132,20 +169,6 @@
             btnLimpaCodigo.Text = "Limpar";
             btnLimpaCodigo.UseVisualStyleBackColor = true;
             btnLimpaCodigo.Click += btnLimpaCodigo_Click;
-            // 
-            // txtCodigo
-            // 
-            txtCodigo.Dock = DockStyle.Top;
-            txtCodigo.Location = new Point(0, 0);
-            txtCodigo.Multiline = true;
-            txtCodigo.Name = "txtCodigo";
-            txtCodigo.ReadOnly = true;
-            txtCodigo.ScrollBars = ScrollBars.Both;
-            txtCodigo.Size = new Size(450, 390);
-            txtCodigo.TabIndex = 5;
-            txtCodigo.WordWrap = false;
-            txtCodigo.MouseDown += txtCodigo_MouseDown;
-            txtCodigo.MouseUp += txtCodigo_MouseUp;
             // 
             // tabEtapas
             // 
@@ -390,6 +413,8 @@
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            flowLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.PerformLayout();
             flwFileOpen.ResumeLayout(false);
             flwFileOpen.PerformLayout();
             tabEtapas.ResumeLayout(false);
@@ -438,5 +463,7 @@
         private Label lblTreeNaoCarregada;
         private SplitContainer splitContainer2;
         private TextBox txtErroBox;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private RichTextBox rtbCodigoLines;
     }
 }
