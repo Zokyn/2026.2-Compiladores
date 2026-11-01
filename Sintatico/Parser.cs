@@ -54,6 +54,10 @@ namespace Sintatico
         }
 
         #region Dados
+        private Declaracoes Declaracoes()
+        {
+
+        }
         // <declaracao>     ::= DADOS IDENTIFICADOR <dados> | ε
         // <dados>          ::= <conjunto_dados> | <construtor> | ATRIBUIDOR <valor>
         private Declaracao Declaracao()

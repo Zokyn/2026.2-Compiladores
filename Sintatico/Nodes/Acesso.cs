@@ -7,12 +7,12 @@
      * <sufixo_membro>             ::= ACESSO IDENTIFICADOR
      * <sufixo_indice>             ::= ABRE_TUPLA NUMERO_INTEIRO FECHA_TUPLA
      */ //Ex.: aluno.livros[0]
-    public abstract class Acesso : Node { }
     // Ex.: aluno
-    public class AcessoOrigem : Acesso
+    public class Acesso : Node
     {
-        public string Valor { get; set; } = "";
-        public override string Descricao => $"(Acesso) {Valor}";
+        public string Identificador { get; set; } = "";
+        public Acesso? MaisAcesso { get; set; }
+        public override string Descricao => $"(Acesso) {Identificador}";
     }
     // Ex.: ".livros"
     public class AcessoMembro : Acesso

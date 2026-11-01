@@ -82,6 +82,7 @@ namespace Lexico
 
         public Regex Expressoes = new Regex(@"
             (?<EspacosVazios>[ \t\r\n]+) 
+            | (?<Dados> dados )
             | (?<Identificador> [a-zA-Z_][a-zA-Z0-9_]* (?:-[a-zA-Z0-9_]+)* )
             | (?<TextoLiteral>""[^""\n]*"")
             | (?<NumeroReal>[0-9]*\.[0-9]+)
@@ -94,6 +95,7 @@ namespace Lexico
             | (?<FechaTupla> [\]] )
             | (?<Atribuidor>     [:] )
             | (?<Separador> [,] )
+            | (?<SeparadorBloco> [;] )
             | (?<Acesso> [.] )
             | (?<OperadorRelacional> == | != | >= | <= | > | < )
             | (?<OperadorLogico> && | \|\| )
@@ -104,6 +106,7 @@ namespace Lexico
 
         public readonly Dictionary<string, TokenType?> Grupos = new Dictionary<string, TokenType?>
         {
+            { "Dados", TokenType.Dados },
             { "Identificador", TokenType.Identificador },
             { "TextoLiteral", TokenType.TextoLiteral },
             { "NumeroInteiro", TokenType.NumeroInteiro },
@@ -115,7 +118,8 @@ namespace Lexico
             { "AbreTupla", TokenType.AbreTupla },
             { "FechaTupla", TokenType.FechaTupla },
             { "Atribuidor", TokenType.Atribuidor },
-            { "Separador", TokenType.Atribuidor },
+            { "Separador", TokenType.Separador },
+            { "Separador", TokenType.SeparadorBloco },
             { "Acesso", TokenType.Acesso },
             { "OperadorRelacional", TokenType.OperadorRelacional },
             { "OperadorLogico", TokenType.OperadorLogico },

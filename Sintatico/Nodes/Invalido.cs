@@ -4,5 +4,6 @@
     public class Invalido : Node
     {
         public override string Descricao => "(Inválido)";
+        public override string ToString() => Descricao;
     }
 }
