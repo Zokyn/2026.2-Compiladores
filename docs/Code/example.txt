@@ -1,7 +1,7 @@
-dados produtos {
-  produto(nome: "Camiseta", descricao: "Algodão", promocao: verdadeiro)
+dados produtos [
+  produto(nome: "Camiseta", descricao: "Algodão", promocao: verdadeiro),
   produto(nome: "Caneca", descricao: "Cerâmica", promocao: falso)
-}
+]
 
 pagina(pag-loja, "Loja Declara") {
   secao(sec-produtos, "Produtos em destaque") {
