@@ -44,8 +44,13 @@
             dgvTokens = new DataGridView();
             tabSintatico = new TabPage();
             splitContainer2 = new SplitContainer();
-            lblTreeNaoCarregada = new Label();
+            flowLayoutPanel1 = new FlowLayoutPanel();
             treeParser = new TreeView();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            lblParserItemLinha = new Label();
+            lblParserItemColuna = new Label();
+            lblParserItemDescricao = new Label();
+            lblTreeNaoCarregada = new Label();
             txtErroBox = new TextBox();
             lblErroSintaticoList = new Label();
             lstErrosSintaticos = new ListView();
@@ -67,6 +72,8 @@
             splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
             splitContainer2.SuspendLayout();
+            flowLayoutPanel1.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -253,7 +260,6 @@
             dgvTokens.Name = "dgvTokens";
             dgvTokens.Size = new Size(610, 322);
             dgvTokens.TabIndex = 2;
-            dgvTokens.CellClick += dgvTokens_CellClick;
             dgvTokens.SelectionChanged += dgvTokens_SelectionChanged;
             // 
             // tabSintatico
@@ -275,8 +281,7 @@
             // 
             // splitContainer2.Panel1
             // 
-            splitContainer2.Panel1.Controls.Add(lblTreeNaoCarregada);
-            splitContainer2.Panel1.Controls.Add(treeParser);
+            splitContainer2.Panel1.Controls.Add(flowLayoutPanel1);
             // 
             // splitContainer2.Panel2
             // 
@@ -288,23 +293,96 @@
             splitContainer2.SplitterDistance = 447;
             splitContainer2.TabIndex = 1;
             // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.Controls.Add(treeParser);
+            flowLayoutPanel1.Controls.Add(tableLayoutPanel2);
+            flowLayoutPanel1.Controls.Add(lblTreeNaoCarregada);
+            flowLayoutPanel1.Dock = DockStyle.Fill;
+            flowLayoutPanel1.Location = new Point(0, 0);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(447, 392);
+            flowLayoutPanel1.TabIndex = 4;
+            // 
+            // treeParser
+            // 
+            treeParser.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            treeParser.BackColor = Color.SlateGray;
+            treeParser.Font = new Font("Segoe UI Black", 10F);
+            treeParser.ForeColor = SystemColors.ControlLight;
+            treeParser.Location = new Point(3, 3);
+            treeParser.Name = "treeParser";
+            treeParser.Size = new Size(441, 351);
+            treeParser.TabIndex = 0;
+            treeParser.AfterSelect += treeParser_AfterSelect;
+            // 
+            // tableLayoutPanel2
+            // 
+            tableLayoutPanel2.ColumnCount = 3;
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 47.36842F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 52.63158F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 353F));
+            tableLayoutPanel2.Controls.Add(lblParserItemLinha, 0, 0);
+            tableLayoutPanel2.Controls.Add(lblParserItemColuna, 1, 0);
+            tableLayoutPanel2.Controls.Add(lblParserItemDescricao, 2, 0);
+            tableLayoutPanel2.Location = new Point(3, 360);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 1;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel2.Size = new Size(441, 33);
+            tableLayoutPanel2.TabIndex = 5;
+            // 
+            // lblParserItemLinha
+            // 
+            lblParserItemLinha.AutoSize = true;
+            lblParserItemLinha.BackColor = Color.LightGray;
+            lblParserItemLinha.Dock = DockStyle.Fill;
+            lblParserItemLinha.Font = new Font("Consolas", 12F, FontStyle.Bold);
+            lblParserItemLinha.ForeColor = SystemColors.HotTrack;
+            lblParserItemLinha.Location = new Point(3, 0);
+            lblParserItemLinha.Name = "lblParserItemLinha";
+            lblParserItemLinha.Size = new Size(35, 33);
+            lblParserItemLinha.TabIndex = 0;
+            lblParserItemLinha.Text = "0";
+            lblParserItemLinha.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblParserItemColuna
+            // 
+            lblParserItemColuna.AutoSize = true;
+            lblParserItemColuna.BackColor = Color.LightGray;
+            lblParserItemColuna.Dock = DockStyle.Fill;
+            lblParserItemColuna.Font = new Font("Consolas", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblParserItemColuna.ForeColor = SystemColors.HotTrack;
+            lblParserItemColuna.Location = new Point(44, 0);
+            lblParserItemColuna.Name = "lblParserItemColuna";
+            lblParserItemColuna.Size = new Size(40, 33);
+            lblParserItemColuna.TabIndex = 1;
+            lblParserItemColuna.Text = "0";
+            lblParserItemColuna.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lblParserItemDescricao
+            // 
+            lblParserItemDescricao.AutoSize = true;
+            lblParserItemDescricao.Dock = DockStyle.Fill;
+            lblParserItemDescricao.Location = new Point(90, 0);
+            lblParserItemDescricao.Name = "lblParserItemDescricao";
+            lblParserItemDescricao.Size = new Size(348, 33);
+            lblParserItemDescricao.TabIndex = 2;
+            lblParserItemDescricao.Text = "label3";
+            lblParserItemDescricao.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // lblTreeNaoCarregada
             // 
             lblTreeNaoCarregada.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblTreeNaoCarregada.AutoSize = true;
-            lblTreeNaoCarregada.Location = new Point(95, 345);
+            lblTreeNaoCarregada.BackColor = Color.Transparent;
+            lblTreeNaoCarregada.ForeColor = SystemColors.GrayText;
+            lblTreeNaoCarregada.Location = new Point(3, 396);
             lblTreeNaoCarregada.Name = "lblTreeNaoCarregada";
             lblTreeNaoCarregada.Size = new Size(272, 15);
             lblTreeNaoCarregada.TabIndex = 3;
             lblTreeNaoCarregada.Text = "Árvore Sintática não carregada. Nada a apresentar.";
-            // 
-            // treeParser
-            // 
-            treeParser.Dock = DockStyle.Fill;
-            treeParser.Location = new Point(0, 0);
-            treeParser.Name = "treeParser";
-            treeParser.Size = new Size(447, 392);
-            treeParser.TabIndex = 0;
+            lblTreeNaoCarregada.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // txtErroBox
             // 
@@ -350,7 +428,7 @@
             lstErrosSintaticos.TabIndex = 1;
             lstErrosSintaticos.UseCompatibleStateImageBehavior = false;
             lstErrosSintaticos.View = View.List;
-            lstErrosSintaticos.DoubleClick += lstErrosSintaticos_DoubleClick;
+            lstErrosSintaticos.ItemActivate += lstErrosSintaticos_DoubleClick;
             // 
             // menuStrip1
             // 
@@ -401,11 +479,14 @@
             ((System.ComponentModel.ISupportInitialize)dgvTokens).EndInit();
             tabSintatico.ResumeLayout(false);
             splitContainer2.Panel1.ResumeLayout(false);
-            splitContainer2.Panel1.PerformLayout();
             splitContainer2.Panel2.ResumeLayout(false);
             splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
             splitContainer2.ResumeLayout(false);
+            flowLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.PerformLayout();
+            tableLayoutPanel2.ResumeLayout(false);
+            tableLayoutPanel2.PerformLayout();
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ResumeLayout(false);
@@ -435,8 +516,13 @@
         private TreeView treeParser;
         private Label lblErroSintaticoList;
         private ListView lstErrosSintaticos;
-        private Label lblTreeNaoCarregada;
         private SplitContainer splitContainer2;
         private TextBox txtErroBox;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private Label lblTreeNaoCarregada;
+        private TableLayoutPanel tableLayoutPanel2;
+        private Label lblParserItemLinha;
+        private Label lblParserItemColuna;
+        private Label lblParserItemDescricao;
     }
 }

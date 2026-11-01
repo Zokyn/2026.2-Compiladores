@@ -2,6 +2,7 @@ using DotNetEnv;
 using Lexico;
 using Sintatico;
 using Sintatico.Nodes;
+using System.Xml.Linq;
 
 namespace Interface
 {
@@ -24,9 +25,7 @@ namespace Interface
             ConfiguraControles();
             //
             LeCodigoFonteLocal();
-            PreencheGridTokens();
-            PreencheArvoreSintatica();
-            ListaErrosSintaticos();
+            PreencheEstruturasControle();
         }
         private void LeCodigoFonteLocal()
         {
@@ -244,6 +243,7 @@ namespace Interface
         {
             var treeNode = new TreeNode(node.Descricao);
 
+            treeNode.Tag = node;
             foreach (var child in node.Filhos)
             {
                 treeNode.Nodes.Add(ConverterNodeParaTreeNode(child));
@@ -374,11 +374,6 @@ namespace Interface
             btnLimpaCodigo.Enabled = !(txtFilePath.Text == string.Empty);
 
         }
-        /// <summary>Seleciona token pelo clique em linha do DataGridView dgvTokens.</summary>
-        private void dgvTokens_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
         /// <summary>
         /// Ao soltar o clique no bloco de código, se não estiver selecionando nada, 
         /// o index (posição em caracateres) é passado, a partir da posição
@@ -425,6 +420,17 @@ namespace Interface
         private void lstErrosSintaticos_DoubleClick(object sender, EventArgs e)
         {
             txtErroBox.Text = lstErrosSintaticos.SelectedItems[0].Text;
+            if (lstErrosSintaticos.SelectedItems.Count == 0) txtErroBox.Text = "Nenhum Erro Selecionado";
+        }
+
+        private void treeParser_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node?.Tag is Node)
+            {
+                lblParserItemColuna.Text = $"{((Node)e.Node.Tag).Coluna}";
+                lblParserItemLinha.Text = $"{((Node)e.Node.Tag).Linha}";
+                lblParserItemDescricao.Text = $"{((Node)e.Node.Tag).Descricao}";
+            }
         }
     }
 }

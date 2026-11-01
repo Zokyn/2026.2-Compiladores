@@ -1,6 +1,6 @@
 ﻿namespace Sintatico.Nodes
 {
-    // IDENTIFICADOR ATRIBUIDOR <valor>, ex.: nome: "Caneca"
+    //  ATRIBUIDOR <valor>,
     public class Atribuicao(string identificador = "") : Node
     {
         public string Nome { get; set; } = identificador;

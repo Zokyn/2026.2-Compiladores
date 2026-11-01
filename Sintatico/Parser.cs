@@ -79,7 +79,8 @@ namespace Sintatico
             }
             if (Verificar(TokenType.Atribuidor))
             {
-                declaracao.Definicao = new Atribuicao { Nome = declaracao.Identificador, Valor = Literal() };
+                AvancarToken();
+                declaracao.Definicao = Valor();
             }
             else
             {
@@ -128,7 +129,7 @@ namespace Sintatico
             if (Verificar(TokenType.Atribuidor))
             {
                 AvancarToken();
-                item.Resto = Posicionar(new Atribuicao { Nome = identificador, Valor = Valor() }, token);
+                item.Resto = Posicionar(Valor(), token);
             }
             else if (Verificar(TokenType.AbreConstrutor))
             {
