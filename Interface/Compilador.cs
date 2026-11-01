@@ -406,21 +406,6 @@ namespace Interface
             lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
         }
 
-        private void splitContainer2_Panel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void lstErrosSintaticos_ColumnClick(object sender, ColumnClickEventArgs e)
-        {
-
-        }
-
-        private void flpSintaticoErroListContainer_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
         private void dgvTokens_SelectionChanged(object sender, EventArgs e)
         {
             txtCodigo.HideSelection = false;

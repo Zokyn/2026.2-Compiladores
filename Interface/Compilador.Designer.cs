@@ -283,7 +283,6 @@
             splitContainer2.Panel2.Controls.Add(txtErroBox);
             splitContainer2.Panel2.Controls.Add(lblErroSintaticoList);
             splitContainer2.Panel2.Controls.Add(lstErrosSintaticos);
-            splitContainer2.Panel2.Paint += splitContainer2_Panel2_Paint;
             splitContainer2.Panel2MinSize = 128;
             splitContainer2.Size = new Size(616, 392);
             splitContainer2.SplitterDistance = 447;
