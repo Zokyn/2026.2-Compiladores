@@ -39,11 +39,9 @@ namespace Interface
 
             _filename = defaultPath;
 
-            LeArquivo(_filename);
+            _codigofonte = File.ReadAllText(_filename);
 
             List<Token>? tokens = ProcessaArquivo();
-
-
 
             if (tokens != null && tokens?.Count > 0) _tokens = tokens;
         }
@@ -52,7 +50,7 @@ namespace Interface
             txtCodigo.BackColor = Color.FromArgb(40, 44, 52);
             txtCodigo.ForeColor = Color.FromArgb(171, 178, 191);
             txtCodigo.Font = new Font("Segoe UI", 10f, FontStyle.Bold);
-            txtCodigo.TextAlign = HorizontalAlignment.Left;
+            
         }
         private void ConfiguraGridTokens()
         {
@@ -108,10 +106,6 @@ namespace Interface
             }
             return null;
         }
-        private void LeArquivo(string filename)
-        {
-            _codigofonte = File.ReadAllText(filename);
-        }
         /// <summary>
         /// Abre um OpenFileDialog que serve para selecionar o arquivo de código-fonte de entrada. 
         /// O caminho inicial do dialog é definido como a raiz do projeto, que buscada pelo método
@@ -143,7 +137,7 @@ namespace Interface
             //Fechado o dialog temos um FileName atribuido a ele
             _filename = dialog.FileName;
 
-            LeArquivo(_filename);
+            _codigofonte = File.ReadAllText(_filename);
 
             txtFilePath.Text = _filename;
 
@@ -183,7 +177,7 @@ namespace Interface
 
             txtCodigo.Text = _codigofonte.Replace("\r\n", "\n")
                                         .Replace("\n", Environment.NewLine); // codigo formatado
-            int totalLinhas = txtCodigo.Text.Length;
+            int totalLinhas = txtCodigo.Lines.Length;
 
             if (totalLinhas == 0) totalLinhas = 1;
 
@@ -222,7 +216,7 @@ namespace Interface
             }).ToList();
 
             dgvTokens.DataSource = linhas;
-
+            
             LimpaSelecaoGridTokens();
         }
         /// <summary>
@@ -425,10 +419,11 @@ namespace Interface
             txtCodigo.HideSelection = false;
             //if (txtCodigo.SelectionLength > 0) return;
 
+            
             txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
             lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
 
-            int? startPosition = (int?)(dgvTokens.CurrentRow?.Cells["Inicio"].Value) + Offset;
+            int? startPosition = (int?)(dgvTokens.CurrentRow?.Cells["Inicio"].Value);
             int? comprimento = (int?)dgvTokens.CurrentRow?.Cells["Comprimento"].Value;
 
             if (!startPosition.HasValue || !comprimento.HasValue) return;
