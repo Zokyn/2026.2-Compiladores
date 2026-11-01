@@ -1,4 +1,4 @@
-# v1.7
+# v1.8
 """
 Gramática LL(1) para o analisador sintático descendente recursivo.
 Cada não-terminal <x> corresponde a um método X() no Parser.
@@ -10,11 +10,11 @@ Terminais (em MAIÚSCULAS) correspondem ao TokenType do léxico:
   TEXTO_LITERAL       "Olá"
   NUMERO_INTEIRO      42
   NUMERO_REAL         4.2 | .5
-  ABRE_CONSTRUTOR     (            FECHA_CONSTRUTOR    )
-  ABRE_BLOCO          {            FECHA_BLOCO         }
-  ABRE_TUPLA          [            FECHA_TUPLA         ]
-  ATRIBUIDOR          :            SEPARADOR           ,
-  ACESSO              .
+  ABRE_CONSTRUTOR     (             FECHA_CONSTRUTOR    )
+  ABRE_BLOCO          {             FECHA_BLOCO         }
+  ABRE_TUPLA          [             FECHA_TUPLA         ]
+  ATRIBUIDOR          :             ACESSO              .
+  SEPARADOR           ,             SEPARADOR_BLOCO     ;
   OPERADOR_RELACIONAL == | != | >= | <= | > | <
   OPERADOR_LOGICO     && | ||
   INCREMENTO          ++           DECREMENTO          --
@@ -26,7 +26,9 @@ do tipo Controle cujo Valor é a própria palavra.
 
 # Documento
 
-<documento>                 ::= <declaracoes> <componente> FIM_DE_ARQUIVO
+<documento>                 ::= <declaracoes> <lista_componentes> FIM_DE_ARQUIVO
+<lista_componentes>         ::= <componente> <mais_componentes> | ε
+<mais_componentes>          ::= SEPARADOR_BLOCO <componente> <mais_componentes> | ε
 
 # Dados
 # Ex.: `dados turma <dados>` 
@@ -51,7 +53,7 @@ do tipo Controle cujo Valor é a própria palavra.
 
 # Componentes
 
-<componente>                ::= COMPONENTE <nome_componente> <construtor> <bloco_componente> <mais_componente>
+<componente>                ::= COMPONENTE <nome_componente> <construtor> <bloco_componente_opc>
 <nome_componente>           ::= IDENTIFICADOR | ε
 
 # Construtor
@@ -67,9 +69,11 @@ do tipo Controle cujo Valor é a própria palavra.
 
 # Bloco Componente
 
-<bloco_componente_opcional> ::= <bloco_componente> | ε
+<<bloco_componente_opc>     ::= <bloco_componente> | ε
 <bloco_componente>          ::= ABRE_BLOCO <conteudo> FECHA_BLOCO
-<mais_componente>           ::= ";" <componente> <mais_componente> | ε  
+
+# Conteudo do Componente
+
 <conteudo>                  ::= <elemento> <mais_conteudo>
 <elemento>                  ::= <componente> | <iteracao> | <condicional>
 <mais_conteudo>             ::= SEPARADOR <elemento> <mais_conteudo> | ε
