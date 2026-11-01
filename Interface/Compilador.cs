@@ -50,7 +50,7 @@ namespace Interface
             txtCodigo.BackColor = Color.FromArgb(40, 44, 52);
             txtCodigo.ForeColor = Color.FromArgb(171, 178, 191);
             txtCodigo.Font = new Font("Segoe UI", 10f, FontStyle.Bold);
-            
+
         }
         private void ConfiguraGridTokens()
         {
@@ -216,7 +216,7 @@ namespace Interface
             }).ToList();
 
             dgvTokens.DataSource = linhas;
-            
+
             LimpaSelecaoGridTokens();
         }
         /// <summary>
@@ -419,7 +419,7 @@ namespace Interface
             txtCodigo.HideSelection = false;
             //if (txtCodigo.SelectionLength > 0) return;
 
-            
+
             txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
             lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
 
@@ -435,6 +435,5 @@ namespace Interface
         {
             txtErroBox.Text = lstErrosSintaticos.SelectedItems[0].Text;
         }
-
     }
 }

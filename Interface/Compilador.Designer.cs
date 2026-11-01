@@ -125,8 +125,8 @@
             txtCodigo.TabIndex = 7;
             txtCodigo.Text = "";
             txtCodigo.WordWrap = false;
-            txtCodigo.MouseDown += txtCodigo_MouseDown;
             txtCodigo.MouseUp += txtCodigo_MouseUp;
+            txtCodigo.MouseDown += txtCodigo_MouseDown;
             // 
             // flwFileOpen
             // 
@@ -435,6 +435,11 @@
             menuStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
+        }
+
+        private void TxtCodigo_MouseDown(object sender, MouseEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
