@@ -124,6 +124,7 @@
             txtCodigo.Size = new Size(410, 423);
             txtCodigo.TabIndex = 7;
             txtCodigo.Text = "";
+            txtCodigo.WordWrap = false;
             txtCodigo.MouseDown += txtCodigo_MouseDown;
             txtCodigo.MouseUp += txtCodigo_MouseUp;
             // 
