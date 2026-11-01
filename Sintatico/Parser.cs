@@ -39,11 +39,8 @@ namespace Sintatico
         {
             var documento = Posicionar(new Documento(), TokenAtual);
 
-            while (Verificar(TokenType.Dados))
-            {
-                documento.Corpo.Add(Declaracao());
-                if (_emPanico) AvancarAte(TokenType.Dados, TokenType.Componente);
-            }
+            documento.Corpo.Add(Declaracoes());
+            if (_emPanico) AvancarAte(TokenType.Dados, TokenType.Componente);
 
             documento.Corpo.Add(Componente());
 
@@ -54,48 +51,41 @@ namespace Sintatico
         }
 
         #region Dados
-        private Declaracoes Declaracoes()
-        {
-
-        }
         // <declaracao>     ::= DADOS IDENTIFICADOR <dados> | ε
         // <dados>          ::= <conjunto_dados> | <construtor> | ATRIBUIDOR <valor>
+        private Node Declaracoes()
+        {
+            var declaracoes = Posicionar(new Declaracoes(), Consumir(TokenType.Dados, "declaração de dados"));
+            if (!Verificar(TokenType.Identificador)) return new Invalido();
+
+            Declaracao declaracacao = Declaracao();
+
+            declaracoes.Declaracao.Add(declaracacao);
+
+            return declaracoes;
+        }
+
         private Declaracao Declaracao()
         {
-            var declaracao = Posicionar(new Declaracao(), Consumir(TokenType.Dados, "declaração de dados"));
-            declaracao.Nome = Consumir(TokenType.Identificador, "Nome da declaração").Valor;
+            var declaracao = new Declaracao(Consumir(TokenType.Identificador, "identificador de dados").Valor);
 
-            switch (TokenAtual.Tipo)
-            {
-                case TokenType.AbreConstrutor:
-                    declaracao.Definicao = BlocoConstrutor();
-                    break;
-                case TokenType.AbreTupla:
-                    declaracao.Definicao = ListaDados();
-                    break;
-                case TokenType.Atribuidor:
-                    AvancarToken();
-                    declaracao.Definicao = Valor();
-                    break;
-                default:
-                    RegistrarErro($"Esperado '[', '(' ou ':' após 'dados {declaracao.Nome}', mas encontrado {Descrever(TokenAtual)}");
-                    break;
-            }
+            declaracao.Definicao = ConjuntoDados();
+
             return declaracao;
         }
 
         // <bloco_dados> ::= ABRE_BLOCO <itens_dados> FECHA_BLOCO
         // <itens_dados> ::= <item_dados> <separador_opcional> <itens_dados> | ε
-        private BlocoDados BlocoDados()
+        private ConjuntoDados ConjuntoDados()
         {
-            var bloco = Posicionar(new BlocoDados(), Consumir(TokenType.AbreBloco, "bloco de dados"));
+            var conjunto = Posicionar(new ConjuntoDados(), Consumir(TokenType.AbreTupla, "bloco de dados"));
 
             while (!Verificar(TokenType.FechaBloco) && !Verificar(TokenType.FimDeArquivo))
             {
                 int inicio = _posicao;
 
                 if (Verificar(TokenType.Identificador))
-                    bloco.Itens.Add(ItemDados());
+                    conjunto.Itens.Add(ItemDado());
                 else
                     RegistrarErro($"Esperado item de dados (identificador), mas encontrado {Descrever(TokenAtual)}");
 
@@ -104,23 +94,8 @@ namespace Sintatico
             }
 
             Consumir(TokenType.FechaBloco, "bloco de dados");
-            return bloco;
+            return conjunto;
         }
-
-        // <item_dados>       ::= IDENTIFICADOR <resto_item_dados>
-        // <resto_item_dados> ::= <bloco_construtor> | ATRIBUIDOR <valor>
-        private Node ItemDados()
-        {
-            var identificador = Consumir(TokenType.Identificador, "item de dados");
-
-            if (Verificar(TokenType.Atribuidor))
-            {
-                AvancarToken();
-                return Posicionar(new Atribuicao { Nome = identificador.Valor, Valor = Valor() }, identificador);
-            }
-            return Posicionar(new Instancia { Nome = identificador.Valor, Construtor = BlocoConstrutor() }, identificador);
-        }
-
         // <lista_dados>      ::= ABRE_TUPLA <itens_lista> FECHA_TUPLA
         // <itens_lista>      ::= <item_lista> <mais_itens_lista> | ε
         // <mais_itens_lista> ::= SEPARADOR <item_lista> <mais_itens_lista> | ε
@@ -130,11 +105,11 @@ namespace Sintatico
 
             if (!Verificar(TokenType.FechaTupla))
             {
-                lista.Itens.Add(ItemLista());
+                lista.Itens.Add(ItemDado());
                 while (Verificar(TokenType.Separador))
                 {
                     AvancarToken();
-                    lista.Itens.Add(ItemLista());
+                    lista.Itens.Add(ItemDado());
                 }
             }
 
@@ -142,18 +117,22 @@ namespace Sintatico
             return lista;
         }
 
-        // <item_lista>       ::= IDENTIFICADOR <resto_item_lista> | <literal>
-        // <resto_item_lista> ::= <bloco_construtor> | <resto_acesso>
-        private Node ItemLista()
+        // <item_dados>       ::= IDENTIFICADOR <resto_item_dados>
+        // <resto_item_dados> ::= <bloco_construtor> | ATRIBUIDOR <valor>
+        private ItemDado ItemDado()
         {
-            if (!Verificar(TokenType.Identificador)) return Literal();
+            var token = Consumir(TokenType.Identificador, "item de dados");
+            var identificador = token.Valor;
+            var item = new ItemDado(identificador);
 
-            var identificador = AvancarToken();
+            if (Verificar(TokenType.Atribuidor))
+            {
+                AvancarToken();
+                item.Resto = Posicionar(new Atribuicao { Nome = identificador, Valor = Valor() }, token);
+            }
+            item.Resto = Posicionar(new Instancia { Nome = identificador, Construtor = BlocoConstrutor() }, token);
 
-            if (Verificar(TokenType.AbreConstrutor))
-                return Posicionar(new Instancia { Nome = identificador.Valor, Construtor = BlocoConstrutor() }, identificador);
-
-            return Acesso();
+            return item;
         }
         #endregion
 
@@ -239,14 +218,14 @@ namespace Sintatico
         {
             if (!Verificar(TokenType.Identificador)) return Literal();
 
-            var identificador = AvancarToken();
+            var token = AvancarToken();
 
             Node argumento = Valor();
 
             if (Verificar(TokenType.Atribuidor))
             {
                 AvancarToken();
-                return Posicionar(new Atribuicao { Nome = identificador.Valor, Valor = Valor() }, identificador);
+                return Posicionar(new Atribuicao { Nome = token.Valor, Valor = Valor() }, token);
             }
             if (Verificar(TokenType.Acesso))
             {
@@ -303,15 +282,15 @@ namespace Sintatico
         // <resto_passo> ::= ATRIBUIDOR <valor> | INCREMENTO | DECREMENTO
         private Node Passo()
         {
-            var identificador = Consumir(TokenType.Identificador, "passo do 'para'");
+            var token = Consumir(TokenType.Identificador, "passo do 'para'");
 
             if (Verificar(TokenType.Atribuidor))
             {
                 AvancarToken();
-                return Posicionar(new Atribuicao { Nome = identificador.Valor, Valor = Valor() }, identificador);
+                return Posicionar(new Atribuicao { Nome = token.Valor, Valor = Valor() }, token);
             }
             if (Verificar(TokenType.Incremento) || Verificar(TokenType.Decremento))
-                return Posicionar(new Incremento { Variavel = identificador.Valor, Operador = AvancarToken().Valor }, identificador);
+                return Posicionar(new Incremento { Variavel = token.Valor, Operador = AvancarToken().Valor }, token);
 
             RegistrarErro($"Esperado ':', '++' ou '--' no passo do 'para', mas encontrado {Descrever(TokenAtual)}");
             return Posicionar(new Invalido(), TokenAtual);
@@ -368,9 +347,9 @@ namespace Sintatico
         {
             // 1. Lê identificador base, considerado "nome" do acesso.
             // Ex.: carro.cor, esse identificador inicial seria "carro"
-            Token identificador = Consumir(TokenType.Identificador, "acesso");
+            Token token = Consumir(TokenType.Identificador, "acesso");
 
-            Acesso nodeAtual = Posicionar(new AcessoOrigem { Valor = identificador.Valor }, identificador);
+            Acesso nodeAtual = Posicionar(new Acesso { Identificador = token.Valor }, token);
 
             bool fimDaArvore = false; 
             while (!fimDaArvore)

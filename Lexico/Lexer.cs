@@ -119,7 +119,7 @@ namespace Lexico
             { "FechaTupla", TokenType.FechaTupla },
             { "Atribuidor", TokenType.Atribuidor },
             { "Separador", TokenType.Separador },
-            { "Separador", TokenType.SeparadorBloco },
+            { "SeparadorBloco", TokenType.SeparadorBloco },
             { "Acesso", TokenType.Acesso },
             { "OperadorRelacional", TokenType.OperadorRelacional },
             { "OperadorLogico", TokenType.OperadorLogico },

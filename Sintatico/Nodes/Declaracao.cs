@@ -4,7 +4,7 @@
     {
         private static int _count;
         private int _numeroId { get; set; } = numero ?? _count++;
-        public List<Declaracao> Declaracao { get; } = [];
+        public List<Declaracao> Declaracao { get; set; } = [];
         public override string Descricao => $"(Declaracoes de Dados {_numeroId})";
         public override IEnumerable<Node> Filhos => Declaracao;
 
@@ -29,7 +29,7 @@
     {
         private static int _count;
         private int _numeroId = numero ?? _count++;
-        public List<ListaDados> ListaDados { get; set; } = [];
+        public List<ItemDado> Itens { get; set; } = [];
         public override string Descricao => $"(Conjunto de Dados {_numeroId})";
     }
 
@@ -40,7 +40,7 @@
         public override IEnumerable<Node> Filhos => Itens;
     }
 
-    public class ItemDado(string identificador = "") : Node
+    public class ItemDado(string identificador) : Node
     {
         public Node Resto { get; set; } = new Invalido(); // Atribuicao | Construtor | MaisAcesso
         public string Identificador { get; set; } = identificador;
