@@ -34,7 +34,6 @@ namespace Sintatico
 
         #region Documento
         // <documento>   ::= <declaracoes> <componente> FIM_DE_ARQUIVO
-        // <declaracoes> ::= <declaracao> <declaracoes> | ε 
         private Documento Documento()
         {
             var documento = Posicionar(new Documento(), TokenAtual);
@@ -51,16 +50,16 @@ namespace Sintatico
         }
 
         #region Dados
+        // <declaracoes> ::= <declaracao> <declaracoes> | ε 
         // <declaracao>     ::= DADOS IDENTIFICADOR <dados> | ε
         // <dados>          ::= <conjunto_dados> | <construtor> | ATRIBUIDOR <valor>
         private Node Declaracoes()
         {
             var declaracoes = Posicionar(new Declaracoes(), Consumir(TokenType.Dados, "declaração de dados"));
+
             if (!Verificar(TokenType.Identificador)) return new Invalido();
 
-            Declaracao declaracacao = Declaracao();
-
-            declaracoes.Declaracao.Add(declaracacao);
+            declaracoes.Declaracao.Add(Declaracao());
 
             return declaracoes;
         }
@@ -69,56 +68,57 @@ namespace Sintatico
         {
             var declaracao = new Declaracao(Consumir(TokenType.Identificador, "identificador de dados").Valor);
 
-            declaracao.Definicao = ConjuntoDados();
+            if (Verificar(TokenType.AbreTupla))
+            {
+                declaracao.Definicao = ConjuntoDados();
+
+            }
+            if (Verificar(TokenType.AbreConstrutor))
+            {
+                declaracao.Definicao = Construtor();
+            }
+            if (Verificar(TokenType.Atribuidor))
+            {
+                declaracao.Definicao = new Atribuicao { Nome = declaracao.Identificador, Valor = Literal() };
+            }
+            else
+            {
+                RegistrarErro("Definição de Dados Incompleta", "Esperado bloco de dados, construtor ou atribuição, mas encontrado " +
+                    Descrever(TokenAtual));
+            }
 
             return declaracao;
         }
 
-        // <bloco_dados> ::= ABRE_BLOCO <itens_dados> FECHA_BLOCO
-        // <itens_dados> ::= <item_dados> <separador_opcional> <itens_dados> | ε
+        /*
+         * <conjunto_dados>            ::= ABRE_TUPLA <itens_dados> FECHA_TUPLA
+         * <itens_dados>               ::= <item_dado> <mais_itens>
+         * <mais_itens>                ::= SEPARADOR <item_dado> <mais_itens> | ε
+         * <item_dado>                 ::= IDENTIFICADOR <resto_item_dado> | <literal>
+         */
         private ConjuntoDados ConjuntoDados()
         {
             var conjunto = Posicionar(new ConjuntoDados(), Consumir(TokenType.AbreTupla, "bloco de dados"));
 
-            while (!Verificar(TokenType.FechaBloco) && !Verificar(TokenType.FimDeArquivo))
+            while (!Verificar(TokenType.FechaTupla) && !Verificar(TokenType.FimDeArquivo))
             {
                 int inicio = _posicao;
 
                 if (Verificar(TokenType.Identificador))
                     conjunto.Itens.Add(ItemDado());
                 else
-                    RegistrarErro($"Esperado item de dados (identificador), mas encontrado {Descrever(TokenAtual)}");
+                    RegistrarErro("Esperado item de dados", $"Esperado item de dados (identificador), mas encontrado {Descrever(TokenAtual)}");
 
                 if (Verificar(TokenType.Separador)) AvancarToken();
                 if (_posicao == inicio) Descartar();
             }
 
-            Consumir(TokenType.FechaBloco, "bloco de dados");
+            Consumir(TokenType.FechaTupla, "bloco de dados");
             return conjunto;
         }
-        // <lista_dados>      ::= ABRE_TUPLA <itens_lista> FECHA_TUPLA
-        // <itens_lista>      ::= <item_lista> <mais_itens_lista> | ε
-        // <mais_itens_lista> ::= SEPARADOR <item_lista> <mais_itens_lista> | ε
-        private ListaDados ListaDados()
-        {
-            var lista = Posicionar(new ListaDados(), Consumir(TokenType.AbreTupla, "lista"));
 
-            if (!Verificar(TokenType.FechaTupla))
-            {
-                lista.Itens.Add(ItemDado());
-                while (Verificar(TokenType.Separador))
-                {
-                    AvancarToken();
-                    lista.Itens.Add(ItemDado());
-                }
-            }
-
-            ConsumirFechamento(TokenType.FechaTupla, "lista");
-            return lista;
-        }
-
-        // <item_dados>       ::= IDENTIFICADOR <resto_item_dados>
-        // <resto_item_dados> ::= <bloco_construtor> | ATRIBUIDOR <valor>
+        // <item_dado>                  ::= IDENTIFICADOR <resto_item_dado> | <literal>
+        // <resto_item_dados>           ::= ATRIBUIDOR <valor> | <construtor> | <mais_acesso>
         private ItemDado ItemDado()
         {
             var token = Consumir(TokenType.Identificador, "item de dados");
@@ -130,12 +130,68 @@ namespace Sintatico
                 AvancarToken();
                 item.Resto = Posicionar(new Atribuicao { Nome = identificador, Valor = Valor() }, token);
             }
-            item.Resto = Posicionar(new Instancia { Nome = identificador, Construtor = BlocoConstrutor() }, token);
-
+            else if (Verificar(TokenType.AbreConstrutor))
+            {
+                item.Resto = Posicionar(Construtor(), token);
+            }
+            
             return item;
         }
         #endregion
+        #region Construtor
+        // <bloco_construtor> ::= ABRE_CONSTRUTOR <argumentos> FECHA_CONSTRUTOR
+        // <argumentos>       ::= <argumento> <mais_argumentos> | ε
+        // <mais_argumentos>  ::= SEPARADOR <argumento> <mais_argumentos> | ε
+        private Construtor Construtor()
+        {
+            var construtor = Posicionar(new Construtor(), Consumir(TokenType.AbreConstrutor, "construtor"));
 
+            if (!Verificar(TokenType.FechaConstrutor))
+            {
+                construtor.Argumentos.Add(Argumento());
+                while (Verificar(TokenType.Separador))
+                {
+                    AvancarToken();
+                    construtor.Argumentos.Add(Argumento());
+                }
+            }
+
+            ConsumirFechamento(TokenType.FechaConstrutor, "construtor");
+            return construtor;
+        }
+
+        #region Argumento
+        // <argumento>       ::= IDENTIFICADOR <resto_argumento> | <literal>
+        // <resto_argumento> ::= ATRIBUIDOR <valor> | <construtor> | <mais_acesso>
+        private Node Argumento()
+        {
+            if (!Verificar(TokenType.Identificador)) return Literal();
+            else
+            {
+                var token = AvancarToken();
+
+                if (Verificar(TokenType.Atribuidor))
+                {
+                    AvancarToken();
+                    return Posicionar(new Atribuicao { Nome = token.Valor, Valor = Valor() }, token);
+                }
+                if (Verificar(TokenType.AbreConstrutor))
+                {
+                    return Posicionar(Construtor(), token);
+                }
+                if (Verificar(TokenType.Acesso))
+                {
+                    return Acesso();
+                }
+            }
+
+            RegistrarErro("Resto de argumento inválido.", $"Resto de argumento inválido. Esperado Atribuição, " +
+                $"Construtor ou Acesso, mas encontrado {Descrever(TokenAtual)}");
+            return new Invalido();
+        }
+        #endregion
+
+        #endregion
         #region Componente
         // <componente>                ::= COMPONENTE <nome_componente> <bloco_construtor> <bloco_componente_opcional>
         // <nome_componente>           ::= IDENTIFICADOR | ε
@@ -148,7 +204,7 @@ namespace Sintatico
             if (Verificar(TokenType.Identificador))
                 componente.Nome = AvancarToken().Valor;
 
-            componente.Construtor = BlocoConstrutor();
+            componente.Construtor = Construtor();
 
             if (Verificar(TokenType.AbreBloco))
                 BlocoComponente(componente.Corpo);
@@ -184,57 +240,10 @@ namespace Sintatico
             if (VerificarControle("para") || VerificarControle("enquanto")) return Iteracao();
             if (VerificarControle("se")) return Condicional();
 
-            RegistrarErro($"Esperado componente, 'para', 'enquanto' ou 'se', mas encontrado {Descrever(TokenAtual)}");
+            RegistrarErro("Esperado componente ou controle.", $"Esperado componente, 'para', 'enquanto' ou 'se', " +
+                $"mas encontrado {Descrever(TokenAtual)}");
             return null;
         }
-        #endregion
-
-        #region Construtor
-        // <bloco_construtor> ::= ABRE_CONSTRUTOR <argumentos> FECHA_CONSTRUTOR
-        // <argumentos>       ::= <argumento> <mais_argumentos> | ε
-        // <mais_argumentos>  ::= SEPARADOR <argumento> <mais_argumentos> | ε
-        private Construtor BlocoConstrutor()
-        {
-            var construtor = Posicionar(new Construtor(), Consumir(TokenType.AbreConstrutor, "construtor"));
-
-            if (!Verificar(TokenType.FechaConstrutor))
-            {
-                construtor.Argumentos.Add(Argumento());
-                while (Verificar(TokenType.Separador))
-                {
-                    AvancarToken();
-                    construtor.Argumentos.Add(Argumento());
-                }
-            }
-
-            ConsumirFechamento(TokenType.FechaConstrutor, "construtor");
-            return construtor;
-        }
-
-        #region Argumento
-        // <argumento>       ::= IDENTIFICADOR <resto_argumento> | <literal>
-        // <resto_argumento> ::= <valor> | <vazio>
-        private Node Argumento()
-        {
-            if (!Verificar(TokenType.Identificador)) return Literal();
-
-            var token = AvancarToken();
-
-            Node argumento = Valor();
-
-            if (Verificar(TokenType.Atribuidor))
-            {
-                AvancarToken();
-                return Posicionar(new Atribuicao { Nome = token.Valor, Valor = Valor() }, token);
-            }
-            if (Verificar(TokenType.Acesso))
-            {
-                return Acesso();
-            }
-            return argumento;
-        }
-        #endregion
-
         #endregion
 
         #region Controle
@@ -276,7 +285,7 @@ namespace Sintatico
 
         // <colecao> ::= <acesso> | <lista_dados>
         private Node Colecao() =>
-            Verificar(TokenType.AbreTupla) ? ListaDados() : Acesso();
+            Verificar(TokenType.AbreTupla) ? ConjuntoDados() : Acesso();
 
         // <passo>       ::= IDENTIFICADOR <resto_passo>
         // <resto_passo> ::= ATRIBUIDOR <valor> | INCREMENTO | DECREMENTO
@@ -339,7 +348,7 @@ namespace Sintatico
         #endregion
 
         #region Valor
-        // <valor> ::= <acesso> | <literal>
+        // <valor> ::= <literal> | <acesso> 
         private Node Valor() => Verificar(TokenType.Identificador) ? Acesso() : Literal();
         #region Acesso
         // <acesso> ::= IDENTIFICADOR <resto_acesso>
@@ -484,7 +493,8 @@ namespace Sintatico
             }
         }
 
-        private void RegistrarErro(string mensagem) => RegistrarErro(mensagem, TokenAtual);
+        private void RegistrarErro(string mensagem) => RegistrarErro("", mensagem);
+        private void RegistrarErro(string titulo, string mensagem) => RegistrarErro(titulo, mensagem, TokenAtual);
         /// <summary>
         /// Registra erro, armazenando a mensagem e um Token de entrada (por padrão, TokenAtual).
         /// Caso já esteja em modo Pânico, ele retorna, ignorando esse erro. Caso contrário, ativa
@@ -493,11 +503,14 @@ namespace Sintatico
         /// </summary>
         /// <param name="mensagem">Mensagem de erro gerado pela regra de produção do Parser.</param>
         /// <param name="token">Token lido que levantou o erro, com informações de linha e coluna.</param>
-        private void RegistrarErro(string mensagem, Token token)
+        private void RegistrarErro(string titulo, string mensagem, Token token)
         {
             if (_emPanico) return;
+            token ??= TokenAtual; // if (token == null) token = TokenAtual; 
+
             _emPanico = true;
-            _resultado.Erros.Add(new ErroSintatico(mensagem, token.Linha, token.Coluna));
+            
+            _resultado.Erros.Add(new ErroSintatico(titulo, mensagem, token.Linha, token.Coluna));
         }
         /// <summary>Atribui, a partir do Node passado como parâmetro, a um Node, ou qualquer filho dele 
         /// a linha e coluna do token encontrado. </summary>

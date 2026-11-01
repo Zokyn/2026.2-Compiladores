@@ -14,8 +14,8 @@ namespace Sintatico.Nodes
     // <bloco_construtor> ::= ABRE_CONSTRUTOR <argumentos> FECHA_CONSTRUTOR
     public class Construtor : Node
     {
-        public List<Node> Argumentos { get; } = new();
-        public override string Descricao => "(Construtor) ( )";
+        public List<Node> Argumentos { get; set; } = new();
+        public override string Descricao => "<construtor> ( )";
         public override IEnumerable<Node> Filhos => Argumentos;
     }
 }
