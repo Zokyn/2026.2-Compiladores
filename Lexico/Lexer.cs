@@ -160,7 +160,10 @@ namespace Lexico
                             linhaAtual++;
                             ultimaQuebraLinha = m.Index + i;
                         }
-                        _posicao++;
+                        else
+                        {
+                            _posicao++;
+                        }
                     }
                     continue;
                 }
