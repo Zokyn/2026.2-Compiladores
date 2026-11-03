@@ -29,11 +29,13 @@
         private void InitializeComponent()
         {
             splitContainer1 = new SplitContainer();
+            flpCodigoContainer = new FlowLayoutPanel();
+            rtbCodigoLines = new RichTextBox();
+            txtCodigo = new RichTextBox();
             flwFileOpen = new FlowLayoutPanel();
             btnAbrirCodigo = new Button();
             txtFilePath = new TextBox();
             btnLimpaCodigo = new Button();
-            txtCodigo = new TextBox();
             tabEtapas = new TabControl();
             tabLexico = new TabPage();
             tlpLexerMain = new TableLayoutPanel();
@@ -61,6 +63,7 @@
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            flpCodigoContainer.SuspendLayout();
             flwFileOpen.SuspendLayout();
             tabEtapas.SuspendLayout();
             tabLexico.SuspendLayout();
@@ -86,8 +89,8 @@
             // 
             // splitContainer1.Panel1
             // 
+            splitContainer1.Panel1.Controls.Add(flpCodigoContainer);
             splitContainer1.Panel1.Controls.Add(flwFileOpen);
-            splitContainer1.Panel1.Controls.Add(txtCodigo);
             splitContainer1.Panel1MinSize = 450;
             // 
             // splitContainer1.Panel2
@@ -96,6 +99,41 @@
             splitContainer1.Size = new Size(1084, 426);
             splitContainer1.SplitterDistance = 450;
             splitContainer1.TabIndex = 7;
+            // 
+            // flpCodigoContainer
+            // 
+            flpCodigoContainer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+            flpCodigoContainer.AutoSize = true;
+            flpCodigoContainer.Controls.Add(rtbCodigoLines);
+            flpCodigoContainer.Controls.Add(txtCodigo);
+            flpCodigoContainer.Location = new Point(0, 0);
+            flpCodigoContainer.Name = "flpCodigoContainer";
+            flpCodigoContainer.Size = new Size(451, 429);
+            flpCodigoContainer.TabIndex = 7;
+            flpCodigoContainer.WrapContents = false;
+            // 
+            // rtbCodigoLines
+            // 
+            rtbCodigoLines.Location = new Point(3, 3);
+            rtbCodigoLines.Name = "rtbCodigoLines";
+            rtbCodigoLines.ReadOnly = true;
+            rtbCodigoLines.ScrollBars = RichTextBoxScrollBars.None;
+            rtbCodigoLines.Size = new Size(29, 423);
+            rtbCodigoLines.TabIndex = 6;
+            rtbCodigoLines.Text = "";
+            rtbCodigoLines.WordWrap = false;
+            // 
+            // txtCodigo
+            // 
+            txtCodigo.Dock = DockStyle.Fill;
+            txtCodigo.Location = new Point(38, 3);
+            txtCodigo.Name = "txtCodigo";
+            txtCodigo.Size = new Size(410, 423);
+            txtCodigo.TabIndex = 7;
+            txtCodigo.Text = "";
+            txtCodigo.WordWrap = false;
+            txtCodigo.MouseUp += txtCodigo_MouseUp;
+            txtCodigo.MouseDown += txtCodigo_MouseDown;
             // 
             // flwFileOpen
             // 
@@ -139,20 +177,6 @@
             btnLimpaCodigo.Text = "Limpar";
             btnLimpaCodigo.UseVisualStyleBackColor = true;
             btnLimpaCodigo.Click += btnLimpaCodigo_Click;
-            // 
-            // txtCodigo
-            // 
-            txtCodigo.Dock = DockStyle.Top;
-            txtCodigo.Location = new Point(0, 0);
-            txtCodigo.Multiline = true;
-            txtCodigo.Name = "txtCodigo";
-            txtCodigo.ReadOnly = true;
-            txtCodigo.ScrollBars = ScrollBars.Both;
-            txtCodigo.Size = new Size(450, 390);
-            txtCodigo.TabIndex = 5;
-            txtCodigo.WordWrap = false;
-            txtCodigo.MouseDown += txtCodigo_MouseDown;
-            txtCodigo.MouseUp += txtCodigo_MouseUp;
             // 
             // tabEtapas
             // 
@@ -468,6 +492,7 @@
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            flpCodigoContainer.ResumeLayout(false);
             flwFileOpen.ResumeLayout(false);
             flwFileOpen.PerformLayout();
             tabEtapas.ResumeLayout(false);
@@ -493,6 +518,11 @@
             PerformLayout();
         }
 
+        private void TxtCodigo_MouseDown(object sender, MouseEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
         private Label lblFilePath;
         private SplitContainer splitContainer1;
@@ -506,7 +536,6 @@
         private Button btnAbrirCodigo;
         private TextBox txtFilePath;
         private Button btnLimpaCodigo;
-        private TextBox txtCodigo;
         private TextBox txtCurrentToken;
         private LinkLabel lblCurrentTokenTypeLink;
         private TableLayoutPanel tlpLexerMain;
@@ -524,5 +553,9 @@
         private Label lblParserItemLinha;
         private Label lblParserItemColuna;
         private Label lblParserItemDescricao;
+        private FlowLayoutPanel flpCodigoContainer;
+        private RichTextBox rtbCodigoLines;
+        private RichTextBox txtCodigo;
+
     }
 }

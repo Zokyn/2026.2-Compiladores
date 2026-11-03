@@ -2,7 +2,7 @@ using DotNetEnv;
 using Lexico;
 using Sintatico;
 using Sintatico.Nodes;
-using System.Xml.Linq;
+using System.Text;
 
 namespace Interface
 {
@@ -13,9 +13,10 @@ namespace Interface
         private string _codigofonte { get; set; } = string.Empty;
         private List<Token>? _tokens { get; set; } = null;
         private ResultadoParser? _result { get; set; } = null;
-        private static string[] ColumnNames = {
+        public static string[] ColumnNames = {
                 "Id", "Lexema", "Inicio", "Fim", "Comprimento", "Linha", "Coluna",
             };
+        public static int Offset = 4;
         public Compilador()
         {
             Env.Load();
@@ -35,11 +36,9 @@ namespace Interface
 
             _filename = defaultPath;
 
-            LeArquivo(_filename);
+            _codigofonte = File.ReadAllText(_filename);
 
             List<Token>? tokens = ProcessaArquivo();
-
-            if (!string.IsNullOrEmpty(_codigofonte)) EscreveTextoCodigo();
 
             if (tokens != null && tokens?.Count > 0) _tokens = tokens;
         }
@@ -48,7 +47,7 @@ namespace Interface
             txtCodigo.BackColor = Color.FromArgb(40, 44, 52);
             txtCodigo.ForeColor = Color.FromArgb(171, 178, 191);
             txtCodigo.Font = new Font("Segoe UI", 10f, FontStyle.Bold);
-            txtCodigo.TextAlign = HorizontalAlignment.Left;
+
         }
         private void ConfiguraGridTokens()
         {
@@ -104,10 +103,6 @@ namespace Interface
             }
             return null;
         }
-        private void LeArquivo(string filename)
-        {
-            _codigofonte = File.ReadAllText(filename);
-        }
         /// <summary>
         /// Abre um OpenFileDialog que serve para selecionar o arquivo de código-fonte de entrada. 
         /// O caminho inicial do dialog é definido como a raiz do projeto, que buscada pelo método
@@ -139,7 +134,7 @@ namespace Interface
             //Fechado o dialog temos um FileName atribuido a ele
             _filename = dialog.FileName;
 
-            LeArquivo(_filename);
+            _codigofonte = File.ReadAllText(_filename);
 
             txtFilePath.Text = _filename;
 
@@ -179,6 +174,17 @@ namespace Interface
 
             txtCodigo.Text = _codigofonte.Replace("\r\n", "\n")
                                         .Replace("\n", Environment.NewLine); // codigo formatado
+            int totalLinhas = txtCodigo.Lines.Length;
+
+            if (totalLinhas == 0) totalLinhas = 1;
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 1; i < totalLinhas; i++)
+            {
+                sb.AppendLine(i.ToString());
+            }
+
+            rtbCodigoLines.Text = sb.ToString();
         }
         /// <summary>
         /// A partir de uma lista IReadOnlyList de tokens (se tiver), trata os tokens e os 
@@ -405,6 +411,7 @@ namespace Interface
         {
             txtCodigo.HideSelection = false;
             //if (txtCodigo.SelectionLength > 0) return;
+
 
             txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
             lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
