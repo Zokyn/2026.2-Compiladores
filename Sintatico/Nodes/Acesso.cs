@@ -11,21 +11,28 @@
     public class Acesso : Node
     {
         public string Identificador { get; set; } = "";
-        public Acesso? MaisAcesso { get; set; }
-        public override string Descricao => $"(Acesso) {Identificador}";
+        public List<Sufixo> Sufixos { get; } = new();
+        public override string Descricao =>
+            $"(Acesso) {Identificador}";
     }
-    // Ex.: ".livros"
-    public class AcessoMembro : Acesso
+    public abstract class Sufixo : Node
     {
-        public Acesso Origem { get; set; } // O que vem antes do ponto
-        public string Membro { get; set; } // O que fica depois do ponto
-        public override string Descricao => $"(Acesso de Membro) {Origem.Descricao}.{Membro}";
+        public abstract string Texto { get; }
+    }
+
+    // Ex.: ".livros"
+    public class SufixoMembro : Sufixo
+    {
+        public string Membro { get; set; } = "";
+        public override string Texto => $".{Membro}";
+        public override string Descricao => $"(Sufixo de Membro) {Texto}";
     }
     // Ex.: "[1]"
-    public class AcessoIndice : Acesso
+
+    public class SufixoIndice : Sufixo
     {
-        public Acesso Colecao { get; set; } // O que vem antes do colchetes
-        public int Indice { get; set; }     // O que fica entre os colchetes
-        public override string Descricao => $"(Acesso de Índice) {Colecao.Descricao}[{Indice}]";
+        public int Indice { get; set; }
+        public override string Texto => $"[{Indice}]";
+        public override string Descricao => $"(Sufixo de Índice) {Texto}";
     }
 }

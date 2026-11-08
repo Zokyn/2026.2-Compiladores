@@ -106,7 +106,7 @@ namespace Sintatico
                 int inicio = _posicao;
 
                 if (Verificar(TokenType.Identificador))
-                    conjunto.Itens.Add(ItemDado());
+                    conjunto.Itens.Add(Dado());
                 else
                     RegistrarErro("Esperado item de dados", $"Esperado item de dados (identificador), mas encontrado {Descrever(TokenAtual)}");
 
@@ -120,11 +120,11 @@ namespace Sintatico
 
         // <item_dado>                  ::= IDENTIFICADOR <resto_item_dado> | <literal>
         // <resto_item_dados>           ::= ATRIBUIDOR <valor> | <construtor> | <mais_acesso>
-        private ItemDado ItemDado()
+        private Dado Dado()
         {
             var token = Consumir(TokenType.Identificador, "item de dados");
             var identificador = token.Valor;
-            var item = new ItemDado(identificador);
+            var item = new Dado(identificador);
 
             if (Verificar(TokenType.Atribuidor))
             {
@@ -135,8 +135,13 @@ namespace Sintatico
             {
                 item.Resto = Posicionar(Construtor(), token);
             }
-            
-            return item;
+            // TO-DO: Implementar Dado -> MaisAcesso
+            else if (Verificar(TokenType.Acesso))
+            {
+                item.Resto = Posicionar(Acesso(), token);
+            }
+
+                return item;
         }
         #endregion
         #region Construtor
@@ -352,53 +357,37 @@ namespace Sintatico
         // <valor> ::= <literal> | <acesso> 
         private Node Valor() => Verificar(TokenType.Identificador) ? Acesso() : Literal();
         #region Acesso
-        // <acesso> ::= IDENTIFICADOR <resto_acesso>
-        private Acesso Acesso()
+        Acesso Acesso()
         {
-            // 1. Lê identificador base, considerado "nome" do acesso.
-            // Ex.: carro.cor, esse identificador inicial seria "carro"
-            Token token = Consumir(TokenType.Identificador, "acesso");
+            // Captura token identificador 
+            Token token = Consumir(TokenType.Identificador, "identificador do acesso");
+            // Atibui o identificador ao acesso, sendo o identificador a origem do acesso
+            var acesso = new Acesso { Identificador = token.Lexema };
 
-            Acesso nodeAtual = Posicionar(new Acesso { Identificador = token.Valor }, token);
-
-            bool fimDaArvore = false; 
-            while (!fimDaArvore)
+            while (TokenAtual.Tipo == TokenType.Acesso || TokenAtual.Tipo == TokenType.AbreTupla)
             {
-                if (Verificar(TokenType.Acesso)) // carro.cor 
-                {
-                    // Acesso a identificadores membro de um objeto, como atributos ou proprieadades
-                    AvancarToken(); // Pula o símbolo terminal "." 
-
-                    var membro = Consumir(TokenType.Identificador, "membro do objeto");
-
-                    nodeAtual = new AcessoMembro
-                    {
-                        Origem = nodeAtual,
-                        Membro = membro.Valor
-                    };
-                }
-                else if (Verificar(TokenType.AbreTupla)) // carro.rodas[0]
-                {
-                    // Acesso a um número inteiro cercado por delimitadores de tuplas, acessando um
-                    // item da colecao
-                    AvancarToken(); // Pula o símbolo terminal "[" 
-
-                    var indice = Consumir(TokenType.NumeroInteiro, "índice");
-
-                    ConsumirFechamento(TokenType.FechaTupla, "índice");
-
-                    nodeAtual = new AcessoIndice
-                    {
-                        Colecao = nodeAtual,
-                        Indice = int.Parse(indice.Valor)
-                    };
-                }
-                else
-                {
-                    fimDaArvore = true;
-                }
+                acesso.Sufixos.Add(Sufixo());
             }
-            return nodeAtual;
+
+            return acesso;
+        }
+        Sufixo Sufixo()
+        {
+            if (TokenAtual.Tipo == TokenType.Acesso)
+            {
+                Consumir(TokenType.Acesso, "sufixo de acesso");
+                return new SufixoMembro { Membro = Consumir(TokenType.Identificador, "nome do membro").Valor };
+            } else
+            {
+
+                Consumir(TokenType.AbreTupla);
+                var token = Consumir(TokenType.NumeroInteiro, "índice do conjunto");
+
+                var indice = int.Parse(token.Lexema);
+                Consumir(TokenType.FechaTupla);
+
+                return new SufixoIndice { Indice = indice };
+            }
         }
         #endregion
         #region Literal

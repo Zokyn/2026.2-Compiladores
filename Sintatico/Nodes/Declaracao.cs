@@ -24,7 +24,7 @@
     {
         private static int _count;
         private int _numeroId = numero ?? _count++;
-        public List<ItemDado> Itens { get; set; } = [];
+        public List<Dado> Itens { get; set; } = [];
         public override string Descricao => $"<conjunto_dados> [ ]";
         public override IEnumerable<Node> Filhos => Itens;
 
@@ -33,21 +33,18 @@
     // <mais_itens> ::= SEPARADOR <item_dado> <mais_itens> | <vazio>
     // <resto_item_dado> ::= ATRIBUIDOR <valor> | <construtor> | <mais_acesso>
     // <item_dado> ::= IDENTIFICADOR <resto_item_dado> | <literal>
-
-    public class ItemDado(string identificador) : Node
+    public enum Type
+    {
+        Identificador,
+        Literal
+    }
+    public class Dado(string identificador) : Node
     {
         public Node Resto { get; set; } = new Invalido(); // Atribuicao | Construtor | MaisAcesso
+        public Type Tipo { get; set; } = Type.Identificador; // Texto Literal | Numero Inteiro | Numero Real | Construtor/Classe | Estrutura/Lista | Componente
         public string Identificador { get; set; } = identificador;
         public override string Descricao => $"<item_dado> {Identificador}";
         public override IEnumerable<Node> Filhos => [Resto];
-    }
 
-    // IDENTIFICADOR <bloco_construtor>, ex.: produto(nome: "Caneca")
-    public class Instancia : Node
-    {
-        public string Nome { get; set; } = "";
-        public Construtor Construtor { get; set; } = new();
-        public override string Descricao => $"(Instância) {Nome}";
-        public override IEnumerable<Node> Filhos => Construtor.Argumentos;
     }
 }
