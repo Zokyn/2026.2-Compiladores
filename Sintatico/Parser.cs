@@ -79,7 +79,6 @@ namespace Sintatico
             }
             if (Verificar(TokenType.Atribuidor))
             {
-                AvancarToken();
                 declaracao.Definicao = Valor();
             }
             else
@@ -146,12 +145,16 @@ namespace Sintatico
         #endregion
         #region Construtor
         // <bloco_construtor> ::= ABRE_CONSTRUTOR <argumentos> FECHA_CONSTRUTOR
-        // <argumentos>       ::= <argumento> <mais_argumentos> | ε
-        // <mais_argumentos>  ::= SEPARADOR <argumento> <mais_argumentos> | ε
         private Construtor Construtor()
         {
-            var construtor = Posicionar(new Construtor(), Consumir(TokenType.AbreConstrutor, "construtor"));
+            Token origem = Consumir(TokenType.AbreConstrutor, "construtor");
 
+            return Construtor(origem);
+        }
+
+        private Construtor Construtor(Token origem)
+        {
+            var construtor = Posicionar(new Construtor(), origem);
             if (!Verificar(TokenType.FechaConstrutor))
             {
                 construtor.Argumentos.Add(Argumento());
@@ -165,36 +168,42 @@ namespace Sintatico
             ConsumirFechamento(TokenType.FechaConstrutor, "construtor");
             return construtor;
         }
-
+        public static bool VerificaLiteral(TokenType type) =>
+            type is TokenType.TextoLiteral or TokenType.NumeroReal or TokenType.NumeroInteiro;
         #region Argumento
-        // <argumento>       ::= IDENTIFICADOR <resto_argumento> | <literal>
-        // <resto_argumento> ::= ATRIBUIDOR <valor> | <construtor> | <mais_acesso>
-        private Node Argumento()
+        // <argumento>                 ::= <literal> | IDENTIFICADOR <resto_argumento> 
+        //<mais_argumentos>           ::= SEPARADOR<argumento> <mais_argumentos> | ε
+        //<resto_argumento>           ::= ATRIBUIDOR<valor> | <construtor> | <mais_acesso>
+        private Argumento Argumento()
         {
-            if (!Verificar(TokenType.Identificador)) return Literal();
-            else
+            if (VerificaLiteral(TokenAtual.Tipo))
             {
-                var token = AvancarToken();
-
-                if (Verificar(TokenType.Atribuidor))
-                {
-                    AvancarToken();
-                    return Posicionar(new Atribuicao { Nome = token.Valor, Valor = Valor() }, token);
-                }
-                if (Verificar(TokenType.AbreConstrutor))
-                {
-                    return Posicionar(Construtor(), token);
-                }
-                if (Verificar(TokenType.Acesso))
-                {
-                    return Acesso();
-                }
+                var literal = Consumir(TokenAtual.Tipo);
+                return Posicionar(new ArgumentoLiteral(new Literal(literal.Valor, literal.Tipo)), literal);
             }
 
-            RegistrarErro("Resto de argumento inválido.", $"Resto de argumento inválido. Esperado Atribuição, " +
-                $"Construtor ou Acesso, mas encontrado {Descrever(TokenAtual)}");
-            return new Invalido();
+            var identificador = Consumir(TokenType.Identificador, "argumento");
+            var argumento = Posicionar(new Argumento(), identificador);
+
+            // Argumento nomeado ex: `nome: "João"`
+            // ou argumento com construtor ex: `pessoa: Pessoa()`
+            if (TokenAtual.Tipo == TokenType.Atribuidor)
+            {
+                AvancarToken();
+                argumento.Nome = identificador.Valor;
+                argumento.Resto.Add(Valor());
+            }
+            else if (TokenAtual.Tipo == TokenType.AbreConstrutor)
+            {
+                argumento.Resto.Add(Construtor());
+            } else
+            {
+                argumento.Resto.Add(Acesso());
+            }
+
+            return argumento;
         }
+
         #endregion
 
         #endregion
@@ -354,20 +363,44 @@ namespace Sintatico
         #endregion
 
         #region Valor
-        // <valor> ::= <literal> | <acesso> 
-        private Node Valor() => Verificar(TokenType.Identificador) ? Acesso() : Literal();
+        /*
+         * <valor>                     ::= <literal> | IDENTIFICADOR <resto_valor>
+         * <resto_valor>                ::= <construtor> | <mais_acesso>
+         */
+        private Valor Valor() 
+        {
+            // Se não houver identificador, só pode ser um Valor Literal
+            if (!Verificar(TokenType.Identificador)) 
+            {
+                var literal = Consumir(TokenAtual.Tipo);
+
+                return Posicionar(new Valor(string.Empty, new Literal(literal.Valor, literal.Tipo)), literal);
+            }
+            var identificador = Consumir(TokenType.Identificador, "valor");
+
+            var valor = Posicionar(new Valor(identificador.Lexema), identificador);
+
+            if (TokenAtual.Tipo == TokenType.AbreConstrutor)
+                valor.Construtor = Construtor(identificador);
+            else
+                valor.Acesso = Acesso(identificador);
+
+            return valor;
+        }
         #region Acesso
         Acesso Acesso()
         {
             // Captura token identificador 
             Token token = Consumir(TokenType.Identificador, "identificador do acesso");
+            return Acesso(token);
+        }
+        Acesso Acesso(Token origem)
+        {
             // Atibui o identificador ao acesso, sendo o identificador a origem do acesso
-            var acesso = new Acesso { Identificador = token.Lexema };
+            var acesso = Posicionar(new Acesso { Identificador = origem.Lexema }, origem);
 
             while (TokenAtual.Tipo == TokenType.Acesso || TokenAtual.Tipo == TokenType.AbreTupla)
-            {
                 acesso.Sufixos.Add(Sufixo());
-            }
 
             return acesso;
         }
@@ -376,7 +409,7 @@ namespace Sintatico
             if (TokenAtual.Tipo == TokenType.Acesso)
             {
                 Consumir(TokenType.Acesso, "sufixo de acesso");
-                return new SufixoMembro { Membro = Consumir(TokenType.Identificador, "nome do membro").Valor };
+                return new SufixoMembro(Consumir(TokenType.Identificador, "nome do membro").Valor);
             } else
             {
 
@@ -386,27 +419,25 @@ namespace Sintatico
                 var indice = int.Parse(token.Lexema);
                 Consumir(TokenType.FechaTupla);
 
-                return new SufixoIndice { Indice = indice };
+                return new SufixoIndice(indice);
             }
         }
         #endregion
         #region Literal
         // <literal> ::= TEXTO_LITERAL | NUMERO_INTEIRO | NUMERO_REAL
-        private Node Literal()
+        Literal? Literal()
         {
             var token = TokenAtual;
             switch (token.Tipo)
             {
                 case TokenType.TextoLiteral:
-                    AvancarToken();
-                    return Posicionar(new Texto { Valor = token.Valor }, token);
                 case TokenType.NumeroInteiro:
                 case TokenType.NumeroReal:
                     AvancarToken();
-                    return Posicionar(new Numero { Valor = token.Valor, Real = token.Tipo == TokenType.NumeroReal }, token);
+                    return Posicionar(new Literal(token.Valor, token.Tipo), token);
                 default:
-                    RegistrarErro($"Esperado valor (identificador, texto ou número), mas encontrado {Descrever(token)}");
-                    return Posicionar(new Invalido(), token);
+                    RegistrarErro("Literal inválido", $"Esperado um valor literal (texto, inteiro ou real) e encontrado: ({TokenAtual.Tipo}) {TokenAtual.Lexema}");
+                    return null;
             }
         }
         #endregion
@@ -502,12 +533,11 @@ namespace Sintatico
             
             _resultado.Erros.Add(new ErroSintatico(titulo, mensagem, token.Linha, token.Coluna));
         }
-        /// <summary>Atribui, a partir do Node passado como parâmetro, a um Node, ou qualquer filho dele 
-        /// a linha e coluna do token encontrado. </summary>
+        /// <summary>Atribui no Node passado como parâmetro ou qualquer filho dele a linha e coluna do token encontrado. </summary>
         /// <typeparam name="T">Tipo herdado de node.</typeparam>
         /// <param name="node">Node que terá campos atulizados.</param>
         /// <param name="token">Token com linha e coluna que foi encontrado.</param>
-        /// <returns>Node ou classe derivada de Node com coluna de linha atualizados.</returns>
+        /// <returns>Node com coluna de linha atualizados.</returns>
         private static T Posicionar<T>(T node, Token token) where T : Node
         {
             node.Linha = token.Linha;

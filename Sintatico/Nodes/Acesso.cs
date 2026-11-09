@@ -13,7 +13,7 @@
         public string Identificador { get; set; } = "";
         public List<Sufixo> Sufixos { get; } = new();
         public override string Descricao =>
-            $"(Acesso) {Identificador}";
+            $"<acesso> {Identificador}";
     }
     public abstract class Sufixo : Node
     {
@@ -21,17 +21,17 @@
     }
 
     // Ex.: ".livros"
-    public class SufixoMembro : Sufixo
+    public class SufixoMembro(string membro) : Sufixo
     {
-        public string Membro { get; set; } = "";
+        public string Membro { get;} = membro;
         public override string Texto => $".{Membro}";
         public override string Descricao => $"(Sufixo de Membro) {Texto}";
     }
     // Ex.: "[1]"
 
-    public class SufixoIndice : Sufixo
+    public class SufixoIndice(int indice) : Sufixo
     {
-        public int Indice { get; set; }
+        public int Indice { get; } = indice;
         public override string Texto => $"[{Indice}]";
         public override string Descricao => $"(Sufixo de Índice) {Texto}";
     }

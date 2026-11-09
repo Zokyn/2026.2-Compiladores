@@ -63,7 +63,7 @@ do tipo Controle cujo Valor é a própria palavra.
 
 # Argumento 
 
-<argumento>                 ::= IDENTIFICADOR <resto_argumento> | <literal> 
+<argumento>                 ::= <literal> | IDENTIFICADOR <resto_argumento> 
 <mais_argumentos>           ::= SEPARADOR <argumento> <mais_argumentos> | ε
 <resto_argumento>           ::= ATRIBUIDOR <valor> | <construtor> | <mais_acesso>
 
@@ -99,11 +99,16 @@ do tipo Controle cujo Valor é a própria palavra.
 <resto_comparacao>          ::= OPERADOR_RELACIONAL <valor> | ε
 
 # Valores
-<valor>                     ::= <literal> | <acesso>
+<valor>                     ::= <literal> | IDENTIFICADOR <resto_valor>
+<resto_valor>                ::= <construtor> | <mais_acesso>
+
+# Acesso
 <acesso>                    ::= IDENTIFICADOR <mais_acesso>
 <mais_acesso>               ::= <sufixo> <mais_acesso> | ε
 <sufixo>                    ::= <membro_sufixo> | <indice_sufixo> 
 <membro_sufixo>             ::= ACESSO IDENTIFICADOR
 <indice_sufixo>             ::= ABRE_TUPLA <indice> FECHA_TUPLA
 <indice>                    ::= NUMERO_INTEIRO | IDENTIFICADOR
+
+# Literal 
 <literal>                   ::= TEXTO_LITERAL | NUMERO_INTEIRO | NUMERO_REAL

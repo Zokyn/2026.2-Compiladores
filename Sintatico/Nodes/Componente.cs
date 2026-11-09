@@ -7,15 +7,7 @@ namespace Sintatico.Nodes
         public string? Nome { get; set; }
         public Construtor Construtor { get; set; } = new();
         public List<Node> Corpo { get; } = new();
-        public override string Descricao => Nome is null ? $"(Componente) {Tipo}" : $"(Componente) {Tipo} {Nome}";
+        public override string Descricao => $"<componente> ({Tipo})" + $" {Nome}" ?? "";
         public override IEnumerable<Node> Filhos => Corpo.Prepend(Construtor);
-    }
-
-    // <bloco_construtor> ::= ABRE_CONSTRUTOR <argumentos> FECHA_CONSTRUTOR
-    public class Construtor : Node
-    {
-        public List<Node> Argumentos { get; set; } = new();
-        public override string Descricao => "<construtor> ( )";
-        public override IEnumerable<Node> Filhos => Argumentos;
     }
 }

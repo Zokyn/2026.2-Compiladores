@@ -132,8 +132,8 @@
             txtCodigo.TabIndex = 7;
             txtCodigo.Text = "";
             txtCodigo.WordWrap = false;
-            txtCodigo.MouseUp += txtCodigo_MouseUp;
             txtCodigo.MouseDown += txtCodigo_MouseDown;
+            txtCodigo.MouseUp += txtCodigo_MouseUp;
             // 
             // flwFileOpen
             // 
@@ -334,6 +334,7 @@
             treeParser.BackColor = Color.SlateGray;
             treeParser.Font = new Font("Segoe UI Black", 10F);
             treeParser.ForeColor = SystemColors.ControlLight;
+            treeParser.LineColor = Color.Aqua;
             treeParser.Location = new Point(3, 3);
             treeParser.Name = "treeParser";
             treeParser.Size = new Size(441, 351);
