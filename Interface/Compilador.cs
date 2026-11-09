@@ -102,7 +102,7 @@ namespace Interface
             lstErrosSintaticos.View = View.Details;
             lstErrosSintaticos.FullRowSelect = true;
             lstErrosSintaticos.GridLines = true;
-
+            lstErrosSintaticos.ShowGroups = true;
             lblErroSintaticoList.Text = "";
         }
 
@@ -450,21 +450,6 @@ namespace Interface
             dgvTokens.Focus();
         }
 
-        private void lstErrosSintaticos_DoubleClick(object sender, EventArgs e)
-        {
-            int index = lstErrosSintaticos.SelectedItems[0].Index;
-
-            string conteudoTexto = ListaErros[index].Titulo + "\n\t" + ListaErros[index].Message;
-
-            int posicao = ListaErros[index].Posicao;
-
-            // Atribui erro sintático ao textBox 
-            txtErroBox.Text = conteudoTexto;
-            // Seleciona posição do erro no txtCodigo
-            txtCodigo.Select(posicao, 1);
-            if (lstErrosSintaticos.SelectedItems.Count == 0) txtErroBox.Text = "Nenhum Erro Selecionado";
-        }
-
         private void treeParser_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (e.Node?.Tag is Node)
@@ -478,6 +463,26 @@ namespace Interface
         private void splitContainer2_Panel2_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void lstErrosSintaticos_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lstErrosSintaticos.SelectedItems.Count <= 0)
+            {
+                txtErroBox.Text = "Nenhum Erro Selecionado";
+                return;
+            }
+            
+            int index = lstErrosSintaticos.SelectedItems[0].Index;
+
+            string conteudoTexto = ListaErros[index].Titulo + "\n\t" + ListaErros[index].Message;
+
+            int posicao = ListaErros[index].Posicao;
+
+            // Atribui erro sintático ao textBox 
+            txtErroBox.Text = conteudoTexto;
+            // Seleciona posição do erro no txtCodigo
+            txtCodigo.Select(posicao, 1);
         }
     }
 }
