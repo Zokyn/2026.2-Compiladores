@@ -20,6 +20,7 @@ namespace Interface
         public static string[] ColumnNames = {
                 "Id", "Lexema", "Inicio", "Fim", "Comprimento", "Linha", "Coluna",
             };
+        public static ListViewGroup group = new ListViewGroup(key: "ErrosSintaticos", headerText: "Erros Sintáticos");
         public static int Offset = 4;
         public Compilador()
         {
@@ -95,6 +96,7 @@ namespace Interface
         {
             lstErrosSintaticos.Items.Clear();
             lstErrosSintaticos.Columns.Clear();
+            lstErrosSintaticos.Groups.Add(group);
             lstErrosSintaticos.Columns.Add("Titulo", 480, HorizontalAlignment.Left);
             lstErrosSintaticos.Columns.Add("Linha", 60, HorizontalAlignment.Center);
             lstErrosSintaticos.Columns.Add("Coluna", 60, HorizontalAlignment.Center);
@@ -334,7 +336,7 @@ namespace Interface
                 lstItem.SubItems.Add(new ListViewSubItem(lstItem, erro.Coluna.ToString()));
                 //lstItem.SubItems.Add(new ListViewSubItem(lstItem, count++.ToString()));
 
-
+                lstItem.Group = group;
                 lstItem.Text = erro.Titulo;
                 lstErrosSintaticos.Items.Add(lstItem);
 
