@@ -3,6 +3,7 @@ using Lexico;
 using Sintatico;
 using Sintatico.Nodes;
 using System.Text;
+using static System.Windows.Forms.ListViewItem;
 
 namespace Interface
 {
@@ -25,7 +26,8 @@ namespace Interface
             InitializeComponent();
             ConfiguraCodeBlock();
             ConfiguraGridTokens();
-            ConfiguraControles();
+            ConfiguraTokensLabels();
+            ConfiguraListaErrosSintaticos();
             //
             LeCodigoFonteLocal();
             PreencheEstruturasControle();
@@ -80,7 +82,7 @@ namespace Interface
                     dgvTokens.Columns[col]!.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             };
         }
-        private void ConfiguraControles()
+        private void ConfiguraTokensLabels()
         {
             txtCurrentToken.TextAlign = HorizontalAlignment.Center;
             txtCurrentToken.Font = new Font("Segoe UI", 12f, FontStyle.Regular);
@@ -88,7 +90,20 @@ namespace Interface
             lblCurrentTokenTypeLink.Font = new Font("Arial, sans serif", 14f, FontStyle.Bold);
             lblCurrentTokenTypeLink.BorderStyle = BorderStyle.FixedSingle;
         }
+        private void ConfiguraListaErrosSintaticos()
+        {
+            lstErrosSintaticos.Items.Clear();
+            lstErrosSintaticos.Columns.Clear();
+            lstErrosSintaticos.Columns.Add("Titulo", 400, HorizontalAlignment.Left);
+            lstErrosSintaticos.Columns.Add("Linha", 60, HorizontalAlignment.Center);
+            lstErrosSintaticos.Columns.Add("Coluna", 60, HorizontalAlignment.Center);
 
+            lstErrosSintaticos.View = View.Details;
+            lstErrosSintaticos.FullRowSelect = true;
+            lstErrosSintaticos.GridLines = true; 
+
+            lblErroSintaticoList.Text = "";
+        }
 
 
         // EXPLORAÇÃO E LEITURA DE ARQUIVO
@@ -304,17 +319,21 @@ namespace Interface
 
         private void ListaErrosSintaticos()
         {
-            lstErrosSintaticos.Columns.Clear();
-            lblErroSintaticoList.Text = "";
-
             if (_result == null) return;
 
             List<ErroSintatico> erros = _result.Erros;
 
+            int count = 0;
             foreach (ErroSintatico erro in erros)
             {
-                ListViewItem lstItem = new(erro.Message);
+                ListViewItem lstItem = new ListViewItem(text: erro.Message);
+
+                lstItem.SubItems.Add(new ListViewSubItem(lstItem, erro.Linha.ToString()));
+                lstItem.SubItems.Add(new ListViewSubItem(lstItem, erro.Coluna.ToString()));
+
+                lstItem.SubItems.Add(new ListViewSubItem(lstItem, count++.ToString()));
                 lstErrosSintaticos.Items.Add(lstItem);
+
             }
 
             switch (erros.Count)
