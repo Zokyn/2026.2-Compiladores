@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace Lexico
 {
@@ -28,7 +23,7 @@ namespace Lexico
             "sendo"
         };
         /// <summary>Expressão regular com grupos nomeados acomplando todas as expressões regulares de cada TokenType</summary>
-        public Regex Expressoes = new Regex(@"
+        public static Regex Expressoes = new Regex(@"
             (?<EspacosVazios>[ \t\r\n]+) 
             | (?<Dados> dados )
             | (?<Identificador> [a-zA-Z_][a-zA-Z0-9_]* (?:-[a-zA-Z0-9_]+)* )
@@ -45,7 +40,7 @@ namespace Lexico
             | (?<Separador> [,] )
             | (?<SeparadorBloco> [;] )
             | (?<Acesso> [.] )
-            | (?<Booleano> verdadeiro | verdade | falso | falsidade )
+            | (?<Booleano> \b(?:v(?:erdadeiro|erdade)? | (f(?:also|alsidade)?)\b) )
             | (?<OperadorRelacional> == | != | >= | <= | > | < )
             | (?<OperadorLogico> && | \|\| )
             | (?<Incremento> \+\+ )
@@ -75,16 +70,16 @@ namespace Lexico
             TokenType.Atribuidor => "Símbolo de Atribuidor",
             TokenType.Separador => "Símbolo de Separador",
             TokenType.Acesso => "Símbolo de Acesso",
-            TokenType.OperadorRelacional => "Operador Relacional",
-            TokenType.OperadorLogico => "Operador Lógico",
             TokenType.Incremento => "Operador de Incremento",
             TokenType.Decremento => "Operador de Decremento",
             TokenType.FimDeArquivo => "Token de Fim de arquivo",
             TokenType.Erro => "Erro",
             _ => throw new ErroLexico("TokenType sem Categoria definida.", linha, coluna)
         };
+
+        public static string GetNomeByType(TokenType tipo) => GetNomeByType(tipo, 0, 0);
         /// <summary>Método utilitário que retorna o nome do TokenType</summary>
-        /// <returns>Uma string com o nome do token</returns>
+        /// <returns>Uma string com o nome do token.</returns>
         /// <exception cref="Exception">Erro de TokenType sem nome definido.</exception>
         public static string GetNomeByType(TokenType tipo, int linha, int coluna) => tipo switch
         {
@@ -104,13 +99,12 @@ namespace Lexico
             TokenType.Separador => "Separador",
             TokenType.Atribuidor => "Atribuidor",
             TokenType.Acesso => "Acesso",
-            TokenType.OperadorRelacional => "OperadorRelacional",
-            TokenType.OperadorLogico => "OperadorLogico",
+            TokenType.Booleano => "Booleano",
             TokenType.Incremento => "Incremento",
             TokenType.Decremento => "Decremento",
             TokenType.FimDeArquivo => "FimDeArquivo",
             TokenType.Erro => "Erro",
-            _ => throw new ErroLexico("TokenType sem Nome definido.", linha, coluna)
+            _ => (linha == 0 || coluna == 0) ? throw new Exception("TokenType sem Nome definido.") : throw new ErroLexico("TokenType sem Nome definido.", linha, coluna)
         };
         /// <summary>Método utilitário que retorna um exemplo para o TokenType</summary>
         /// <returns>Uma string com o exemplo do token</returns>
@@ -133,8 +127,7 @@ namespace Lexico
             TokenType.Separador => ",",
             TokenType.Atribuidor => ":",
             TokenType.Acesso => ".",
-            TokenType.OperadorRelacional => "==, !=, >=, <=, >, <",
-            TokenType.OperadorLogico => "&&, ||",
+            TokenType.Booleano => "verdeiro, falso",
             TokenType.Incremento => "++",
             TokenType.Decremento => "--",
             TokenType.FimDeArquivo => "FimDeArquivo",

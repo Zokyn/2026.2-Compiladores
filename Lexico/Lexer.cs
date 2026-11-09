@@ -53,8 +53,6 @@ namespace Lexico
             { "Separador", TokenType.Separador },
             { "SeparadorBloco", TokenType.SeparadorBloco },
             { "Acesso", TokenType.Acesso },
-            { "OperadorRelacional", TokenType.OperadorRelacional },
-            { "OperadorLogico", TokenType.OperadorLogico },
             { "Incremento", TokenType.Incremento },
             { "Decremento", TokenType.Decremento },
             { "EspacosVazios", TokenType.EspacosVazios },
@@ -68,10 +66,12 @@ namespace Lexico
         /// <exception cref="Exception"></exception>
         public List<Token> Tokenizar()
         {
-            List<Token> tokens = new List<Token>();
+            Regex expressoes = Utils.Expressoes;
+
+            List<Token> tokens = [];
             int linhaAtual = 1, ultimaQuebraLinha = -1;
             int colunaAtual = -1;
-            foreach (Match m in Expressoes.Matches(_entrada))
+            foreach (Match m in expressoes.Matches(_entrada))
             {
                 string grupoNome = Grupos.Keys.First(nome => m.Groups[nome].Success);
                 Grupos.TryGetValue(grupoNome, out TokenType? tipo);
@@ -107,11 +107,11 @@ namespace Lexico
                         // então verifica se o valor do identificador está nas listas de palavras-chave.
                         if (tipo.Value == TokenType.Identificador)
                         {
-                            if (Componentes.Contains(m.Value)) // pagina, cartao, secao, botao, selo
+                            if (Utils.Componentes.Contains(m.Value)) // pagina, cartao, secao, botao, selo
                                 tipo = TokenType.Componente;
-                            else if (Controles.Contains(m.Value)) // para, em, se, enquanto, sendo
+                            else if (Utils.Controles.Contains(m.Value)) // para, em, se, enquanto, sendo
                                 tipo = TokenType.Controle;
-                            else if (m.Value == PalavraDados) // dados
+                            else if (m.Value == Utils.PalavraDados) // dados
                                 tipo = TokenType.Dados;
                         }
                         // O valor do texto literal é o conteúdo sem as aspas delimitadoras.

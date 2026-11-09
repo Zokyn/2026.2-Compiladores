@@ -252,114 +252,13 @@ namespace Sintatico
         private Node? Elemento()
         {
             if (Verificar(TokenType.Componente)) return Componente();
-            if (VerificarControle("para") || VerificarControle("enquanto")) return Iteracao();
-            if (VerificarControle("se")) return Condicional();
+            //if (VerificarControle("para") || VerificarControle("enquanto")) return Iteracao();
+            //if (VerificarControle("se")) return Condicional();
 
             RegistrarErro("Esperado componente ou controle.", $"Esperado componente, 'para', 'enquanto' ou 'se', " +
                 $"mas encontrado {Descrever(TokenAtual)}");
             return null;
         }
-        #endregion
-
-        #region Controle
-        #region Iteracao
-        // <iteracao>   ::= "para" IDENTIFICADOR <resto_para> <bloco_componente>
-        //                | "enquanto" <condicao> <bloco_componente>
-        // <resto_para> ::= "em" <colecao> | "enquanto" <condicao> "sendo" <passo>
-        private Controle Iteracao()
-        {
-            if (VerificarControle("enquanto"))
-            {
-                var enquanto = Posicionar(new Enquanto(), AvancarToken());
-                enquanto.Condicao = Condicao();
-                BlocoComponente(enquanto.Corpo);
-                return enquanto;
-            }
-
-            var para = ConsumirControle("para");
-            var variavel = Consumir(TokenType.Identificador, "variável do 'para'").Valor;
-            Controle iteracao;
-
-            if (VerificarControle("enquanto"))
-            {
-                AvancarToken();
-                var paraEnquanto = Posicionar(new ParaEnquanto { Variavel = variavel, Condicao = Condicao() }, para);
-                ConsumirControle("sendo");
-                paraEnquanto.Passo = Passo();
-                iteracao = paraEnquanto;
-            }
-            else
-            {
-                ConsumirControle("em");
-                iteracao = Posicionar(new ParaEm { Variavel = variavel, Colecao = Colecao() }, para);
-            }
-
-            BlocoComponente(iteracao.Corpo);
-            return iteracao;
-        }
-
-        // <colecao> ::= <acesso> | <lista_dados>
-        private Node Colecao() =>
-            Verificar(TokenType.AbreTupla) ? ConjuntoDados() : Acesso();
-
-        // <passo>       ::= IDENTIFICADOR <resto_passo>
-        // <resto_passo> ::= ATRIBUIDOR <valor> | INCREMENTO | DECREMENTO
-        private Node Passo()
-        {
-            var token = Consumir(TokenType.Identificador, "passo do 'para'");
-
-            if (Verificar(TokenType.Atribuidor))
-            {
-                AvancarToken();
-                return Posicionar(new Atribuicao { Nome = token.Valor, Valor = Valor() }, token);
-            }
-            if (Verificar(TokenType.Incremento) || Verificar(TokenType.Decremento))
-                return Posicionar(new Incremento { Variavel = token.Valor, Operador = AvancarToken().Valor }, token);
-
-            RegistrarErro($"Esperado ':', '++' ou '--' no passo do 'para', mas encontrado {Descrever(TokenAtual)}");
-            return Posicionar(new Invalido(), TokenAtual);
-        }
-        #endregion
-
-        #region Condicional
-        // <condicional> ::= "se" <condicao> <bloco_componente>
-        private Condicional Condicional()
-        {
-            var condicional = Posicionar(new Condicional(), ConsumirControle("se"));
-            condicional.Condicao = Condicao();
-            BlocoComponente(condicional.Corpo);
-            return condicional;
-        }
-        #region Condicao
-        // <condicao>      ::= <comparacao> <mais_condicao>
-        // <mais_condicao> ::= OPERADOR_LOGICO <comparacao> <mais_condicao> | ε
-        private Node Condicao()
-        {
-            var esquerda = Comparacao();
-
-            while (Verificar(TokenType.OperadorLogico))
-            {
-                var operador = AvancarToken();
-                esquerda = Posicionar(new OperacaoBinaria { Operador = operador.Valor, Esquerda = esquerda, Direita = Comparacao() }, operador);
-            }
-            return esquerda;
-        }
-        #endregion
-        #endregion
-
-        #region Comparacao
-        // <comparacao>       ::= <valor> <resto_comparacao>
-        // <resto_comparacao> ::= OPERADOR_RELACIONAL <valor> | ε
-        private Node Comparacao()
-        {
-            Node esquerda = Valor();
-
-            if (!Verificar(TokenType.OperadorRelacional)) return esquerda;
-
-            Token operador = AvancarToken();
-            return Posicionar(new OperacaoBinaria { Operador = operador.Valor, Esquerda = esquerda, Direita = Valor() }, operador);
-        }
-        #endregion
         #endregion
 
         #region Valor
@@ -548,8 +447,7 @@ namespace Sintatico
         /// <summary>Nome legível de um tipo de token: o próprio símbolo para delimitadores, ex.: ')'.</summary>
         private static string Nome(TokenType tipo)
         {
-            string exemplo = Utils.GetExampleByType(tipo);
-            return exemplo.Length <= 2 ? $"'{exemplo}'" : Utils.GetNomeByType(tipo);
+            return Utils.GetExampleByType(tipo).Length <= 2 ? $"'{Utils.GetExampleByType(tipo)}'" : Utils.GetNomeByType(tipo);
         }
         /// <summary>Método que transforma o Token recebido em texto, iniciado por seu tipo e seguido do lexema.</summary>
         /// <param name="token">Token que será descrito</param>

@@ -12,7 +12,6 @@ namespace Interface
         public int Linha { get; init; }
         public int Coluna { get; init; }
         public int Comprimento { get; init; }
-        public string Categoria { get; init; } = "";
 
         public TokenType TipoEnum { get; init; }
     }

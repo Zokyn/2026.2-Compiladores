@@ -7,53 +7,114 @@ namespace Lexico
         [Description("Palavra-Chave Componente")]
         Componente,    // pagina, secao, cartao, botao, selo
         /// <summary>
-        /// Tipo de Token da Palavra-Chave de Dados (dados).
+        /// Palavra-Chave de Dados. ex: dados.
         /// </summary>
         [Description("Palavra-Chave Dados")]
         Dados,
         /// <summary>
-        /// Tipo de Token das Palavras-Chave de Controle (para, em, se, enquanto, sendo).
+        /// Palavras-Chave de Controle. ex: para, em, se, enquanto, sendo.
         /// </summary>
         [Description("Palavra-Chave de Controle")]
         Controle,
+        /// <summary>
+        /// Identificadores, nomes usados para referenciar componentes, 
+        /// controles e dados. ex: nome, idade, endereco, telefone, email, etc.
+        /// </summary>
         [Description("Identificador")]
         Identificador,  // controle, componente e dados
+        /// <summary>
+        /// Uma cadeia de texto literal, delimitado por aspas duplas.
+        /// ex: "Alô, mamãe", "Hello World", "Hi"
+        /// </summary>
         [Description("Texto Literal")]
-        TextoLiteral,   // "AAAAA", "Hello World", "Hi"
+        TextoLiteral,
+        /// <summary>
+        /// Um número real, podendo ser inteiro ou decimal, com ponto como 
+        /// separador decimal. ex: 1.05, .5, 0.0, ...
+        /// </summary>
         [Description("Numero Real")]
-        NumeroReal,     // 1.05, .5, 0.0, ...
+        NumeroReal,
+        /// <summary>
+        /// Um número inteiro. 
+        /// ex: 1, 2, 0, -1, -2, ...
+        /// </summary>
         [Description("Numero Inteiro")]
-        NumeroInteiro,  // 1, 2, 0, ...
+        NumeroInteiro,
+        /// <summary>
+        /// Símbolo de abertura de bloco construtor, representado por (.
+        /// </summary>
         [Description("Abre Construtor")]
-        AbreConstrutor, // (
+        AbreConstrutor,
+        /// <summary>
+        /// Símbolo de fechamento de bloco construtor, representado por ).
+        /// </summary>
         [Description("Fecha Construtor")]
-        FechaConstrutor,// )
+        FechaConstrutor,
+        /// <summary>
+        /// Símbolo de abertura de bloco de componente, representado por {.
+        /// </summary>
         [Description("Abre Bloco")]
-        AbreBloco,  // {
+        AbreBloco,
+        /// <summary>
+        /// Símbolo de fechamento de bloco de componente, representado por }.
+        /// </summary>
         [Description("Fecha Bloco")]
-        FechaBloco, // }
+        FechaBloco,
+        /// <summary>
+        /// Símbolo de abertura de tupla, representado por [.
+        /// </summary>
         [Description("Abre Tupla")]
-        AbreTupla,  // [
+        AbreTupla,
+        /// <summary>
+        /// Símbolo de fechamneto de tupla, representado por ].
+        /// </summary>
         [Description("Fecha Tupla")]
-        FechaTupla, // ]
+        FechaTupla,
+        /// <summary>
+        /// Símbolo de atribuição, representado por :.
+        /// </summary>
         [Description("Símbolo Atribuidor")]
-        Atribuidor, // :
+        Atribuidor,
+        /// <summary>
+        /// Símbolo de separação de itens, representado por ,.
+        /// </summary>
         [Description("Separador de Itens")]
-        Separador,  // ,
+        Separador,
+        /// <summary>
+        /// Símbolo de separação de blocos, representado por ;.
+        /// </summary>
         [Description("Separador de Bloco")]
         SeparadorBloco,
+        /// <summary>
+        /// Símbolo de acesso a membros de um componente, representado por ..
+        /// </summary>
         [Description("Símbolo de Acesso")]
-        Acesso, // .
-        [Description("Operador Relacional")]
-        OperadorRelacional, // ==, !=, >=, <=, >, <
-        [Description("Operador Lógico")]
-        OperadorLogico, // &&, ||
+        Acesso,
+        /// <summary>
+        /// Palavra-chave de booleano, podendo ser variações entre v, verdadeiro, verdade, f, falso, falsidade
+        /// </summary>
+        [Description("Palavra-Chave de Booleano")]
+        Booleano,
+        /// <summary>
+        /// Símbolo de incremento, representado por ++.
+        /// </summary>
         [Description("Incremento")]
-        Incremento, // ++
+        Incremento,
+        /// <summary>
+        /// Símbolo de decremento, representado por --.
+        /// </summary>
         [Description("Decremento")]
-        Decremento, // --
+        Decremento,
+        /// <summary>
+        /// Símbolo demarcador de Fim de Arquivo. Não possui representação no código-fonte, uma vez que é gerado
+        /// pelo analisador léxico e inserido no final da lista de tokens. Demarca o final do arquivo-fonte.
+        /// </summary>
         [Description("FimDeArquivo")]
-        FimDeArquivo, // EOF ou FDA
+        FimDeArquivo,
+        /// <summary>
+        /// Símbolo inicial de comentário, representado por >. O comentário é encerrado pelo final da linha, 
+        /// ou seja, pelo caractere de nova linha \n.
+        /// </summary>
         [Description("Comentários")]
         Comentarios, // > 
         [Description("Espaços Vazios")]

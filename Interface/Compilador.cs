@@ -16,7 +16,7 @@ namespace Interface
         private List<Token>? _tokens { get; set; } = null;
         private ResultadoParser? _result { get; set; } = null;
 
-        public List<ErroSintatico> ListaErros => _result.Erros;
+        public List<ErroSintatico>? ListaErros => _result?.Erros;
         public static string[] ColumnNames = {
                 "Id", "Lexema", "Inicio", "Fim", "Comprimento", "Linha", "Coluna",
             };
@@ -221,14 +221,13 @@ namespace Interface
             var linhas = _tokens.Select((t, i) => new TokenItem
             {
                 Id = i + 1,
-                Tipo = Utils.GetNomeByType(t.Tipo),
+                Tipo = Utils.GetNomeByType(t.Tipo, t.Linha, t.Coluna),
                 Inicio = t.Posicao,
                 Fim = t.Posicao + t.Comprimento,
                 Lexema = t.Lexema,
                 Linha = t.Linha,
                 Coluna = t.Coluna,
                 Comprimento = t.Lexema.Length,
-                Categoria = Utils.GetCategoriaByType(t.Tipo),
                 TipoEnum = t.Tipo
             }).ToList();
 
@@ -334,13 +333,10 @@ namespace Interface
                 lstItem.SubItems.Add(new ListViewSubItem(lstItem, count.ToString()));
                 lstItem.SubItems.Add(new ListViewSubItem(lstItem, erro.Linha.ToString()));
                 lstItem.SubItems.Add(new ListViewSubItem(lstItem, erro.Coluna.ToString()));
-                //lstItem.SubItems.Add(new ListViewSubItem(lstItem, count++.ToString()));
 
                 lstItem.Group = group;
                 lstItem.Text = erro.Titulo;
                 lstErrosSintaticos.Items.Add(lstItem);
-
-
             }
 
             switch (erros.Count)
@@ -469,6 +465,12 @@ namespace Interface
 
         private void lstErrosSintaticos_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (ListaErros == null || ListaErros.Count <= 0)
+            {
+                txtErroBox.Text = "Nenhum Erro Sintático";
+                return;
+            }
+
             if (lstErrosSintaticos.SelectedItems.Count <= 0)
             {
                 txtErroBox.Text = "Nenhum Erro Selecionado";
