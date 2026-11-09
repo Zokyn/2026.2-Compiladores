@@ -113,12 +113,18 @@ namespace Lexico
         FimDeArquivo,
         /// <summary>
         /// Símbolo inicial de comentário, representado por >. O comentário é encerrado pelo final da linha, 
-        /// ou seja, pelo caractere de nova linha \n.
+        /// ou seja, pelo caractere de nova linha \n ou delimitado por <<< >>> para comentários multilinhas. 
         /// </summary>
         [Description("Comentários")]
         Comentarios, // > 
+        /// <summary>
+        /// Espaços, tabulação, nova linha, retorno de carro e espaço em branco. Lidos como \t, \n, \r e ' '.
+        /// </summary>
         [Description("Espaços Vazios")]
-        EspacosVazios, // \t, \n, \r, ' '
+        EspacosVazios,
+        /// <summary>
+        /// Denotador de erro. Usado apenas para debug do analisador léxico e levantamento de exceções.
+        /// </summary>
         [Description("Erro")]
         Erro,
     }
