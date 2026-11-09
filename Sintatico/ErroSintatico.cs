@@ -8,7 +8,7 @@
         public int Coluna { get; }
         public int Posicao { get; }
         public ErroSintatico(string titulo, string mensagem, int linha, int coluna, int posicao)
-            : base($"Erro sintático [{linha};{coluna}]: {mensagem}")
+            : base($"Erro sintático [{linha};{coluna}]: {titulo}" + (!string.IsNullOrEmpty(mensagem) ? $"\n\t{mensagem}": ""))
         {
             Titulo = titulo;
             Mensagem = mensagem;

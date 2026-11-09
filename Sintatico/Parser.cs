@@ -514,7 +514,7 @@ namespace Sintatico
             }
         }
 
-        private void RegistrarErro(string mensagem) => RegistrarErro("", mensagem);
+        private void RegistrarErro(string titulo) => RegistrarErro(titulo, "");
         private void RegistrarErro(string titulo, string mensagem) => RegistrarErro(titulo, mensagem, TokenAtual);
         /// <summary>
         /// Registra erro, armazenando a mensagem e um Token de entrada (por padrão, TokenAtual).

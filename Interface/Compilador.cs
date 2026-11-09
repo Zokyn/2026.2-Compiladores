@@ -3,6 +3,7 @@ using Lexico;
 using Sintatico;
 using Sintatico.Nodes;
 using System.Text;
+using System.Windows.Forms;
 using static System.Windows.Forms.ListViewItem;
 
 namespace Interface
@@ -94,13 +95,13 @@ namespace Interface
         {
             lstErrosSintaticos.Items.Clear();
             lstErrosSintaticos.Columns.Clear();
-            lstErrosSintaticos.Columns.Add("Titulo", 400, HorizontalAlignment.Left);
+            lstErrosSintaticos.Columns.Add("Titulo", 480, HorizontalAlignment.Left);
             lstErrosSintaticos.Columns.Add("Linha", 60, HorizontalAlignment.Center);
             lstErrosSintaticos.Columns.Add("Coluna", 60, HorizontalAlignment.Center);
 
             lstErrosSintaticos.View = View.Details;
             lstErrosSintaticos.FullRowSelect = true;
-            lstErrosSintaticos.GridLines = true; 
+            lstErrosSintaticos.GridLines = true;
 
             lblErroSintaticoList.Text = "";
         }
@@ -326,13 +327,17 @@ namespace Interface
             int count = 0;
             foreach (ErroSintatico erro in erros)
             {
-                ListViewItem lstItem = new ListViewItem(text: erro.Message);
-
+                ListViewItem lstItem = new ListViewItem();
+                count++;
+                lstItem.SubItems.Add(new ListViewSubItem(lstItem, count.ToString()));
                 lstItem.SubItems.Add(new ListViewSubItem(lstItem, erro.Linha.ToString()));
                 lstItem.SubItems.Add(new ListViewSubItem(lstItem, erro.Coluna.ToString()));
+                //lstItem.SubItems.Add(new ListViewSubItem(lstItem, count++.ToString()));
 
-                lstItem.SubItems.Add(new ListViewSubItem(lstItem, count++.ToString()));
+
+                lstItem.Text = erro.Titulo;
                 lstErrosSintaticos.Items.Add(lstItem);
+
 
             }
 
@@ -447,9 +452,9 @@ namespace Interface
 
         private void lstErrosSintaticos_DoubleClick(object sender, EventArgs e)
         {
-            string conteudoTexto = lstErrosSintaticos.SelectedItems[0].Text;
-
             int index = lstErrosSintaticos.SelectedItems[0].Index;
+
+            string conteudoTexto = ListaErros[index].Titulo + "\n\t" + ListaErros[index].Message;
 
             int posicao = ListaErros[index].Posicao;
 
@@ -468,6 +473,11 @@ namespace Interface
                 lblParserItemLinha.Text = $"{((Node)e.Node.Tag).Linha}";
                 lblParserItemDescricao.Text = $"{((Node)e.Node.Tag).Descricao}";
             }
+        }
+
+        private void splitContainer2_Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

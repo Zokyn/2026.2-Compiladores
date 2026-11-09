@@ -98,7 +98,7 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(tabEtapas);
-            splitContainer1.Size = new Size(1084, 426);
+            splitContainer1.Size = new Size(1120, 426);
             splitContainer1.SplitterDistance = 450;
             splitContainer1.TabIndex = 7;
             // 
@@ -188,7 +188,7 @@
             tabEtapas.Location = new Point(0, 0);
             tabEtapas.Name = "tabEtapas";
             tabEtapas.SelectedIndex = 0;
-            tabEtapas.Size = new Size(630, 426);
+            tabEtapas.Size = new Size(666, 426);
             tabEtapas.TabIndex = 4;
             // 
             // tabLexico
@@ -197,7 +197,7 @@
             tabLexico.Location = new Point(4, 24);
             tabLexico.Name = "tabLexico";
             tabLexico.Padding = new Padding(3);
-            tabLexico.Size = new Size(622, 398);
+            tabLexico.Size = new Size(658, 398);
             tabLexico.TabIndex = 0;
             tabLexico.Text = "Lexico";
             tabLexico.UseVisualStyleBackColor = true;
@@ -215,7 +215,7 @@
             tlpLexerMain.RowCount = 2;
             tlpLexerMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 64F));
             tlpLexerMain.RowStyles.Add(new RowStyle());
-            tlpLexerMain.Size = new Size(616, 392);
+            tlpLexerMain.Size = new Size(652, 392);
             tlpLexerMain.TabIndex = 3;
             // 
             // tableLayoutPanel1
@@ -235,7 +235,7 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 90.90909F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090909F));
-            tableLayoutPanel1.Size = new Size(610, 58);
+            tableLayoutPanel1.Size = new Size(624, 58);
             tableLayoutPanel1.TabIndex = 2;
             // 
             // txtCurrentToken
@@ -284,7 +284,7 @@
             dgvTokens.Dock = DockStyle.Fill;
             dgvTokens.Location = new Point(3, 67);
             dgvTokens.Name = "dgvTokens";
-            dgvTokens.Size = new Size(610, 322);
+            dgvTokens.Size = new Size(646, 322);
             dgvTokens.TabIndex = 2;
             dgvTokens.SelectionChanged += dgvTokens_SelectionChanged;
             // 
@@ -294,7 +294,7 @@
             tabSintatico.Location = new Point(4, 24);
             tabSintatico.Name = "tabSintatico";
             tabSintatico.Padding = new Padding(3);
-            tabSintatico.Size = new Size(622, 398);
+            tabSintatico.Size = new Size(658, 398);
             tabSintatico.TabIndex = 1;
             tabSintatico.Text = "Sintatico";
             tabSintatico.UseVisualStyleBackColor = true;
@@ -302,18 +302,24 @@
             // splitContainer2
             // 
             splitContainer2.Dock = DockStyle.Fill;
+            splitContainer2.FixedPanel = FixedPanel.Panel1;
             splitContainer2.Location = new Point(3, 3);
             splitContainer2.Name = "splitContainer2";
             // 
             // splitContainer2.Panel1
             // 
             splitContainer2.Panel1.Controls.Add(flowLayoutPanel1);
+            splitContainer2.Panel1MinSize = 360;
             // 
             // splitContainer2.Panel2
             // 
+            splitContainer2.Panel2.AutoScroll = true;
+            splitContainer2.Panel2.BackColor = Color.Transparent;
             splitContainer2.Panel2.Controls.Add(flpListErros);
+            splitContainer2.Panel2.Padding = new Padding(4);
+            splitContainer2.Panel2.Paint += splitContainer2_Panel2_Paint;
             splitContainer2.Panel2MinSize = 64;
-            splitContainer2.Size = new Size(616, 392);
+            splitContainer2.Size = new Size(652, 392);
             splitContainer2.SplitterDistance = 360;
             splitContainer2.TabIndex = 1;
             // 
@@ -331,15 +337,15 @@
             // 
             // treeParser
             // 
-            treeParser.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            treeParser.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             treeParser.BackColor = Color.SlateGray;
             treeParser.Font = new Font("Segoe UI Black", 10F);
             treeParser.ForeColor = SystemColors.ControlLight;
             treeParser.LineColor = Color.Aqua;
             treeParser.Location = new Point(3, 3);
-            treeParser.MinimumSize = new Size(0, 300);
+            treeParser.MinimumSize = new Size(190, 300);
             treeParser.Name = "treeParser";
-            treeParser.Size = new Size(441, 327);
+            treeParser.Size = new Size(355, 300);
             treeParser.TabIndex = 0;
             treeParser.AfterSelect += treeParser_AfterSelect;
             // 
@@ -352,7 +358,7 @@
             tableLayoutPanel2.Controls.Add(lblParserItemLinha, 0, 0);
             tableLayoutPanel2.Controls.Add(lblParserItemColuna, 1, 0);
             tableLayoutPanel2.Controls.Add(lblParserItemDescricao, 2, 0);
-            tableLayoutPanel2.Location = new Point(3, 336);
+            tableLayoutPanel2.Location = new Point(3, 309);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 1;
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
@@ -404,7 +410,7 @@
             lblTreeNaoCarregada.AutoSize = true;
             lblTreeNaoCarregada.BackColor = Color.Transparent;
             lblTreeNaoCarregada.ForeColor = SystemColors.GrayText;
-            lblTreeNaoCarregada.Location = new Point(3, 372);
+            lblTreeNaoCarregada.Location = new Point(3, 345);
             lblTreeNaoCarregada.Name = "lblTreeNaoCarregada";
             lblTreeNaoCarregada.Size = new Size(272, 15);
             lblTreeNaoCarregada.TabIndex = 3;
@@ -413,21 +419,21 @@
             // 
             // flpListErros
             // 
-            flpListErros.AutoSize = true;
+            flpListErros.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            flpListErros.BackColor = Color.Transparent;
             flpListErros.Controls.Add(lblErroSintaticoList);
             flpListErros.Controls.Add(lstErrosSintaticos);
             flpListErros.Controls.Add(txtErroBox);
             flpListErros.Dock = DockStyle.Fill;
             flpListErros.FlowDirection = FlowDirection.TopDown;
-            flpListErros.Location = new Point(0, 0);
+            flpListErros.Location = new Point(4, 4);
             flpListErros.Name = "flpListErros";
-            flpListErros.Size = new Size(252, 392);
+            flpListErros.Size = new Size(280, 384);
             flpListErros.TabIndex = 9;
             flpListErros.WrapContents = false;
             // 
             // lblErroSintaticoList
             // 
-            lblErroSintaticoList.AutoSize = true;
             lblErroSintaticoList.BackColor = Color.Black;
             lblErroSintaticoList.BorderStyle = BorderStyle.FixedSingle;
             lblErroSintaticoList.Dock = DockStyle.Fill;
@@ -436,7 +442,7 @@
             lblErroSintaticoList.Location = new Point(3, 0);
             lblErroSintaticoList.MinimumSize = new Size(0, 24);
             lblErroSintaticoList.Name = "lblErroSintaticoList";
-            lblErroSintaticoList.Size = new Size(252, 24);
+            lblErroSintaticoList.Size = new Size(280, 24);
             lblErroSintaticoList.TabIndex = 2;
             lblErroSintaticoList.Text = "Erro(s) encontrado(s)";
             lblErroSintaticoList.TextAlign = ContentAlignment.MiddleCenter;
@@ -445,14 +451,16 @@
             // 
             lstErrosSintaticos.Activation = ItemActivation.OneClick;
             lstErrosSintaticos.Alignment = ListViewAlignment.Left;
-            lstErrosSintaticos.Dock = DockStyle.Top;
+            lstErrosSintaticos.Dock = DockStyle.Fill;
+            flpListErros.SetFlowBreak(lstErrosSintaticos, true);
             lstErrosSintaticos.FullRowSelect = true;
             lstErrosSintaticos.GridLines = true;
             lstErrosSintaticos.Location = new Point(3, 27);
+            lstErrosSintaticos.MinimumSize = new Size(280, 0);
             lstErrosSintaticos.MultiSelect = false;
             lstErrosSintaticos.Name = "lstErrosSintaticos";
             lstErrosSintaticos.ShowGroups = false;
-            lstErrosSintaticos.Size = new Size(252, 247);
+            lstErrosSintaticos.Size = new Size(280, 247);
             lstErrosSintaticos.TabIndex = 1;
             lstErrosSintaticos.UseCompatibleStateImageBehavior = false;
             lstErrosSintaticos.View = View.List;
@@ -461,6 +469,7 @@
             // txtErroBox
             // 
             txtErroBox.BackColor = SystemColors.WindowFrame;
+            txtErroBox.Dock = DockStyle.Fill;
             txtErroBox.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
             txtErroBox.ForeColor = SystemColors.Info;
             txtErroBox.HideSelection = false;
@@ -468,7 +477,7 @@
             txtErroBox.Multiline = true;
             txtErroBox.Name = "txtErroBox";
             txtErroBox.ReadOnly = true;
-            txtErroBox.Size = new Size(252, 113);
+            txtErroBox.Size = new Size(280, 113);
             txtErroBox.TabIndex = 3;
             txtErroBox.Text = "Nenhum Erro Selecionado.";
             // 
@@ -477,7 +486,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { smiEditar });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(1084, 24);
+            menuStrip1.Size = new Size(1120, 24);
             menuStrip1.TabIndex = 8;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -499,7 +508,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1084, 450);
+            ClientSize = new Size(1120, 450);
             Controls.Add(splitContainer1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
@@ -524,7 +533,6 @@
             splitContainer2.Panel1.ResumeLayout(false);
             splitContainer2.Panel1.PerformLayout();
             splitContainer2.Panel2.ResumeLayout(false);
-            splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
             splitContainer2.ResumeLayout(false);
             flowLayoutPanel1.ResumeLayout(false);
