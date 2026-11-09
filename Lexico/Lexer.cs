@@ -2,39 +2,14 @@
 
 namespace Lexico
 {
+
     /// <summary>
     /// Analisador Léxico (Lexer) para o compilador. 
     /// Responsável por ler o código-fonte de entrada e gerar uma lista de tokens.
     /// </summary>
     public partial class Lexer(string entrada)
     {
-        // LISTAS DE SIMBOLOS
-        /// <summary>
-        /// Lista de Palavras Chaves de Componentes
-        /// </summary>
-        public static readonly List<string> Componentes = new List<string>
-        {
-            "pagina",
-            "secao",
-            "cartao",
-            "botao",
-            "selo"
-        };
-        /// <summary>
-        /// Lista de Palavras Chaves de Controles
-        /// </summary>
-        public static readonly List<string> Controles = new List<string>
-        {
-            "para",
-            "em",
-            "se",
-            "enquanto",
-            "sendo"
-        };
-        /// <summary>
-        /// Palavra-chave de declaração de dados
-        /// </summary>
-        public const string PalavraDados = "dados";
+
         // PROPRIEDADES
         /// <summary>String de entrada; código-fonte do compilador.</summary>
         private readonly string _entrada = entrada ?? throw new ArgumentNullException(nameof(entrada));
@@ -53,7 +28,6 @@ namespace Lexico
         /// <summary>Propriedade computada que retorna o caractere atual do código-fonte de entrada, baseado na posição atual.</summary>
         public char CaractereAtual => _entrada[_posicao];
         // SUBCLASSES E OBJETOS
-        public partial class TokenFactory { }
 
         /// <summary>
         /// Retorna verdadeiro se a posição atual mais o valor de deslocamento for maior que o tamanho do código-fonte.
@@ -61,48 +35,6 @@ namespace Lexico
         /// <param name="deslocamento">Valor inteiro do deslocamento que somado a posição do leitor, é verificado se 
         /// é o final do código de entrada.</param>
         public bool IsFimDoCodigo(int deslocamento = 0) => _posicao + deslocamento >= _entrada.Length;
-        /// <summary>
-        /// Avança para o próximo caractere do código-fonte de entrada, atualizando reiniciando a coluna e
-        /// incrementando o valor da linha, tenha ocorrido uma quebra de linha. Caso contrário apenas a coluna
-        /// é incrementada. A posição no código-fonte é incrementada sempre, independente do caractere atual.
-        /// </summary>
-        private void ProximoCaractere()
-        {
-            if (_entrada[_posicao] == '\n')
-            {
-                _linha++;
-                _coluna = 1;
-            }
-            else
-            {
-                _coluna++;
-            }
-            _posicao++;
-        }
-
-        public Regex Expressoes = new Regex(@"
-            (?<EspacosVazios>[ \t\r\n]+) 
-            | (?<Dados> dados )
-            | (?<Identificador> [a-zA-Z_][a-zA-Z0-9_]* (?:-[a-zA-Z0-9_]+)* )
-            | (?<TextoLiteral>""[^""\n]*"")
-            | (?<NumeroReal>[0-9]*\.[0-9]+)
-            | (?<NumeroInteiro>[0-9]+)
-            | (?<AbreConstrutor> [(] )
-            | (?<FechaConstrutor> [)] )
-            | (?<AbreBloco> [{] )
-            | (?<FechaBloco> [}] )
-            | (?<AbreTupla> [\[] )
-            | (?<FechaTupla> [\]] )
-            | (?<Atribuidor>     [:] )
-            | (?<Separador> [,] )
-            | (?<SeparadorBloco> [;] )
-            | (?<Acesso> [.] )
-            | (?<OperadorRelacional> == | != | >= | <= | > | < )
-            | (?<OperadorLogico> && | \|\| )
-            | (?<Incremento> \+\+ )
-            | (?<Decremento> -- )
-            | (?<Erro>        . )
-        ", RegexOptions.IgnorePatternWhitespace);
 
         public readonly Dictionary<string, TokenType?> Grupos = new Dictionary<string, TokenType?>
         {
