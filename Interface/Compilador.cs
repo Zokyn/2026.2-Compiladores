@@ -13,6 +13,8 @@ namespace Interface
         private string _codigofonte { get; set; } = string.Empty;
         private List<Token>? _tokens { get; set; } = null;
         private ResultadoParser? _result { get; set; } = null;
+
+        public List<ErroSintatico> ListaErros => _result.Erros;
         public static string[] ColumnNames = {
                 "Id", "Lexema", "Inicio", "Fim", "Comprimento", "Linha", "Coluna",
             };
@@ -426,7 +428,16 @@ namespace Interface
 
         private void lstErrosSintaticos_DoubleClick(object sender, EventArgs e)
         {
-            txtErroBox.Text = lstErrosSintaticos.SelectedItems[0].Text;
+            string conteudoTexto = lstErrosSintaticos.SelectedItems[0].Text;
+
+            int index = lstErrosSintaticos.SelectedItems[0].Index;
+
+            int posicao = ListaErros[index].Posicao;
+
+            // Atribui erro sintático ao textBox 
+            txtErroBox.Text = conteudoTexto;
+            // Seleciona posição do erro no txtCodigo
+            txtCodigo.Select(posicao, 1);
             if (lstErrosSintaticos.SelectedItems.Count == 0) txtErroBox.Text = "Nenhum Erro Selecionado";
         }
 

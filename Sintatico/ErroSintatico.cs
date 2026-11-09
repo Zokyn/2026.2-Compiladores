@@ -6,13 +6,15 @@
         public string Mensagem { get; }
         public int Linha { get; }
         public int Coluna { get; }
-        public ErroSintatico(string titulo, string mensagem, int linha, int coluna)
+        public int Posicao { get; }
+        public ErroSintatico(string titulo, string mensagem, int linha, int coluna, int posicao)
             : base($"Erro sintático [{linha};{coluna}]: {mensagem}")
         {
             Titulo = titulo;
             Mensagem = mensagem;
             Linha = linha;
             Coluna = coluna;
+            Posicao = posicao;
         }
         public override string ToString() => "Erro sintático" 
             + (string.IsNullOrEmpty(Titulo) ? $":{Titulo}" : "") 

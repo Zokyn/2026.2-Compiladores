@@ -531,7 +531,7 @@ namespace Sintatico
 
             _emPanico = true;
             
-            _resultado.Erros.Add(new ErroSintatico(titulo, mensagem, token.Linha, token.Coluna));
+            _resultado.Erros.Add(new ErroSintatico(titulo, mensagem, token.Linha, token.Coluna, token.Posicao));
         }
         /// <summary>Atribui no Node passado como parâmetro ou qualquer filho dele a linha e coluna do token encontrado. </summary>
         /// <typeparam name="T">Tipo herdado de node.</typeparam>
