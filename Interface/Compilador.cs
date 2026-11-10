@@ -18,7 +18,7 @@ namespace Interface
 
         public List<ErroSintatico>? ListaErros => _result?.Erros;
         public static string[] ColumnNames = {
-                "Id", "Lexema", "Inicio", "Fim", "Comprimento", "Linha", "Coluna",
+                "Id", "Tipo", "Posicao", "Lexema", "Inicio", "Fim", "Comprimento", "Linha", "Coluna",
             };
         public static ListViewGroup group = new ListViewGroup(key: "ErrosSintaticos", headerText: "Erros Sintáticos");
         public static int Offset = 4;
@@ -81,7 +81,11 @@ namespace Interface
                 if (dgvTokens.Columns["TipoEnum"] is { } c) c.Visible = false;
                 dgvTokens.Columns["Id"]!.HeaderText = "#";
                 foreach (var col in ColumnNames)
+                {
+                    if (!dgvTokens.Columns.Contains(col)) continue;
+
                     dgvTokens.Columns[col]!.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
             };
         }
         private void ConfiguraTokensLabels()
@@ -216,19 +220,19 @@ namespace Interface
         /// <param name="tokens">Lista read-only preenchida ou não de Tokens a serem convertidos para TokenLinha.</param>
         private void PreencheGridTokens()
         {
+            dgvTokens.Rows.Clear();
+
             if (_tokens == null || _tokens.Count < 0) return;
 
             var linhas = _tokens.Select((t, i) => new TokenItem
             {
                 Id = i + 1,
+                Posicao = t.Posicao,
                 Tipo = Utils.GetNomeByTokenType(t.Tipo, t.Linha, t.Coluna),
-                Inicio = t.Posicao,
-                Fim = t.Posicao + t.Comprimento,
                 Lexema = t.Lexema,
                 Linha = t.Linha,
                 Coluna = t.Coluna,
                 Comprimento = t.Lexema.Length,
-                TipoEnum = t.Tipo
             }).ToList();
 
             dgvTokens.DataSource = linhas;
@@ -434,18 +438,24 @@ namespace Interface
         private void dgvTokens_SelectionChanged(object sender, EventArgs e)
         {
             txtCodigo.HideSelection = false;
-            //if (txtCodigo.SelectionLength > 0) return;
 
+            if (dgvTokens.CurrentRow is null) return;
 
-            txtCurrentToken.Text = dgvTokens.CurrentRow?.Cells["Lexema"].Value?.ToString() ?? "";
-            lblCurrentTokenTypeLink.Text = dgvTokens.CurrentRow?.Cells["Tipo"].Value?.ToString() ?? "";
+            var token = _tokens[dgvTokens.CurrentRow.Index];
 
-            int? startPosition = (int?)(dgvTokens.CurrentRow?.Cells["Inicio"].Value);
-            int? comprimento = (int?)dgvTokens.CurrentRow?.Cells["Comprimento"].Value;
+            if (token is not null)
+            {
+                txtCurrentToken.Text = token.Lexema;
+                lblCurrentTokenTypeLink.Text = Utils.GetNomeByTokenType(token.Tipo);
 
-            if (!startPosition.HasValue || !comprimento.HasValue) return;
-            txtCodigo.Select(startPosition.Value, comprimento.Value);
-            dgvTokens.Focus();
+                int? startPosition = token.Posicao;
+                int? comprimento = token.Lexema.Length;
+
+                if (!startPosition.HasValue || !comprimento.HasValue) return;
+                txtCodigo.Select(startPosition.Value, comprimento.Value);
+                dgvTokens.Focus();
+            }
+
         }
 
         private void treeParser_AfterSelect(object sender, TreeViewEventArgs e)
