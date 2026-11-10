@@ -9,7 +9,7 @@ namespace Lexico
     /// </summary>
     public partial class Lexer(string entrada)
     {
-
+        public const int TAB_SIZE = 2;
         // PROPRIEDADES
         /// <summary>String de entrada; código-fonte do compilador.</summary>
         private readonly string _entrada = entrada ?? throw new ArgumentNullException(nameof(entrada));
@@ -36,29 +36,6 @@ namespace Lexico
         /// é o final do código de entrada.</param>
         public bool IsFimDoCodigo(int deslocamento = 0) => _posicao + deslocamento >= _entrada.Length;
 
-        public readonly Dictionary<string, TokenType?> Grupos = new Dictionary<string, TokenType?>
-        {
-            { "Dados", TokenType.Dados },
-            { "Identificador", TokenType.Identificador },
-            { "TextoLiteral", TokenType.TextoLiteral },
-            { "NumeroInteiro", TokenType.NumeroInteiro },
-            { "NumeroReal", TokenType.NumeroReal },
-            { "AbreConstrutor", TokenType.AbreConstrutor },
-            { "FechaConstrutor", TokenType.FechaConstrutor },
-            { "AbreBloco", TokenType.AbreBloco },
-            { "FechaBloco", TokenType.FechaBloco },
-            { "AbreTupla", TokenType.AbreTupla },
-            { "FechaTupla", TokenType.FechaTupla },
-            { "Atribuidor", TokenType.Atribuidor },
-            { "Separador", TokenType.Separador },
-            { "SeparadorBloco", TokenType.SeparadorBloco },
-            { "Acesso", TokenType.Acesso },
-            { "Incremento", TokenType.Incremento },
-            { "Decremento", TokenType.Decremento },
-            { "EspacosVazios", TokenType.EspacosVazios },
-            { "Erro", TokenType.Erro }
-            //Fim de Arquivo não tem match
-        };
         /// <summary>
         /// Dado o conjunto de caracteres de entrada, o Lexer gera uma lista de tokens.
         /// </summary>
@@ -73,8 +50,8 @@ namespace Lexico
             int colunaAtual = -1;
             foreach (Match m in expressoes.Matches(_entrada))
             {
-                string grupoNome = Grupos.Keys.First(nome => m.Groups[nome].Success);
-                Grupos.TryGetValue(grupoNome, out TokenType? tipo);
+                string grupoNome = Utils.Grupos.Keys.First(nome => m.Groups[nome].Success);
+                Utils.Grupos.TryGetValue(grupoNome, out TokenType? tipo);
 
                 colunaAtual = m.Index - ultimaQuebraLinha;
 
@@ -83,19 +60,24 @@ namespace Lexico
                 //throw new ErroLexico($"Caractere inesperado '{m.Value}'", linhaAtual, colunaAtual);
 
                 // Se for um valor em branco, segue o cursor para frente e quebra linha, caso necessário.
-                if (tipo == TokenType.EspacosVazios)
+                if (tipo == TokenType.QuebraLinha)
                 {
+                    _posicao += m.Length;
+                    if (m.Value.Contains('\n'))
+                    {
+                        linhaAtual++;
+                        ultimaQuebraLinha = m.Index + m.Length;
+                    }
+                }
+                else if (tipo == TokenType.Espacos)
+                {
+                    if (m.Value.Contains('\t'))
+                    {
+                        _posicao += TAB_SIZE;
+                    }
                     for (int i = 0; i < m.Length; i++)
                     {
-                        if (m.Value[i] == '\n')
-                        {
-                            linhaAtual++;
-                            ultimaQuebraLinha = m.Index + i;
-                        }
-                        else
-                        {
-                            _posicao++;
-                        }
+                        _posicao++;
                     }
                     continue;
                 }

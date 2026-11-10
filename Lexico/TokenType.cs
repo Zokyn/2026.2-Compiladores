@@ -116,12 +116,17 @@ namespace Lexico
         /// ou seja, pelo caractere de nova linha \n ou delimitado por <<< >>> para comentários multilinhas. 
         /// </summary>
         [Description("Comentários")]
-        Comentarios, // > 
+        Comentario,
         /// <summary>
-        /// Espaços, tabulação, nova linha, retorno de carro e espaço em branco. Lidos como \t, \n, \r e ' '.
+        /// Especificamente o demarcador de quebra de linha.
         /// </summary>
-        [Description("Espaços Vazios")]
-        EspacosVazios,
+        [Description("Quebra de Linha")]
+        QuebraLinha,
+        /// <summary>
+        /// Espaços, tabulação, nova linha, retorno de carro e espaço em branco. Lidos como \t, e múltiplos ' '.
+        /// </summary>
+        [Description("Espaços")]
+        Espacos,
         /// <summary>
         /// Denotador de erro. Usado apenas para debug do analisador léxico e levantamento de exceções.
         /// </summary>

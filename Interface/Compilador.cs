@@ -221,7 +221,7 @@ namespace Interface
             var linhas = _tokens.Select((t, i) => new TokenItem
             {
                 Id = i + 1,
-                Tipo = Utils.GetNomeByType(t.Tipo, t.Linha, t.Coluna),
+                Tipo = Utils.GetNomeByTokenType(t.Tipo, t.Linha, t.Coluna),
                 Inicio = t.Posicao,
                 Fim = t.Posicao + t.Comprimento,
                 Lexema = t.Lexema,

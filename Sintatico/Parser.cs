@@ -23,8 +23,8 @@ namespace Sintatico
             FimDeTokens ? _tokens[^1] : _tokens[_posicao];
         public Parser(IEnumerable<Token> tokens)
         {
-            _tokens = tokens.Where(t => t.Tipo != TokenType.EspacosVazios
-                                    && t.Tipo != TokenType.Comentarios).ToList();
+            _tokens = tokens.Where(t => t.Tipo != TokenType.Espacos 
+                                    && t.Tipo != TokenType.Comentario).ToList();
         }
         public ResultadoParser Parse()
         {
@@ -447,7 +447,7 @@ namespace Sintatico
         /// <summary>Nome legível de um tipo de token: o próprio símbolo para delimitadores, ex.: ')'.</summary>
         private static string Nome(TokenType tipo)
         {
-            return Utils.GetExampleByType(tipo).Length <= 2 ? $"'{Utils.GetExampleByType(tipo)}'" : Utils.GetNomeByType(tipo);
+            return Utils.GetExampleByTokenType(tipo).Length <= 2 ? $"'{Utils.GetExampleByTokenType(tipo)}'" : Utils.GetNomeByTokenType(tipo);
         }
         /// <summary>Método que transforma o Token recebido em texto, iniciado por seu tipo e seguido do lexema.</summary>
         /// <param name="token">Token que será descrito</param>

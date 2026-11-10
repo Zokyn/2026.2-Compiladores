@@ -24,8 +24,7 @@ namespace Lexico
         };
         /// <summary>Expressão regular com grupos nomeados acomplando todas as expressões regulares de cada TokenType</summary>
         public static Regex Expressoes = new Regex(@"
-            (?<EspacosVazios>[ \t\r\n]+) 
-            | (?<Dados> dados )
+            (?<Dados> dados )
             | (?<Identificador> [a-zA-Z_][a-zA-Z0-9_]* (?:-[a-zA-Z0-9_]+)* )
             | (?<TextoLiteral>""[^""\n]*"")
             | (?<NumeroReal>[0-9]*\.[0-9]+)
@@ -41,18 +40,46 @@ namespace Lexico
             | (?<SeparadorBloco> [;] )
             | (?<Acesso> [.] )
             | (?<Booleano> \b(?:v(?:erdadeiro|erdade)? | (f(?:also|alsidade)?)\b) )
-            | (?<OperadorRelacional> == | != | >= | <= | > | < )
-            | (?<OperadorLogico> && | \|\| )
             | (?<Incremento> \+\+ )
             | (?<Decremento> -- )
+            | (?<Comentario> <<<[\s\S]*?>>>|^[ \t]*>[^\r\n]* )
+            | (?<QuebraLinha> \G[\r?\n] )
+            | (?<Espaco> \G[ \t]+ )
             | (?<Erro>        . )
-        ", RegexOptions.IgnorePatternWhitespace);
+        ", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
+
+        public static readonly Dictionary<string, TokenType?> Grupos = new Dictionary<string, TokenType?>
+        {
+            { "Dados", TokenType.Dados },
+            { "Identificador", TokenType.Identificador },
+            { "TextoLiteral", TokenType.TextoLiteral },
+            { "NumeroInteiro", TokenType.NumeroInteiro },
+            { "NumeroReal", TokenType.NumeroReal },
+            { "AbreConstrutor", TokenType.AbreConstrutor },
+            { "FechaConstrutor", TokenType.FechaConstrutor },
+            { "AbreBloco", TokenType.AbreBloco },
+            { "FechaBloco", TokenType.FechaBloco },
+            { "AbreTupla", TokenType.AbreTupla },
+            { "FechaTupla", TokenType.FechaTupla },
+            { "Atribuidor", TokenType.Atribuidor },
+            { "Separador", TokenType.Separador },
+            { "SeparadorBloco", TokenType.SeparadorBloco },
+            { "Acesso", TokenType.Acesso },
+            { "Incremento", TokenType.Incremento },
+            { "Decremento", TokenType.Decremento },
+            { "Comentario", TokenType.Comentario },
+            { "QuebraLinha", TokenType.QuebraLinha },
+            { "Espaco", TokenType.Espacos },
+            { "Erro", TokenType.Erro }
+            //Fim de Arquivo não tem match
+        };
+
         /// <summary>Palavra-chave de declaração de dados </summary>
         public const string PalavraDados = "dados";
         /// <summary>Método utiltário que retorna uma categoria para o token.</summary>
         /// <returns>Uma string com a categoria do token</returns>
         /// <exception cref="ErroLexico">Erro de TokenType sem categoria definida.</exception>
-        public static string GetCategoriaByType(TokenType tipo, int linha, int coluna) => tipo switch
+        public static string GetDetalhesByTokenType(TokenType tipo, int linha, int coluna) => tipo switch
         {
             TokenType.Componente => "Palavra-chave de Componente",
             TokenType.Dados => "Palavra-chave de Declaração de Dados",
@@ -72,16 +99,17 @@ namespace Lexico
             TokenType.Acesso => "Símbolo de Acesso",
             TokenType.Incremento => "Operador de Incremento",
             TokenType.Decremento => "Operador de Decremento",
+            TokenType.Comentario =>  "Comentário",
             TokenType.FimDeArquivo => "Token de Fim de arquivo",
             TokenType.Erro => "Erro",
             _ => throw new ErroLexico("TokenType sem Categoria definida.", linha, coluna)
         };
 
-        public static string GetNomeByType(TokenType tipo) => GetNomeByType(tipo, 0, 0);
+        public static string GetNomeByTokenType(TokenType tipo) => GetNomeByTokenType(tipo, 0, 0);
         /// <summary>Método utilitário que retorna o nome do TokenType</summary>
         /// <returns>Uma string com o nome do token.</returns>
         /// <exception cref="Exception">Erro de TokenType sem nome definido.</exception>
-        public static string GetNomeByType(TokenType tipo, int linha, int coluna) => tipo switch
+        public static string GetNomeByTokenType(TokenType tipo, int linha, int coluna) => tipo switch
         {
             TokenType.Componente => "Componente",
             TokenType.Dados => "Dados",
@@ -102,6 +130,7 @@ namespace Lexico
             TokenType.Booleano => "Booleano",
             TokenType.Incremento => "Incremento",
             TokenType.Decremento => "Decremento",
+            TokenType.Comentario => "Comentario",
             TokenType.FimDeArquivo => "FimDeArquivo",
             TokenType.Erro => "Erro",
             _ => (linha == 0 || coluna == 0) ? throw new Exception("TokenType sem Nome definido.") : throw new ErroLexico("TokenType sem Nome definido.", linha, coluna)
@@ -109,7 +138,7 @@ namespace Lexico
         /// <summary>Método utilitário que retorna um exemplo para o TokenType</summary>
         /// <returns>Uma string com o exemplo do token</returns>
         /// <exception cref="Exception">Erro de TokenType sem exemplo definido.</exception>
-        public static string GetExampleByType(TokenType tipo) => tipo switch
+        public static string GetExampleByTokenType(TokenType tipo) => tipo switch
         {
             TokenType.Componente => "pagina, secao, cartao, botao, selo",
             TokenType.Dados => "dados",
@@ -130,6 +159,7 @@ namespace Lexico
             TokenType.Booleano => "verdeiro, falso",
             TokenType.Incremento => "++",
             TokenType.Decremento => "--",
+            TokenType.Comentario => "> comentário de linha",
             TokenType.FimDeArquivo => "FimDeArquivo",
             TokenType.Erro => "Erro",
             _ => throw new Exception("TokenType sem Exemplo definida.")
