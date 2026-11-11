@@ -1,4 +1,6 @@
-﻿namespace Sintatico
+﻿using Lexico;
+
+namespace Sintatico
 {
     public class ErroSintatico : Exception
     {
@@ -19,5 +21,16 @@
         public override string ToString() => "Erro sintático" 
             + (string.IsNullOrEmpty(Titulo) ? $":{Titulo}" : "") 
             + $"\n[{Linha};{Coluna}]: {Mensagem}";
+    }
+    public class ErroTokenNaoEncontrado : ErroSintatico
+    {
+        public TokenType TipoEsperado { get; }
+        public Token? TokenEncontrado { get; }
+        public ErroTokenNaoEncontrado(TokenType tipoEsperado, Token? tokenEncontrado, int linha, int coluna, int posicao)
+            : base("Token Inesperado", $"Token esperado '{tipoEsperado}', mas encontrado '{tokenEncontrado?.Tipo}'", linha, coluna, posicao)
+        {
+            TipoEsperado = tipoEsperado;
+            TokenEncontrado = tokenEncontrado;
+        }
     }
 }

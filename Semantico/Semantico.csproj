@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Lexico\Lexico.csproj" />
+    <ProjectReference Include="..\Sintatico\Sintatico.csproj" />
+  </ItemGroup>
+
 </Project>
