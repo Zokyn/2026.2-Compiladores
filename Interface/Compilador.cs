@@ -439,21 +439,28 @@ namespace Interface
         {
             txtCodigo.HideSelection = false;
 
-            if (dgvTokens.CurrentRow is null) return;
+            if (dgvTokens.CurrentRow is null || _tokens is null) return;
 
             var token = _tokens[dgvTokens.CurrentRow.Index];
 
-            if (token is not null)
+            if (token is null) return; 
+
+            txtCurrentToken.Text = token.Lexema;
+            lblCurrentTokenTypeLink.Text = Utils.GetNomeByTokenType(token.Tipo);
+
+            int indexLinha = token.Linha - 1;
+
+            if (indexLinha >= 0 && indexLinha < txtCodigo.Lines.Length)
             {
-                txtCurrentToken.Text = token.Lexema;
-                lblCurrentTokenTypeLink.Text = Utils.GetNomeByTokenType(token.Tipo);
+                int indexCharDeInicioLinha = txtCodigo.GetFirstCharIndexFromLine(indexLinha);
 
-                int? startPosition = token.Posicao;
-                int? comprimento = token.Lexema.Length;
+                int startPosition = indexCharDeInicioLinha + (token.Coluna - 1);
+                int comprimento = token.Lexema.Length;
 
-                if (!startPosition.HasValue || !comprimento.HasValue) return;
-                txtCodigo.Select(startPosition.Value, comprimento.Value);
-                dgvTokens.Focus();
+                txtCodigo.Select(startPosition, comprimento);
+
+                txtCodigo.ScrollToCaret();
+
             }
 
         }

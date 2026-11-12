@@ -94,8 +94,10 @@ namespace Lexico
                             else if (m.Value == Utils.PalavraDados) // dados
                                 tipo = TokenType.Dados;
                         }
-                        // O valor do texto literal é o conteúdo sem as aspas delimitadoras.
+                        // Trata o valor do texto literal como conteúdo sem as aspas delimitadoras.
                         string valor = tipo.Value == TokenType.TextoLiteral ? m.Value[1..^1] : m.Value;
+
+                        // Salva o token na lista de tokens, com o tipo, lexema, valor, posição e linha/coluna.
                         tokens.Add(new Token(tipo.Value, m.Value, valor, Posicao, (linhaAtual, colunaAtual)));
                     }
                     _posicao += m.Length;

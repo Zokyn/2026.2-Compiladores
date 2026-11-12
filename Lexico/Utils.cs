@@ -42,8 +42,8 @@ namespace Lexico
             | (?<Booleano> \b(?:v(?:erdadeiro|erdade)? | (f(?:also|alsidade)?)\b) )
             | (?<Incremento> \+\+ )
             | (?<Decremento> -- )
-            | (?<Comentario> <<<[\s\S]*?>>>|^[ \t]*>[^\r\n]*(?:\r\n|\n|\r|\z) )
-            | (?<QuebraLinha> \G[\r?\n] )
+            | (?<Comentario> <<<[\s\S]*?>>>|^[ \t]*>[^\r\n]* )
+            | (?<QuebraLinha> \r\n|\r|\n )
             | (?<Espaco> \G[ \t]+ )
             | (?<Erro>        . )
         ", RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
