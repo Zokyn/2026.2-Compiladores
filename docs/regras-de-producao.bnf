@@ -69,7 +69,7 @@ do tipo Controle cujo Valor é a própria palavra.
 
 # Bloco Componente
 
-<<bloco_componente_opc>     ::= <bloco_componente> | ε
+<bloco_componente_opc>     ::= <bloco_componente> | ε
 <bloco_componente>          ::= ABRE_BLOCO <conteudo> FECHA_BLOCO
 
 # Conteudo do Componente

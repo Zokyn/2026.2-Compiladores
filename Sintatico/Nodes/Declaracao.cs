@@ -1,12 +1,11 @@
-﻿namespace Sintatico.Nodes
+﻿using Lexico;
+namespace Sintatico.Nodes
 {
-    public class Declaracoes(int? numero = null) : Node
+    public class Declaracoes() : Node
     {
-        private static int _count;
-        private int _numeroId { get; set; } = numero ?? _count++;
-        public List<Declaracao> Declaracao { get; set; } = [];
+        public List<Declaracao> ListaDeclaracao { get; set; } = [];
         public override string Descricao => $"<declaracoes> dados";
-        public override IEnumerable<Node> Filhos => Declaracao;
+        public override IEnumerable<Node> Filhos => ListaDeclaracao;
 
     }
     // <declaracao> ::= "dados" IDENTIFICADOR <dados>
@@ -33,15 +32,9 @@
     // <mais_itens> ::= SEPARADOR <item_dado> <mais_itens> | <vazio>
     // <resto_item_dado> ::= ATRIBUIDOR <valor> | <construtor> | <mais_acesso>
     // <item_dado> ::= IDENTIFICADOR <resto_item_dado> | <literal>
-    public enum Type
-    {
-        Identificador,
-        Literal
-    }
     public class Dado(string identificador) : Node
     {
         public Node Resto { get; set; } = new Invalido(); // Atribuicao | Construtor | MaisAcesso
-        public Type Tipo { get; set; } = Type.Identificador; // Texto Literal | Numero Inteiro | Numero Real | Construtor/Classe | Estrutura/Lista | Componente
         public string Identificador { get; set; } = identificador;
         public override string Descricao => $"<item_dado> {Identificador}";
         public override IEnumerable<Node> Filhos => [Resto];

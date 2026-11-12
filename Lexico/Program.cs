@@ -9,29 +9,20 @@ namespace Lexico
             string filename = Environment.GetEnvironmentVariable("FILEPATH") ?? "";
             string? entradaDeTexto = File.ReadAllText(filename);
 
-            string entrada = entradaDeTexto ?? @"
-dados produtos {
-  produto(nome: ""Camiseta"", descricao: ""Algodão"", promocao: verdadeiro)
-  produto(nome: ""Caneca"", descricao: ""Cerâmica"", promocao: falso)
-}
+            string codigoEntrada = entradaDeTexto ?? @"
+                    > Arquivo teste
 
-pagina(pag-loja, ""Loja Declara"") {
-  secao(sec-produtos, ""Produtos em destaque"") {
-    para item em produtos {
-      cartao(titulo: item.nome, texto: item.descricao) {
-        se item.promocao {
-          selo(""OFERTA"")
-        }
-        botao(btn-comprar, ""Comprar"", acao: adicionarCarrinho)
-      }
-    }
-  }
-}
-";
+                    pagina(pag-teste, ""Teste"") {
+                      secao(sec-botao <<<secção sem título>>>) {
+                        > constroi uma página com apenas um botão no meio.
+                        botao(btn-comprar, ""Clicar"", acao: abrirPopUp)
+                      }
+                    }
+            ";
 
             try
             {
-                var lexer = new Lexer(entrada);
+                var lexer = new Lexer(codigoEntrada);
                 var tokens = lexer.Tokenizar();
 
                 foreach (var token in tokens)

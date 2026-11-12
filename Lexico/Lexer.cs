@@ -47,13 +47,14 @@ namespace Lexico
 
             List<Token> tokens = [];
             int linhaAtual = 1, ultimaQuebraLinha = -1;
-            int colunaAtual = -1;
             foreach (Match m in expressoes.Matches(_entrada))
             {
+                _posicao = m.Index;
+                int colunaAtual = m.Index - ultimaQuebraLinha;
+
                 string grupoNome = Utils.Grupos.Keys.First(nome => m.Groups[nome].Success);
                 Utils.Grupos.TryGetValue(grupoNome, out TokenType? tipo);
 
-                colunaAtual = m.Index - ultimaQuebraLinha;
 
                 if (grupoNome == "Erro")
                     throw new ErroCaractereInesperado(m.Value[0], linhaAtual, colunaAtual);
@@ -62,27 +63,24 @@ namespace Lexico
                 // Se for um valor em branco, segue o cursor para frente e quebra linha, caso necessário.
                 if (tipo == TokenType.QuebraLinha)
                 {
-                    _posicao += m.Length;
-                    if (m.Value.Contains('\n'))
+                    // Percorre o tamanho do quebra de linha
+                    for (int i = 0; i < m.Value.Length; i++)
                     {
-                        linhaAtual++;
-                        ultimaQuebraLinha = m.Index + m.Length;
+                        if (m.Value[i] == '\n')
+                        {
+                            linhaAtual++;
+                            // Proximo caractere de \n será uma nova linha
+                            ultimaQuebraLinha = m.Index + i;
+                        }
                     }
                 }
+               
                 else if (tipo == TokenType.Espacos)
-                {
-                    if (m.Value.Contains('\t'))
-                    {
-                        _posicao += TAB_SIZE;
-                    }
-                    for (int i = 0; i < m.Length; i++)
-                    {
-                        _posicao++;
-                    }
+                {   // Demais valore em branco são ignorados
                     continue;
                 }
-                else // Se for um token válido, adiciona na lista de tokens.
-                {
+                else
+                {   // Tokens válidos são adicionados na lista de tokens.
                     if (tipo.HasValue)
                     {
                         // Se um identificador pode ser um Identificador, Dados, Controle ou Componente,
@@ -105,7 +103,7 @@ namespace Lexico
             }
 
             // O fim de arquivo fica na posição logo após o último caractere da entrada.
-            tokens.Add(new Token(TokenType.FimDeArquivo, "", "FDA", _entrada.Length, (linhaAtual, colunaAtual)));
+            tokens.Add(new Token(TokenType.FimDeArquivo, "", "FDA", _entrada.Length, (linhaAtual, 0)));
             return tokens;
         }
     }

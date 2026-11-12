@@ -38,7 +38,9 @@ namespace Sintatico
         {
             var documento = Posicionar(new Documento(), TokenAtual);
 
-            documento.Corpo.Add(Declaracoes());
+            var declaracoes = Declaracoes();
+            if (declaracoes != null)
+                documento.Corpo.Add(declaracoes);
             if (_emPanico) AvancarAte(TokenType.Dados, TokenType.Componente);
 
             documento.Corpo.Add(Componente());
@@ -53,13 +55,15 @@ namespace Sintatico
         // <declaracoes> ::= <declaracao> <declaracoes> | ε 
         // <declaracao>     ::= DADOS IDENTIFICADOR <dados> | ε
         // <dados>          ::= <conjunto_dados> | <construtor> | ATRIBUIDOR <valor>
-        private Node Declaracoes()
+        private Declaracoes? Declaracoes()
         {
-            var declaracoes = Posicionar(new Declaracoes(), Consumir(TokenType.Dados, "declaração de dados"));
+            if (Verificar(TokenType.Componente)) return null;
 
-            if (!Verificar(TokenType.Identificador)) return new Invalido();
+            Declaracoes? declaracoes = Posicionar(new Declaracoes(), Consumir(TokenType.Dados, "declaração de dados"));
+            
+            //if (!Verificar(TokenType.Identificador)) return null;
 
-            declaracoes.Declaracao.Add(Declaracao());
+            declaracoes.ListaDeclaracao.Add(Declaracao());
 
             return declaracoes;
         }
@@ -68,28 +72,48 @@ namespace Sintatico
         {
             var declaracao = new Declaracao(Consumir(TokenType.Identificador, "identificador de dados").Valor);
 
-            if (Verificar(TokenType.AbreTupla))
-            {
-                declaracao.Definicao = ConjuntoDados();
-
-            }
-            if (Verificar(TokenType.AbreConstrutor))
-            {
-                declaracao.Definicao = Construtor();
-            }
             if (Verificar(TokenType.Atribuidor))
             {
                 declaracao.Definicao = Valor();
             }
             else
             {
+                declaracao.Definicao = Dado();
+            }
+
+            /*else
+            {
                 RegistrarErro("Definição de Dados Incompleta", "Esperado bloco de dados, construtor ou atribuição, mas encontrado " +
                     Descrever(TokenAtual));
-            }
+            }*/
 
             return declaracao;
         }
+        // <item_dado>                  ::= IDENTIFICADOR <resto_item_dado> | <literal>
+        // <resto_item_dados>           ::= ATRIBUIDOR <valor> | <construtor> | <mais_acesso>
+        private Dado Dado()
+        {
+            var token = Consumir(TokenType.Identificador, "item de dados");
+            var identificador = token.Valor;
+            var item = new Dado(identificador);
 
+            if (Verificar(TokenType.Atribuidor))
+            {
+                AvancarToken();
+                item.Resto = Posicionar(Valor(), token);
+            }
+            else if (Verificar(TokenType.AbreConstrutor))
+            {
+                item.Resto = Posicionar(Construtor(), token);
+            }
+            // TO-DO: Implementar Dado -> MaisAcesso
+            else if (Verificar(TokenType.AbreTupla))
+            {
+                item.Resto = Posicionar(ConjuntoDados(), token);
+            }
+
+            return item;
+        }
         /*
          * <conjunto_dados>            ::= ABRE_TUPLA <itens_dados> FECHA_TUPLA
          * <itens_dados>               ::= <item_dado> <mais_itens>
@@ -117,31 +141,6 @@ namespace Sintatico
             return conjunto;
         }
 
-        // <item_dado>                  ::= IDENTIFICADOR <resto_item_dado> | <literal>
-        // <resto_item_dados>           ::= ATRIBUIDOR <valor> | <construtor> | <mais_acesso>
-        private Dado Dado()
-        {
-            var token = Consumir(TokenType.Identificador, "item de dados");
-            var identificador = token.Valor;
-            var item = new Dado(identificador);
-
-            if (Verificar(TokenType.Atribuidor))
-            {
-                AvancarToken();
-                item.Resto = Posicionar(Valor(), token);
-            }
-            else if (Verificar(TokenType.AbreConstrutor))
-            {
-                item.Resto = Posicionar(Construtor(), token);
-            }
-            // TO-DO: Implementar Dado -> MaisAcesso
-            else if (Verificar(TokenType.Acesso))
-            {
-                item.Resto = Posicionar(Acesso(), token);
-            }
-
-                return item;
-        }
         #endregion
         #region Construtor
         // <bloco_construtor> ::= ABRE_CONSTRUTOR <argumentos> FECHA_CONSTRUTOR
@@ -249,7 +248,7 @@ namespace Sintatico
         }
 
         // <elemento> ::= <componente> | <iteracao> | <condicional>
-        private Node? Elemento()
+        private Componente? Elemento()
         {
             if (Verificar(TokenType.Componente)) return Componente();
             //if (VerificarControle("para") || VerificarControle("enquanto")) return Iteracao();
@@ -273,11 +272,11 @@ namespace Sintatico
             {
                 var literal = Consumir(TokenAtual.Tipo);
 
-                return Posicionar(new Valor(string.Empty, new Literal(literal.Valor, literal.Tipo)), literal);
+                return Posicionar(new Valor(literal.Valor, literal.Tipo), literal);
             }
             var identificador = Consumir(TokenType.Identificador, "valor");
 
-            var valor = Posicionar(new Valor(identificador.Lexema), identificador);
+            var valor = Posicionar(Valor(), identificador);
 
             if (TokenAtual.Tipo == TokenType.AbreConstrutor)
                 valor.Construtor = Construtor(identificador);
